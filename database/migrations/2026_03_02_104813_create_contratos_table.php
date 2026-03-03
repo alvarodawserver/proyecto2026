@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('proc_adjudicacion');
             $table->date('fecha_prevista');
             $table->date('fecha_inicio')->nullable();
+            $table->timestamp('alerta_vencimiento')->nullable();
             $table->string('unidad_promotora');
             $table->timestamp('duracion_estimada');
             $table->string('estado_expediente');

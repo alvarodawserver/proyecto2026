@@ -15,7 +15,7 @@ class MovimientoController extends Controller
      */
     public function index()
     {
-        $movimientos = Auth::user()->movimientos->sortByDesc('created_at');
+        $movimientos = Auth::user()->movimientos->sortByDesc('created_at')->values();
 
         return Inertia::render('movimientos',['movimientos' => $movimientos]);
 

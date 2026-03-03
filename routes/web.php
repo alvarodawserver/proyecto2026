@@ -14,7 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });
 
-Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('auth')->name('movimientos');
+Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('auth','verified')->name('movimientos');
 
 
 require __DIR__.'/settings.php';

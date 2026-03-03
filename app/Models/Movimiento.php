@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Movimiento extends Model
 {
-    //
+    protected $fillable = ['user_id','fecha_movimiento','observaciones','actuacion'];
 
 
     public function user(){

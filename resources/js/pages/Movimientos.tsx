@@ -28,7 +28,7 @@ export default function Movimientos({ movimientos }: Props) {
             <div className="flex flex-col gap-4 p-4">
                 <h1 className="text-xl font-semibold">Tus movimientos</h1>
 
-                {movimientos.length === 0 ? (
+                {movimientos?.length === 0 ? (
                     <p className="text-gray-500">No tienes movimientos aún.</p>
                 ) : (
                     <div className="overflow-x-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
@@ -41,7 +41,7 @@ export default function Movimientos({ movimientos }: Props) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
-                                {movimientos.map((mov) => (
+                                {(movimientos).map((mov) => (
                                     <tr key={mov.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                         <td className="px-4 py-2">{mov.fecha_movimiento}</td>
                                         <td className="px-4 py-2">{mov.observaciones}</td>

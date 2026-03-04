@@ -37,7 +37,7 @@ class ContratoPolicy
      */
     public function update(User $user, Contrato $contrato): bool
     {
-        return $user->name == 'Admin';
+        return $user->id == $contrato->created_by_id;
     }
 
     /**
@@ -45,7 +45,8 @@ class ContratoPolicy
      */
     public function delete(User $user, Contrato $contrato): bool
     {
-        return $user->name == 'Admin';
+        //return $user->name == 'Admin';
+        return $user->id == $contrato->created_by_id;
     }
 
     /**

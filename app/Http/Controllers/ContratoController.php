@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contrato;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ContratoController extends Controller
 {
@@ -12,7 +13,7 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Contratos/contratos',['contratos' => Contrato::all()]);
     }
 
     /**
@@ -20,7 +21,7 @@ class ContratoController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Contratos/create');
     }
 
     /**
@@ -28,7 +29,22 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'n_expediente' => 'required|max:255',
+            'descripcion' => 'required|max:255',
+            'tipo_contrato' => 'required|max:255',
+            'importe_estimado' => 'required|decimal:2|gte:-999999.99|lte:999999.99',
+            'proc_adjudicacion' => 'required|max:255',
+            'fecha_prevista' => 'required|date',
+            'fecha_inicio' => 'date',
+            'alerta_vencimiento' => 'date',
+            'unidad_promotora' => 'required|max:255',
+            'duracion_estimada' => 'required|date',
+            'estado_expediente' => 'required|max:255'
+        ]);
+
+        Contrato::create($validated);
+        return redirect(route('contratos'));
     }
 
     /**
@@ -36,7 +52,7 @@ class ContratoController extends Controller
      */
     public function show(Contrato $contrato)
     {
-        //
+        
     }
 
     /**

@@ -12,4 +12,8 @@ class Movimiento extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function contrato(){
+        return $this->belongsTo(Contrato::class);
+    }
 }

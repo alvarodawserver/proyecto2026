@@ -14,6 +14,7 @@ export default function Heading({
                     variant === 'small'
                         ? 'mb-0.5 text-base font-medium'
                         : 'text-xl font-semibold tracking-tight'
+                        
                 }
             >
                 {title}

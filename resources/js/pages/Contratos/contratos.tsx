@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
-import { contratos as contratosRoute } from '@/routes';
+import {contratos as contratoRoute} from '@/routes';
 import { Link, Route} from 'lucide-react';
 
 type Contrato = {
@@ -30,7 +30,7 @@ type Props = {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Contratos',
-        href: contratosRoute(),
+        href: contratoRoute(),
     },
 ];
 
@@ -66,6 +66,7 @@ export default function Contratos({ contratos }: Props) {
                         </table>
                     </div>
                 )}
+                <a href="/contratos/create" className='btn btn-info'>Crear contrato</a>
             </div>
         </AppLayout>
     );

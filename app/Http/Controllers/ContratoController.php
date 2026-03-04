@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contrato;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ContratoController extends Controller
@@ -32,6 +33,7 @@ class ContratoController extends Controller
         $validated = $request->validate([
             'n_expediente' => 'required|max:255',
             'descripcion' => 'required|max:255',
+            'responsable' => 'required|max:255',
             'tipo_contrato' => 'required|max:255',
             'importe_estimado' => 'required|decimal:2|gte:-999999.99|lte:999999.99',
             'proc_adjudicacion' => 'required|max:255',
@@ -42,9 +44,11 @@ class ContratoController extends Controller
             'duracion_estimada' => 'required|date',
             'estado_expediente' => 'required|max:255'
         ]);
-
-        Contrato::create($validated);
-        return redirect(route('contratos'));
+        Contrato::create([
+        $validated,
+        'created_by' => Auth::user()->id
+        ]);
+        return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');;
     }
 
     /**
@@ -52,7 +56,7 @@ class ContratoController extends Controller
      */
     public function show(Contrato $contrato)
     {
-        
+
     }
 
     /**

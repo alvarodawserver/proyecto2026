@@ -15,7 +15,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::with('contratos')->get();
+        return Inertia::render('users-index',
+        ['users' => $users]
+    );
     }
 
     /**

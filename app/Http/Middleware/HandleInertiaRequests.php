@@ -40,7 +40,12 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
+                'can' => [
+                    'manejar_contratos' => $request->user() ? $request->user()->name === 'admin' : false,
+                    'ver_historico' => $request->user() ? $request->user()->name === 'admin' : false,
+                ],
             ],
+
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

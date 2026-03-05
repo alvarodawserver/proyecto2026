@@ -5,7 +5,7 @@ import { SubmitEvent } from 'react';
 import { route } from 'ziggy-js';
 
 export default function Create() {
-    const { data, setData, post } = useForm({
+    const { data, setData, post, errors } = useForm({
         n_expediente: '',
         descripcion: '',
         responsable:'',
@@ -16,7 +16,6 @@ export default function Create() {
         fecha_inicio:'',
         unidad_promotora:'',
         duracion_estimada:'',
-        estado_expediente:'',
     });
 
 
@@ -28,6 +27,7 @@ export default function Create() {
     ];
 
     function submit(e: React.FormEvent) {
+        e.preventDefault();
         post('/contratos/store');
     }
 
@@ -37,6 +37,7 @@ export default function Create() {
         <div className="flex flex-1 flex-col gap-4 p-4">
             <div className="rounded-xl border border-sidebar-border/70 bg-white p-6 shadow-sm dark:bg-gray-900">
                 <h2 className="mb-6 text-lg font-bold">Datos del Contrato</h2>
+
 
                 <form onSubmit={submit} className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
@@ -62,7 +63,6 @@ export default function Create() {
                         />
                     </div>
 
-                    {/* Tipo de Contrato (Email en tu código) */}
                     <div className="flex flex-col gap-2">
                         <label htmlFor="tipo_contrato" className="text-sm font-medium">Tipo de contrato</label>
                         <input
@@ -78,7 +78,9 @@ export default function Create() {
                         <label htmlFor="importe_estimado" className="text-sm font-medium">Importe estimado</label>
                         <input
                             id="importe_estimado"
-                            type="text"
+                            type="number"
+                            step={'0.01'}
+                            placeholder='0.00'
                             className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
                             value={data.importe_estimado}
                             onChange={e => setData('importe_estimado', e.target.value)}
@@ -108,6 +110,50 @@ export default function Create() {
                         />
                     </div>
 
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="fecha_prevista" className="text-sm font-medium">Fecha prevista</label>
+                        <input
+                            id="fecha_prevista"
+                            type="date"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.fecha_prevista}
+                            onChange={e => setData('fecha_prevista', e.target.value)}
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="fecha_inicio" className="text-sm font-medium">Fecha de inicio</label>
+                        <input
+                            id="fecha_inicio"
+                            type="date"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.fecha_inicio}
+                            onChange={e => setData('fecha_inicio', e.target.value)}
+                        />
+                    </div>
+
+
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="unidad_promotora" className="text-sm font-medium">Unidad promotora</label>
+                        <input
+                            id="unidad_promotora"
+                            type="text"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.unidad_promotora}
+                            onChange={e => setData('unidad_promotora', e.target.value)}
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="duracion_estimada" className="text-sm font-medium">Duración estimada</label>
+                        <input
+                            id="duracion_estimada"
+                            type="date"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.duracion_estimada}
+                            onChange={e => setData('duracion_estimada', e.target.value)}
+                        />
+                    </div>
 
                     <div className="md:col-span-2 mt-4">
                         <button
@@ -117,6 +163,11 @@ export default function Create() {
                             Finalizar Registro
                         </button>
                     </div>
+                    {Object.keys(errors).length > 0 && (
+                        <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md">
+                            Hay errores en el formulario. Revisa los campos.
+                        </div>
+                    )}
 
                 </form>
             </div>

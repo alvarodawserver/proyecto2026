@@ -52,7 +52,17 @@ export default function Movimientos({ movimientos }: Props) {
                                     <tr key={mov.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                         <td className="px-4 py-2">{mov.fecha_movimiento}</td>
                                         <td className="px-4 py-2">{mov.observaciones}</td>
-                                        <td className="px-4 py-2">{mov.actuacion}</td>
+                                        <td className="px-4 py-2">
+                                        <td className='px-4 py-2'>
+                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                mov.actuacion === 'Creación' ? 'bg-green-100 text-green-700' :
+                                                mov.actuacion === 'Edición' ? 'bg-blue-100 text-blue-700' :
+                                                mov.actuacion === 'Borrado' ? 'bg-red-600':
+                                                'bg-gray-100 text-gray-700'}`}>
+                                                {mov.actuacion}
+                                            </span>
+                                        </td>
+</td>
                                         <td className="px-4 py-2">{mov.user?.name}</td>
                                     </tr>
                                 ))}
@@ -60,7 +70,6 @@ export default function Movimientos({ movimientos }: Props) {
                         </table>
                     </div>
                 )}
-                <Link className="btn btn-ghost">Crear movimiento</Link>
             </div>
         </AppLayout>
     );

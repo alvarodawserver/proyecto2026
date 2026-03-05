@@ -27,13 +27,14 @@ Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('au
     Route::post('/contratos/store', [ContratoController::class, 'store'])->name('contratos.store');
 
 
-    Route::get('/contratos/show/{contrato_id}', [ContratoController::class, 'show'])->name('contratos.show');
+    Route::get('/contratos/show/{contrato}', [ContratoController::class, 'show'])->name('contratos.show');
 
 
-    Route::get('/contratos/edit/{id}', [ContratoController::class, 'edit'])->name('contratos.edit');
-    
-    Route::put('/contratos/update/{id}', [ContratoController::class, 'update'])->name('contratos.update');
+    Route::get('/contratos/edit/{contrato}', [ContratoController::class, 'edit'])->name('contratos.edit');
 
+    Route::put('/contratos/update/{contrato}', [ContratoController::class, 'update'])->name('contratos.update');
+
+    Route::delete('/contratos/destroy/{contrato}',[ContratoController::class,'destroy'])->name('contratos.destroy');
 
 
 

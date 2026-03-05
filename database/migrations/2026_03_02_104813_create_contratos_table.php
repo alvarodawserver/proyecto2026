@@ -24,8 +24,9 @@ return new class extends Migration
             $table->date('fecha_inicio')->nullable();
             $table->timestamp('alerta_vencimiento')->nullable();
             $table->string('unidad_promotora');
-            $table->timestamp('duracion_estimada');
+            $table->date('duracion_estimada');
             $table->string('estado_expediente');
+            $table->unique('n_expediente');
             $table->timestamps();
         });
     }

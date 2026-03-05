@@ -2,6 +2,8 @@ import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import {contratos as contratoRoute} from '@/routes';
+import Can from '@/components/can';
+import { Link } from '@inertiajs/react';
 
 type Contrato = {
     id:number,
@@ -47,22 +49,48 @@ export default function Contratos({ contratos }: Props) {
                                     <th className="px-4 py-2 text-left text-sm font-medium">Descripción</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">Estado</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">Responsable</th>
+                                    <Can permission='manejar_contratos'>
+                                        <th className="px-4 py-2 text-left text-sm font-medium">Acciones</th>
+                                    </Can>
+
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
                                 {(contratos).map((con) => (
                                     <tr key={con.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                        <td className="px-4 py-2">{con.n_expediente}</td>
+                                        <td className="px-4 py-2 font-medium text-blue-600">
+                                            <Link href={`/contratos/show/${con.id}`}>
+                                                {con.n_expediente}
+                                            </Link>
+                                        </td>
+
                                         <td className="px-4 py-2">{con.descripcion}</td>
                                         <td className="px-4 py-2">{con.estado_expediente}</td>
                                         <td className="px-4 py-2">{con.responsable}</td>
+                                        <Can permission='manejar_contratos'>
+                                            <Link href={`/contratos/edit/${con.id}`}>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${'bg-blue-100 text-blue-500'}`}>
+                                                    Editar
+                                                </span>
+                                            </Link>
+                                            <Link href={`/contratos/destroy/${con.id}`}
+                                            method='delete'
+                                            onBefore={() => confirm('¿Estás seguro de que deseas eliminar este contrato?')}
+                                            >
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${'bg-red-100 text-red-500'}`}>
+                                                    Eliminar
+                                                    </span>
+                                            </Link>
+                                        </Can>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 )}
-                <a href="/contratos/create" className='btn btn-info'>Crear contrato</a>
+                <Can permission='manejar_contratos'>
+                    <a href="/contratos/create" className='btn btn-info'>Crear contrato</a>
+                </Can>
             </div>
         </AppLayout>
     );

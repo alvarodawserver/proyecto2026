@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('contrato_id')->constrained('contratos');
+            $table->foreignId('contrato_id')->constrained('contratos')->onDelete('cascade');
             $table->timestamp('fecha_movimiento');
             $table->text('observaciones');
             $table->string('actuacion');

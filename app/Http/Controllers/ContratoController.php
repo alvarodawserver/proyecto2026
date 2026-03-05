@@ -14,7 +14,8 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Contratos/contratos',['contratos' => Contrato::all()]);
+        return Inertia::render('Contratos/contratos',[
+            'contratos' => Contrato::all(),]);
     }
 
     /**
@@ -47,7 +48,9 @@ class ContratoController extends Controller
             'created_by' => Auth::id(),
             'estado_expediente' => 'Activo',
         ]));
-        return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');;
+
+
+        return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');
     }
 
     /**
@@ -55,7 +58,11 @@ class ContratoController extends Controller
      */
     public function show(Contrato $contrato)
     {
-
+        $contrato_user = $contrato->load('user');
+        if (!$contrato_user) {
+            return redirect()->route('contratos')->with('error', 'Contrato no encontrado');
+        }
+        return Inertia::render('Contratos/show',['contrato' => $contrato_user]);
     }
 
     /**
@@ -63,7 +70,7 @@ class ContratoController extends Controller
      */
     public function edit(Contrato $contrato)
     {
-        //
+        return Inertia::render('Contratos/edit',['contrato'=>$contrato->id]);
     }
 
     /**
@@ -71,7 +78,19 @@ class ContratoController extends Controller
      */
     public function update(Request $request, Contrato $contrato)
     {
-        //
+        $validated = $request->validate([
+            'descripcion' => 'required|max:255',
+            'responsable' => 'required|max:255',
+            'tipo_contrato' => 'required|max:255',
+            'importe_estimado' => 'required|numeric|min:0',
+            'proc_adjudicacion' => 'required|max:255',
+            'fecha_prevista' => 'required|date',
+            'fecha_inicio' => 'nullable|date',
+            'unidad_promotora' => 'required|max:255',
+            'duracion_estimada' => 'required|date|after:fecha_inicio',
+        ]);
+        $contrato->update($validated);
+        return redirect()->route('contratos');
     }
 
     /**
@@ -79,6 +98,7 @@ class ContratoController extends Controller
      */
     public function destroy(Contrato $contrato)
     {
-        //
+        $contrato->delete();
+        return redirect()->route('contratos');
     }
 }

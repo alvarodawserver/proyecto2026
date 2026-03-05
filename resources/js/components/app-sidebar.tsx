@@ -17,6 +17,7 @@ import { dashboard } from '@/routes';
 import { movimientos} from '@/routes';
 import { contratos} from '@/routes';
 import type { NavItem } from '@/types';
+import Can from '@/components/can';
 
 const mainNavItems: NavItem[] = [
     {

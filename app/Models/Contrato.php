@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Contrato extends Model
 {
@@ -29,6 +31,14 @@ class Contrato extends Model
     'alerta_vencimiento' => 'datetime',
     ];
 
+
+    protected $appends = [
+    'fecha_inicio_f',
+    'fecha_prevista_f',
+    'alerta_vencimiento_f',
+    'duracion_estimada_f'
+];
+
     public function movimientos()
     {
         return $this->hasMany(Movimiento::class);
@@ -36,12 +46,28 @@ class Contrato extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'created_by');//Importante pasar el nombre de la columna si es diferente a lo predeterminado
     }
 
-    public function getTiempoRestanteAttribute() {
-        return $this->fecha_inicio->diffForHumans($this->duracion_estimada);
 
+
+    private function format($date) {
+        return $date ? \Carbon\Carbon::parse($date)->format('d/m/Y') : '---';
     }
 
+    public function getFechaInicioFAttribute() { return $this->format($this->fecha_inicio); }
+    public function getFechaPrevistaFAttribute() { return $this->format($this->fecha_prevista); }
+    public function getAlertaVencimientoFAttribute() { return $this->format($this->alerta_vencimiento); }
+    public function getDuracionEstimadaFAttribute() {
+        if (!$this->fecha_inicio || !$this->duracion_estimada) {
+        return 'Sin definir';
+        }
+        return \Carbon\Carbon::parse($this->fecha_inicio)
+        ->locale('es') // Forzamos el español
+        ->diffForHumans($this->duracion_estimada, [
+            'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+            'parts' => 2,
+        ]);
+
+    }
 }

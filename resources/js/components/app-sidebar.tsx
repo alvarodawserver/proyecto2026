@@ -17,7 +17,6 @@ import { dashboard } from '@/routes';
 import { movimientos} from '@/routes';
 import { contratos} from '@/routes';
 import type { NavItem } from '@/types';
-import { route } from 'ziggy-js';
 
 const mainNavItems: NavItem[] = [
     {

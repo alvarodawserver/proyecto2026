@@ -35,19 +35,18 @@ class ContratoController extends Controller
             'descripcion' => 'required|max:255',
             'responsable' => 'required|max:255',
             'tipo_contrato' => 'required|max:255',
-            'importe_estimado' => 'required|decimal:2|gte:-999999.99|lte:999999.99',
+            'importe_estimado' => 'required|numeric|min:0',
             'proc_adjudicacion' => 'required|max:255',
             'fecha_prevista' => 'required|date',
-            'fecha_inicio' => 'date',
-            'alerta_vencimiento' => 'date',
+            'fecha_inicio' => 'nullable|date',
+            'alerta_vencimiento' => 'nullable|date',
             'unidad_promotora' => 'required|max:255',
-            'duracion_estimada' => 'required|date',
-            'estado_expediente' => 'required|max:255'
+            'duracion_estimada' => 'required|date|after:fecha_inicio',
         ]);
-        Contrato::create([
-        $validated,
-        'created_by' => Auth::user()->id
-        ]);
+       Contrato::create(array_merge($validated, [
+            'created_by' => Auth::id(),
+            'estado_expediente' => 'Activo',
+        ]));
         return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');;
     }
 

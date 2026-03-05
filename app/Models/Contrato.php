@@ -18,7 +18,15 @@ class Contrato extends Model
         'fecha_inicio',
         'unidad_promotora',
         'duracion_estimada',
-        'estado_expediente'
+        'estado_expediente',
+    ];
+
+
+    protected $casts = [
+    'fecha_prevista' => 'date',
+    'fecha_inicio' => 'date',
+    'duracion_estimada' => 'date',
+    'alerta_vencimiento' => 'datetime',
     ];
 
     public function movimientos()
@@ -31,7 +39,9 @@ class Contrato extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getTiempoRestanteAttribute() {
+        return $this->fecha_inicio->diffForHumans($this->duracion_estimada);
 
-
+    }
 
 }

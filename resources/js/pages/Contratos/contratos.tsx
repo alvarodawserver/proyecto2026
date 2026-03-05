@@ -2,16 +2,12 @@ import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import {contratos as contratoRoute} from '@/routes';
-import { Link, Route} from 'lucide-react';
 
 type Contrato = {
     id:number,
     n_expediente:string,
     descripcion:string,
-    responsable:{
-        name:string,
-        id:number,
-    },
+    responsable:string,
     tipo_contrato:string,
     importe_estimado:number | '',
     proc_adjudicacion:string;
@@ -47,10 +43,10 @@ export default function Contratos({ contratos }: Props) {
                         <table className="w-full min-w-[600px] divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
                             <thead>
                                 <tr className="bg-gray-100 dark:bg-gray-800">
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Fecha</th>
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Observaciones</th>
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Actuación</th>
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Usuario</th>
+                                    <th className="px-4 py-2 text-left text-sm font-medium">NºExpediente</th>
+                                    <th className="px-4 py-2 text-left text-sm font-medium">Descripción</th>
+                                    <th className="px-4 py-2 text-left text-sm font-medium">Estado</th>
+                                    <th className="px-4 py-2 text-left text-sm font-medium">Responsable</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
@@ -58,8 +54,8 @@ export default function Contratos({ contratos }: Props) {
                                     <tr key={con.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                         <td className="px-4 py-2">{con.n_expediente}</td>
                                         <td className="px-4 py-2">{con.descripcion}</td>
-                                        <td className="px-4 py-2">{con.tipo_contrato}</td>
-                                        <td className="px-4 py-2">{con.fecha_prevista}</td>
+                                        <td className="px-4 py-2">{con.estado_expediente}</td>
+                                        <td className="px-4 py-2">{con.responsable}</td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -17,16 +17,12 @@ import { dashboard } from '@/routes';
 import { movimientos} from '@/routes';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Inicio',
-        href: dashboard()
-    },
-    {
-        title: 'Movimientos',
-        href: movimientos()
-    }
-];
+interface SharedProps {
+    permissions: {
+        viewDashboard: boolean;
+    };
+    [key: string]: any;
+}
 
 const footerNavItems: NavItem[] = [
     {
@@ -42,6 +38,24 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { permissions } = usePage().props as unknown as SharedProps;
+
+    const mainNavItems: NavItem[] = [
+            ...(permissions?.viewDashboard // Usamos optional chaining por seguridad
+                ? [
+                    {
+                        title: 'Inicio',
+                        href: dashboard(),
+                        icon: LayoutGrid, // Añadido para consistencia
+                    },
+                ]
+                : []),
+            {
+                title: 'Movimientos',
+                href: movimientos(),
+                icon: BookOpen,
+            },
+        ];
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

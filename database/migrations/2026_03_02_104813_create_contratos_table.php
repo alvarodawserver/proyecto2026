@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('n_expediente');
             $table->text('descripcion');
-            $table->foreignId('responsable_id')->nullable()->constrained('users');
+            $table->string('responsable');
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->string('tipo_contrato');
             $table->decimal('importe_estimado',8,2);

@@ -9,7 +9,8 @@ class Contrato extends Model
     protected $fillable = [
         'n_expediente',
         'descripcion',
-        'user_id',
+        'responsable',
+        'created_by',
         'tipo_contrato',
         'importe_estimado',
         'proc_adjudicacion',
@@ -29,7 +30,8 @@ class Contrato extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
+
 
 
 }

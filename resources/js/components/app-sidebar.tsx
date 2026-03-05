@@ -15,7 +15,9 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { movimientos} from '@/routes';
+import { contratos} from '@/routes';
 import type { NavItem } from '@/types';
+import { route } from 'ziggy-js';
 
 const mainNavItems: NavItem[] = [
     {
@@ -25,6 +27,10 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Movimientos',
         href: movimientos()
+    },
+    {
+        title:'Contratos',
+        href:contratos()
     }
 ];
 

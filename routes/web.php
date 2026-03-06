@@ -30,7 +30,7 @@ Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('au
     Route::get('/contratos/show/{contrato}', [ContratoController::class, 'show'])->name('contratos.show');
 
 
-    Route::get('/contratos/edit/{contrato}', [ContratoController::class, 'edit'])->name('contratos.edit');
+    Route::get('/contratos/edit/{contrato}', [ContratoController::class, 'edit'])->name('edit');
 
     Route::put('/contratos/update/{contrato}', [ContratoController::class, 'update'])->name('contratos.update');
 

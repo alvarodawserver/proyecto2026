@@ -69,9 +69,12 @@ class ContratoController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Contrato $contrato)
-    {
-        return Inertia::render('Contratos/edit',['contrato'=>$contrato->id]);
-    }
+{
+    // Enviamos el objeto completo, no solo el ID
+    return Inertia::render('Contratos/edit', [
+        'contrato' => $contrato
+    ]);
+}
 
     /**
      * Update the specified resource in storage.
@@ -87,7 +90,7 @@ class ContratoController extends Controller
             'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
             'unidad_promotora' => 'required|max:255',
-            'duracion_estimada' => 'required|date|after:fecha_inicio',
+            'duracion_estimada' => 'required|date',
         ]);
         $contrato->update($validated);
         return redirect()->route('contratos');

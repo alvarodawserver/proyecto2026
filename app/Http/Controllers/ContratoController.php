@@ -101,7 +101,22 @@ class ContratoController extends Controller
      */
     public function destroy(Contrato $contrato)
     {
+        $contrato->estado_expediente = 'Desactivado';
+        $contrato->save();
         $contrato->delete();
         return redirect()->route('contratos');
+    }
+
+    public function verDesactivados(){
+        $contratos_desactivados = Contrato::onlyTrashed()->with('user')->get();
+        return Inertia::render('Contratos/desactivados',['desactivados' => $contratos_desactivados]);
+    }
+
+    public function recuperarDesactivados($contrato_id){
+        $contrato_recuperar = Contrato::onlyTrashed()->findOrFail($contrato_id);
+        $contrato_recuperar->estado_expediente = 'Activo';
+        $contrato_recuperar->save();
+        $contrato_recuperar->restore();
+        return redirect()->route('contratos')->with('success','El contrato se ha recuperado con éxito');
     }
 }

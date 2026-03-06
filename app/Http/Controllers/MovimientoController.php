@@ -15,7 +15,12 @@ class MovimientoController extends Controller
      */
     public function index()
     {
-        $movimientos = Movimiento::with('user')->get();
+        $movimientos = Movimiento::with([
+        'user',
+        'contrato' => function($query) {
+            $query->withTrashed();
+        }
+        ])->orderBy('fecha_movimiento', 'desc')->get();
 
         return Inertia::render('movimientos',['movimientos' => $movimientos]);
 

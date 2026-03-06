@@ -12,13 +12,7 @@ class ContratoObserver
      */
     public function created(Contrato $contrato): void
     {
-        Movimiento::create([
-        'user_id' => $contrato->created_by,
-        'contrato_id' => $contrato->id,
-        'fecha_movimiento' => now(),
-        'actuacion' => 'Creación',
-        'observaciones' => 'Se ha dado de alta el contrato con expediente: ' . $contrato->n_expediente,
-        ]);
+        $this->registrarMovimiento($contrato, 'Creación', 'Se ha registrado el contrato inicialmente.');
     }
 
     /**
@@ -26,13 +20,7 @@ class ContratoObserver
      */
     public function updated(Contrato $contrato): void
     {
-        Movimiento::create([
-        'user_id' => $contrato->created_by,
-        'contrato_id' => $contrato->id,
-        'fecha_movimiento' => now(),
-        'actuacion' => 'Creación',
-        'observaciones' => 'Se ha dado de alta el contrato con expediente: ' . $contrato->n_expediente,
-        ]);
+        $this->registrarMovimiento($contrato, 'Modificación', 'Se han actualizado los datos del contrato.');
     }
 
     /**
@@ -40,13 +28,7 @@ class ContratoObserver
      */
     public function deleted(Contrato $contrato): void
     {
-        Movimiento::create([
-        'user_id' => $contrato->created_by,
-        'contrato_id' => $contrato->id,
-        'fecha_movimiento' => now(),
-        'actuacion' => 'Creación',
-        'observaciones' => 'Se ha dado de alta el contrato con expediente: ' . $contrato->n_expediente,
-        ]);
+        $this->registrarMovimiento($contrato, 'Eliminación', 'El contrato ha sido desactivado');
     }
 
     /**
@@ -54,7 +36,7 @@ class ContratoObserver
      */
     public function restored(Contrato $contrato): void
     {
-        //
+        $this->registrarMovimiento($contrato, 'Restauración', 'El contrato ha sido restaurado');
     }
 
     /**
@@ -63,5 +45,15 @@ class ContratoObserver
     public function forceDeleted(Contrato $contrato): void
     {
         //
+    }
+
+    private function registrarMovimiento($contrato,$actuacion,$observacion){
+        Movimiento::create([
+        'user_id' => $contrato->created_by,
+        'contrato_id' => $contrato->id,
+        'fecha_movimiento' => now(),
+        'actuacion' => $actuacion,
+        'observaciones' => $observacion,
+        ]);
     }
 }

@@ -36,6 +36,10 @@ Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('au
 
     Route::delete('/contratos/destroy/{contrato}',[ContratoController::class,'destroy'])->name('contratos.destroy');
 
+    Route::get('/contratos/desactivados',[ContratoController::class,'verDesactivados'])->name('desactivados');
+
+    Route::put('/contratos/recuperar/{contrato_id}',[ContratoController::class,'recuperarDesactivados'])->name('recuperar');
+
 
 
 

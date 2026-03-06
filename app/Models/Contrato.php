@@ -5,9 +5,10 @@ namespace App\Models;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Contrato extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'n_expediente',
         'descripcion',

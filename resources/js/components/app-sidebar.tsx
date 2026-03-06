@@ -16,23 +16,12 @@ import {
 import { dashboard } from '@/routes';
 import { movimientos} from '@/routes';
 import { contratos} from '@/routes';
+import {desactivados} from '@/routes';
 import type { NavItem } from '@/types';
 import Can from '@/components/can';
+import {usePage} from '@inertiajs/react';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Inicio',
-        href: dashboard()
-    },
-    {
-        title: 'Movimientos',
-        href: movimientos()
-    },
-    {
-        title:'Contratos',
-        href:contratos()
-    }
-];
+
 
 const footerNavItems: NavItem[] = [
     {
@@ -48,6 +37,26 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const {auth} = usePage().props as any;
+
+    const canManage = auth.can.manejar_contratos;
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Inicio',
+            href: dashboard()
+        },
+        {
+            title: 'Movimientos',
+            href: movimientos()
+        },
+        {
+            title:'Contratos',
+            href:contratos()
+        },
+        ...(canManage ? [{ title:'Contratos Desactivados', href: desactivados()}] : [])
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

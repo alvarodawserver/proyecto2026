@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('duracion_estimada');
             $table->string('estado_expediente');
             $table->unique('n_expediente');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

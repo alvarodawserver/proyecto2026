@@ -5,7 +5,7 @@ import { SubmitEvent } from 'react';
 import {useState} from 'react';
 
 export default function Create() {
-    const [step, setStep] = useState(1); // Empezamos en la pestaña 1
+    const [step, setStep] = useState(1); 
     const { data, setData, post, errors } = useForm({
         n_expediente: '',
         descripcion: '',

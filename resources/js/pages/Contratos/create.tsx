@@ -99,7 +99,7 @@ export default function Create() {
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    {/*<div className="flex flex-col gap-2">
                         <label htmlFor="responsable" className="text-sm font-medium">Responsable del contrato</label>
                         <input
                             id="responsable"
@@ -108,7 +108,7 @@ export default function Create() {
                             value={data.responsable}
                             onChange={e => setData('responsable', e.target.value)}
                         />
-                    </div>
+                    </div> */}
 
                     <div className="flex flex-col gap-2">
                         <label htmlFor="fecha_prevista" className="text-sm font-medium">Fecha prevista</label>
@@ -133,7 +133,7 @@ export default function Create() {
                     </div>
 
 
-                    <div className="flex flex-col gap-2">
+                    {/*<div className="flex flex-col gap-2">
                         <label htmlFor="unidad_promotora" className="text-sm font-medium">Unidad promotora</label>
                         <input
                             id="unidad_promotora"
@@ -142,7 +142,7 @@ export default function Create() {
                             value={data.unidad_promotora}
                             onChange={e => setData('unidad_promotora', e.target.value)}
                         />
-                    </div>
+                    </div> */}
 
                     <div className="flex flex-col gap-2">
                         <label htmlFor="duracion_estimada" className="text-sm font-medium">Duración estimada</label>

@@ -12,14 +12,14 @@ class Contrato extends Model
     protected $fillable = [
         'n_expediente',
         'descripcion',
-        'responsable',
+        //'responsable',
         'created_by',
         'tipo_contrato',
         'importe_estimado',
         'proc_adjudicacion',
         'fecha_prevista',
         'fecha_inicio',
-        'unidad_promotora',
+        //'unidad_promotora',
         'duracion_estimada',
         'estado_expediente',
     ];

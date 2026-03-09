@@ -20,6 +20,7 @@ export default function Create({procedimientos} : Props) {
         responsable:'',
         tipo_contrato:'',
         importe_estimado:'',
+        importe_final:'',
         proc_adjudicacion:'',
         fecha_prevista:'',
         fecha_inicio:'',
@@ -47,8 +48,6 @@ export default function Create({procedimientos} : Props) {
         <>
         <AppLayout breadcrumbs={breadcrumbs}>
         <div className="flex flex-1 flex-col gap-4 p-4">
-
-            <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow"></div>
             <div className="flex border-b mb-6">
                 <button
                     className={`py-2 px-4 ${step === 1 ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500'}`}
@@ -165,10 +164,72 @@ export default function Create({procedimientos} : Props) {
 
                         <div className="md:col-span-2 mt-4">
                             <button
-                                type="submit"
+                                type='button'
+                                onClick={() => setStep(2)}
                                 className="w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600"
                             >
                                 Siguiente
+                            </button>
+                        </div>
+                    </>
+                )}
+                {step === 2 && (
+                    <>
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="fecha_inicio" className="text-sm font-medium">Fecha de inicio</label>
+                            <input
+                                id="fecha_inicio"
+                                type="date"
+                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                                value={data.fecha_inicio}
+                                onChange={e => setData('fecha_inicio', e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="importe_final" className="text-sm font-medium">Importe</label>
+                            <input
+                                id="importe_final"
+                                type="number"
+                                step={'0.01'}
+                                placeholder='0.00'
+                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                                value={data.importe_final}
+                                onChange={e => setData('importe_final', e.target.value)}
+                            />
+                        </div>
+
+
+
+
+
+
+
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="responsable" className="text-sm font-medium">Responsable</label>
+                            <input
+                                id="responsable"
+                                type="text"
+                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                                value={data.responsable}
+                                onChange={e => setData('responsable', e.target.value)}
+                            />
+                        </div>
+
+                        <div className="md:col-span-2 mt-4">
+                            <button
+                                type="submit"
+                                className="w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                            >
+                                Finalizar
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={()=>setStep(1)}
+                                className="w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                            >
+                                Volver
                             </button>
                         </div>
                     </>

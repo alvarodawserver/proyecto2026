@@ -62,4 +62,10 @@ class User extends Authenticatable
     public function movimientos(){
         return $this->hasMany(Movimiento::class);
     }
+
+    public function datosViejos()
+{
+    // Buscamos en la tabla 'usuarios' la fila que tenga el mismo email
+    return $this->hasOne(Usuario::class, 'email', 'email');
+}
 }

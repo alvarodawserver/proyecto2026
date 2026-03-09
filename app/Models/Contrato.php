@@ -50,6 +50,11 @@ class Contrato extends Model
         return $this->belongsTo(Usuario::class,'created_by');//Importante pasar el nombre de la columna si es diferente a lo predeterminado
     }
 
+    //public function unidadPromotora()
+    //{
+    //    return $this->belongsTo(Unidad_promotora::class,'unidad_promotora');
+    //}
+
 
 
     private function format($date) {

@@ -13,7 +13,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, unidad_promotoras } from '@/routes';
 import { movimientos} from '@/routes';
 import { contratos} from '@/routes';
 import {desactivados} from '@/routes';
@@ -54,7 +54,11 @@ export function AppSidebar() {
             title:'Contratos',
             href:contratos()
         },
-        ...(canManage ? [{ title:'Contratos Desactivados', href: desactivados()}] : [])
+        ...(canManage ? [{ title:'Contratos Desactivados', href: desactivados()}] : []),
+        {
+            title:'Unidades Promotoras',
+            href:unidad_promotoras()
+        },
     ];
 
     return (

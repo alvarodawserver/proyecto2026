@@ -31,6 +31,12 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
+        $userLaravel = Auth::user();
+        $departamento = $userLaravel->empleado?->departamento?->nombre;
+        if (!$departamento) {
+            return back()->withErrors(['error' => 'Tu usuario no tiene un departamento asignado en el sistema.']);
+        }
+
         $validated = $request->validate([
             'n_expediente' => 'required|max:255',
             'descripcion' => 'required|max:255',
@@ -41,12 +47,12 @@ class ContratoController extends Controller
             'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
             'alerta_vencimiento' => 'nullable|date',
-            'unidad_promotora' => 'required|max:255',
             'duracion_estimada' => 'required|date|after:fecha_inicio',
         ]);
        Contrato::create(array_merge($validated, [
-            'created_by' => Auth::id(),
+            'created_by' => $userLaravel->datosViejos?->id ?? $userLaravel->id,
             'estado_expediente' => 'Activo',
+            'unidad_promotora' => $departamento,
         ]));
 
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\MovimientoController;
+use App\Http\Controllers\UnidadPromotoraController;
 use App\Http\Controllers\UserController;
 use App\Models\Movimiento;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,15 @@ Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('au
     Route::put('/contratos/recuperar/{contrato_id}',[ContratoController::class,'recuperarDesactivados'])->name('recuperar');
 
 
+ Route::get('/unidad_promotoras', [UnidadPromotoraController::class, 'index'])->name('unidad_promotoras');
+
+
+    Route::get('/unidad_promotoras/create', [UnidadPromotoraController::class, 'create'])->name('unidad_promotoras.create');
+
+
+    Route::post('/unidad_promotoras/store', [UnidadPromotoraController::class, 'store'])->name('unidad_promotoras.store');
+
+    Route::delete('/unidad_promotoras/destroy/{unidad_promotora}',[UnidadPromotoraController::class,'destroy'])->name('unidad_promotoras.destroy');
 
 
 require __DIR__.'/settings.php';

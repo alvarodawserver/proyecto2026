@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Adjudicacione;
 use App\Models\Contrato;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -23,7 +25,7 @@ class ContratoController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Contratos/create');
+        return Inertia::render('Contratos/create',['procedimientos' => Adjudicacione::all()]);
     }
 
     /**

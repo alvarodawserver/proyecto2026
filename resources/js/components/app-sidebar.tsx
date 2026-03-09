@@ -17,6 +17,7 @@ import { dashboard } from '@/routes';
 import { movimientos} from '@/routes';
 import { contratos} from '@/routes';
 import {desactivados} from '@/routes';
+import {procedimientos} from '@/routes';
 import type { NavItem } from '@/types';
 import Can from '@/components/can';
 import {usePage} from '@inertiajs/react';
@@ -51,10 +52,15 @@ export function AppSidebar() {
             href: movimientos()
         },
         {
+            title:'Procedimientos',
+            href:procedimientos()
+        },
+        {
             title:'Contratos',
             href:contratos()
         },
         ...(canManage ? [{ title:'Contratos Desactivados', href: desactivados()}] : [])
+
     ];
 
     return (

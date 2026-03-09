@@ -51,6 +51,9 @@ class Contrato extends Model
         return $this->belongsTo(Usuario::class,'created_by');//Importante pasar el nombre de la columna si es diferente a lo predeterminado
     }
 
+    public function tipoAdjudicacion(){
+        return $this->belongsTo(Adjudicacione::class);
+    }
 
 
     private function format($date) {
@@ -60,7 +63,7 @@ class Contrato extends Model
     public function getFechaInicioFAttribute() { return $this->format($this->fecha_inicio); }
     public function getFechaPrevistaFAttribute() { return $this->format($this->fecha_prevista); }
     public function getAlertaVencimientoFAttribute() { return $this->format($this->alerta_vencimiento); }
-    
+
     public function getDuracionEstimadaFAttribute() {
         if (!$this->fecha_inicio || !$this->duracion_estimada) {
         return 'Sin definir';

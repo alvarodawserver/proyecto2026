@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'can' => [
                     'manejar_contratos' => $request->user() ? $request->user()->name === 'admin' : false,
+                    'manejar_procedimientos' => $request->user() ? $request->user()->name === 'admin' : false,
                     'ver_historico' => $request->user() ? $request->user()->name === 'admin' : false,
                 ],
             ],

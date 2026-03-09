@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Usuario extends Model
+{
+    protected $fillable = [
+        'nombre',
+        'email',
+        'password',
+        'empleado_id',
+    ];
+    public function contratos()
+    {
+        return $this->hasMany(Contrato::class);
+    }
+
+    public function movimientos(){
+        return $this->hasMany(Movimiento::class);
+    }
+}

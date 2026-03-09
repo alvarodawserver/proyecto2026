@@ -45,9 +45,9 @@ class Contrato extends Model
         return $this->hasMany(Movimiento::class);
     }
 
-    public function user()
+    public function usuario()
     {
-        return $this->belongsTo(User::class,'created_by');//Importante pasar el nombre de la columna si es diferente a lo predeterminado
+        return $this->belongsTo(Usuario::class,'created_by');//Importante pasar el nombre de la columna si es diferente a lo predeterminado
     }
 
 

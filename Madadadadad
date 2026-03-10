@@ -1,0 +1,19 @@
+// 1. Crear el empleado (padre)
+$empleadoId = DB::table('empleados')->insertGetId([
+    'dni' => '12345678Z',
+    'nombre' => 'ADMIN PRUEBAS',
+    'alta' => true,
+    'soft_deleted' => false,
+    // Los demás campos son nullables o tienen valores por defecto
+]);
+
+// 2. Crear el usuario (hijo) vinculado a ese empleado
+DB::table('usuarios')->insert([
+    'nombre' => 'admin2',
+    'password' => Hash::make('12345678'), // Tu contraseña será 12345678
+    'email' => 'admin2@ejemplo.com',
+    'empleado_id' => $empleadoId
+]);
+
+// 3. Ver el ID final del usuario para tu middleware
+DB::table('usuarios')->where('nombre', 'admin2')->value('id');

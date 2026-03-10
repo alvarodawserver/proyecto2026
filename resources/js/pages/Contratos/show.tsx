@@ -8,13 +8,17 @@ type Contrato = {
     n_expediente: string;
     descripcion: string;
     responsable: string;
-    user?:{
+    usuario?:{
         id:number,
-        name:string,
+        nombre:string,
     }
-    tipo_contrato: string;
+    tipo:{
+        tipo_contrato:string
+    }
     importe_estimado: number;
-    proc_adjudicacion: string;
+    tipo_procedimiento:{
+        tipo_procedimiento:string,
+    };
     fecha_prevista_f: string;
     fecha_inicio_f: string;
     alerta_vencimiento_f: string;
@@ -47,19 +51,19 @@ export default function Show({ contrato }:Props) {
                     Nº de expediente: {contrato.n_expediente}
                 </h1>
 
-                <p><span className="font-semibold text-gray-800">Tipo de contrato:</span> <span className="text-gray-600">{contrato.tipo_contrato}</span></p>
+                <p><span className="font-semibold text-gray-800">Tipo de contrato:</span> <span className="text-gray-600">{contrato.tipo.tipo_contrato}</span></p>
 
                 <p><span className="font-semibold text-gray-800">Estado del expediente:</span> <span className="text-gray-600">{contrato.estado_expediente}</span></p>
 
                 <p><span className="font-semibold text-gray-800">Responsable:</span> <span className="text-gray-600">{contrato.responsable}</span></p>
 
-                <p><span className="font-semibold text-gray-800">Creado por:</span> <span className="text-gray-600">{contrato.user?.name}</span></p>
+                <p><span className="font-semibold text-gray-800">Creado por:</span> <span className="text-gray-600">{contrato.usuario?.nombre}</span></p>
 
                 <p><span className="font-semibold text-gray-800">Unidad promotora:</span> <span className="text-gray-600">{contrato.unidad_promotora}</span></p>
 
                 <p><span className="font-semibold text-gray-800">Importe estimado:</span> <span className="text-gray-600">{contrato.importe_estimado}</span></p>
 
-                <p><span className="font-semibold text-gray-800">Procedimiento de adjudicación:</span> <span className="text-gray-600">{contrato.proc_adjudicacion}</span></p>
+                <p><span className="font-semibold text-gray-800">Procedimiento de adjudicación:</span> <span className="text-gray-600">{contrato.tipo_procedimiento.tipo_procedimiento}</span></p>
 
                 <p><span className="font-semibold text-gray-800">Fecha prevista:</span> <span className="text-gray-600">{contrato.fecha_prevista_f}</span></p>
 

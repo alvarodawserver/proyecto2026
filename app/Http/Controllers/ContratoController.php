@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Adjudicacione;
 use App\Models\Contrato;
+use App\Models\Tipo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ContratoController extends Controller
@@ -23,7 +26,7 @@ class ContratoController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Contratos/create');
+        return Inertia::render('Contratos/create',['procedimientos' => Adjudicacione::all(),'tipos' => Tipo::all()]);
     }
 
     /**
@@ -31,28 +34,32 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-        $userLaravel = Auth::user();
-        $departamento = $userLaravel->empleado?->departamento?->nombre;
-        if (!$departamento) {
-            return back()->withErrors(['error' => 'Tu usuario no tiene un departamento asignado en el sistema.']);
-        }
+        $rolJefe = DB::table('per_roles')->where('per_roles_nombre', 'Jefe de Servicio')->first();
+        $unidad_promotora = DB::table('per_distribucion')
+        ->join('departamentos','per_distribucion.per_distribucion_departamento','=','departamentos.id')
+        ->where('per_distribucion_empleado',Auth::id())
+        ->where('per_distribucion_rol',$rolJefe)
+        ->value('departamentos.nombre');
+
 
         $validated = $request->validate([
             'n_expediente' => 'required|max:255',
             'descripcion' => 'required|max:255',
             'responsable' => 'required|max:255',
-            'tipo_contrato' => 'required|max:255',
+            'tipos_id' => 'required|exists:tipos,id',
             'importe_estimado' => 'required|numeric|min:0',
-            'proc_adjudicacion' => 'required|max:255',
+            'importe_final' => 'required|numeric|min:0',
+            'tipo_procedimiento' => 'required|exists:adjudicaciones,id',
             'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
             'alerta_vencimiento' => 'nullable|date',
             'duracion_estimada' => 'required|date|after:fecha_inicio',
         ]);
+
        Contrato::create(array_merge($validated, [
-            'created_by' => $userLaravel->datosViejos?->id ?? $userLaravel->id,
+            'created_by' => Auth::id(),
             'estado_expediente' => 'Activo',
-            'unidad_promotora' => $departamento,
+            'unidad_promotora' => $unidad_promotora ?? ''
         ]));
 
 
@@ -64,7 +71,7 @@ class ContratoController extends Controller
      */
     public function show(Contrato $contrato)
     {
-        $contrato_user = $contrato->load('user');
+        $contrato_user = $contrato->load(['usuario', 'tipo', 'tipo_procedimiento']);;
         if (!$contrato_user) {
             return redirect()->route('contratos')->with('error', 'Contrato no encontrado');
         }
@@ -75,12 +82,11 @@ class ContratoController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Contrato $contrato)
-{
-    // Enviamos el objeto completo, no solo el ID
-    return Inertia::render('Contratos/edit', [
-        'contrato' => $contrato
-    ]);
-}
+    {
+        return Inertia::render('Contratos/edit',['contrato'=>$contrato,
+    'tipos' => Tipo::all(), // <-- ¡Asegúrate de que esta línea existe!
+        'procedimientos' => Adjudicacione::all()]);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -90,13 +96,11 @@ class ContratoController extends Controller
         $validated = $request->validate([
             'descripcion' => 'required|max:255',
             'responsable' => 'required|max:255',
-            'tipo_contrato' => 'required|max:255',
             'importe_estimado' => 'required|numeric|min:0',
-            'proc_adjudicacion' => 'required|max:255',
+            'tipo_procedimiento' => 'required|max:255',
             'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
-            'unidad_promotora' => 'required|max:255',
-            'duracion_estimada' => 'required|date',
+            'duracion_estimada' => 'required|date|after:fecha_inicio',
         ]);
         $contrato->update($validated);
         return redirect()->route('contratos');

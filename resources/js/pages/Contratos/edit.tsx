@@ -2,35 +2,52 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 
-// ELIMINADO: import { edit as editRoute } from '@/routes'; <--- Esto sobraba y fallaba
-
-interface Contrato {
-    id: number;
+interface ContratoForm {
     descripcion: string;
     responsable: string;
-    tipo_contrato: string;
+    tipos_id: number | string;
     importe_estimado: number | string;
-    proc_adjudicacion: string;
+    importe_final: number | string;
+    tipo_procedimiento: string; // Nombre unificado
     fecha_prevista: string;
     fecha_inicio: string;
     unidad_promotora: string;
     duracion_estimada: string;
 }
 
-interface Props {
-    contrato: Contrato;
+// Actualizamos la interfaz Contrato para que incluya los campos que faltaban
+interface Contrato extends ContratoForm {
+    id: number;
 }
 
-export default function Edit({ contrato }: Props) {
+interface Procedimiento {
+    id: number;
+    tipo_procedimiento: string;
+}
+
+interface Tipo {
+    id: number;
+    tipo_contrato: string;
+}
+
+interface Props {
+    contrato: Contrato;
+    procedimientos: Procedimiento[];
+    tipos: Tipo[];
+}
+
+
+
+export default function Edit({ contrato, tipos, procedimientos }: Props) {
     const { data, setData, put, errors } = useForm({
         descripcion: contrato.descripcion || '',
         responsable: contrato.responsable || '',
-        tipo_contrato: contrato.tipo_contrato || '',
+        tipos_id: contrato.tipos_id || '',
         importe_estimado: contrato.importe_estimado || '',
-        proc_adjudicacion: contrato.proc_adjudicacion || '',
+        importe_final: contrato.importe_final || '',
+        tipo_procedimiento: contrato.tipo_procedimiento || '',
         fecha_prevista: contrato.fecha_prevista || '',
         fecha_inicio: contrato.fecha_inicio || '',
-        unidad_promotora: contrato.unidad_promotora || '',
         duracion_estimada: contrato.duracion_estimada || '',
     });
 
@@ -56,6 +73,7 @@ export default function Edit({ contrato }: Props) {
             console.error("No se pudo encontrar el ID del contrato");
         }
     }
+    console.log(errors); // Mira la consola del navegador (F12) al pulsar "Finalizar Registro"
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -78,40 +96,35 @@ export default function Edit({ contrato }: Props) {
                         </div>
 
                         {/* Tipo de contrato */}
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="tipo_contrato" className="text-sm font-medium">Tipo de contrato</label>
-                            <input
-                                id="tipo_contrato"
-                                type="text"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                                value={data.tipo_contrato}
-                                onChange={e => setData('tipo_contrato', e.target.value)}
-                            />
-                        </div>
-
-                        {/* Importe estimado */}
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="importe_estimado" className="text-sm font-medium">Importe estimado</label>
-                            <input
-                                id="importe_estimado"
-                                type="number"
-                                step="0.01"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                                value={data.importe_estimado}
-                                onChange={e => setData('importe_estimado', e.target.value)}
-                            />
+                         <div className="flex flex-col gap-2">
+                            <label htmlFor="tipos_id" className="text-sm font-medium">Proceso de adjudicación</label>
+                            <select name="tipos_id" id="tipos_id"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.tipos_id}
+                            onChange={e => setData('tipos_id',e.target.value)}>
+                                    <option value="">Selecciona un tipo de contrato...</option>
+                                    {tipos.map((tip) => (
+                                        <option key={tip.id} value={tip.id}>
+                                            {tip.tipo_contrato}
+                                        </option>
+                                    ))}
+                            </select>
                         </div>
 
                         {/* Proceso adjudicación */}
                         <div className="flex flex-col gap-2">
-                            <label htmlFor="proc_adjudicacion" className="text-sm font-medium">Proceso de adjudicación</label>
-                            <input
-                                id="proc_adjudicacion"
-                                type="text"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                                value={data.proc_adjudicacion}
-                                onChange={e => setData('proc_adjudicacion', e.target.value)}
-                            />
+                            <label htmlFor="tipo_procedimiento" className="text-sm font-medium">Proceso de adjudicación</label>
+                            <select name="tipo_procedimiento" id="tipo_procedimiento"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.tipo_procedimiento}
+                            onChange={e => setData('tipo_procedimiento',e.target.value)}>
+                                <option value="">Seleccione un proceso...</option>
+                                {procedimientos.map((proc)=>(
+                                    <option key={proc.id} value={proc.id}>
+                                        {proc.tipo_procedimiento}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         {/* Responsable */}
@@ -126,17 +139,6 @@ export default function Edit({ contrato }: Props) {
                             />
                         </div>
 
-                        {/* Fecha prevista */}
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="fecha_prevista" className="text-sm font-medium">Fecha prevista</label>
-                            <input
-                                id="fecha_prevista"
-                                type="date"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                                value={data.fecha_prevista}
-                                onChange={e => setData('fecha_prevista', e.target.value)}
-                            />
-                        </div>
 
                         {/* Fecha inicio */}
                         <div className="flex flex-col gap-2">
@@ -147,18 +149,6 @@ export default function Edit({ contrato }: Props) {
                                 className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
                                 value={data.fecha_inicio}
                                 onChange={e => setData('fecha_inicio', e.target.value)}
-                            />
-                        </div>
-
-                        {/* Unidad promotora */}
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="unidad_promotora" className="text-sm font-medium">Unidad promotora</label>
-                            <input
-                                id="unidad_promotora"
-                                type="text"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                                value={data.unidad_promotora}
-                                onChange={e => setData('unidad_promotora', e.target.value)}
                             />
                         </div>
 

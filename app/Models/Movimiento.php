@@ -12,6 +12,7 @@ class Movimiento extends Model
     protected $casts = [
         'fecha_movimiento' => 'datetime:d/m/Y H:i',
     ];
+
     public function usuario(){
         return $this->belongsTo(Usuario::class);
     }

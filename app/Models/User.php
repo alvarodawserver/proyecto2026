@@ -13,6 +13,10 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
+    protected $table = 'usuarios';
+    protected $primaryKey = 'id';
+    public $timestamps = false;
+    protected $appends = ['name'];
     /**
      * The attributes that are mass assignable.
      *
@@ -50,22 +54,23 @@ class User extends Authenticatable
         ];
     }
 
+    public function getNameAttribute()
+    {
+        return $this->nombre;
+    }
+
+    public function username()
+    {
+        return 'nombre';
+    }
+
     public function contratos()
     {
         return $this->hasMany(Contrato::class);
     }
 
-    public function roles(){
-        return $this->belongsToMany(Role::class);
-    }
 
     public function movimientos(){
         return $this->hasMany(Movimiento::class);
     }
-
-    public function datosViejos()
-{
-    // Buscamos en la tabla 'usuarios' la fila que tenga el mismo email
-    return $this->hasOne(Usuario::class, 'email', 'email');
-}
 }

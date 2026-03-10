@@ -49,7 +49,7 @@ class ContratoObserver
 
     private function registrarMovimiento($contrato,$actuacion,$observacion){
         Movimiento::create([
-        'user_id' => $contrato->created_by,
+        'usuario_id' => $contrato->created_by,
         'contrato_id' => $contrato->id,
         'fecha_movimiento' => now(),
         'actuacion' => $actuacion,

@@ -1,48 +1,52 @@
-//AVISO: NO SE USA
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
-import { SubmitEvent } from 'react';
-import { route } from 'ziggy-js';
+
 
 export default function Create() {
     const { data, setData, post, errors } = useForm({
-        unidad_promotora: '',
+        tipo_contrato: ''
     });
 
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Crear Unidad Promotora',
-            href: '/unidad_promotoras/create',
+            title: 'Crear Contrato',
+            href: '/tipos/create',
         },
     ];
 
+
+
     function submit(e: React.FormEvent) {
         e.preventDefault();
-        post('/unidad_promotoras/store');
+        post('/tipos/store');
     }
 
     return (
         <>
         <AppLayout breadcrumbs={breadcrumbs}>
         <div className="flex flex-1 flex-col gap-4 p-4">
+
+
+
             <div className="rounded-xl border border-sidebar-border/70 bg-white p-6 shadow-sm dark:bg-gray-900">
-                <h2 className="mb-6 text-lg font-bold">Datos de la Unidad Promotora</h2>
+                <h2 className="mb-6 text-lg font-bold">Datos del procedimiento</h2>
 
 
                 <form onSubmit={submit} className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="unidad_promotora" className="text-sm font-medium">Número de expediente</label>
+                        <label htmlFor="tipo_contrato" className="text-sm font-medium">Tipo de contrato</label>
                         <input
-                            id="unidad_promotora"
+                            id="tipo_contrato"
                             type="text"
                             className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                            value={data.unidad_promotora}
-                            onChange={e => setData('unidad_promotora', e.target.value)}
+                            value={data.tipo_contrato}
+                            onChange={e => setData('tipo_contrato', e.target.value)}
                         />
                     </div>
+
 
                     <div className="md:col-span-2 mt-4">
                         <button

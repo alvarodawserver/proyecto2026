@@ -19,11 +19,11 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('usuarios');
             $table->string('tipo_contrato');
             $table->decimal('importe_estimado',8,2);
-            $table->string('proc_adjudicacion');
+            $table->foreignId('tipo_procedimiento')->constrained('adjudicaciones')->onDelete('restrict');
             $table->date('fecha_prevista');
             $table->date('fecha_inicio')->nullable();
             $table->timestamp('alerta_vencimiento')->nullable();
-            $table->string('unidad_promotora');;
+            $table->string('unidad_promotora');
             $table->date('duracion_estimada');
             $table->string('estado_expediente');
             $table->unique('n_expediente');

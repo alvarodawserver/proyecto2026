@@ -2,15 +2,13 @@ import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { movimientos as movimientosRoute } from '@/routes';
-import { Button } from '@headlessui/react';
-import { Link } from 'lucide-react';
 
 type Movimiento = {
     id: number;
     observaciones: string;
-    user:{
+    usuario:{
         id:number;
-        name:string;
+        nombre:string;
     };
     fecha_movimiento: string;
     actuacion: string;
@@ -63,7 +61,7 @@ export default function Movimientos({ movimientos }: Props) {
                                             </span>
                                         </td>
 </td>
-                                        <td className="px-4 py-2">{mov.user?.name}</td>
+                                        <td className="px-4 py-2">{mov.usuario?.nombre}</td>
                                     </tr>
                                 ))}
                             </tbody>

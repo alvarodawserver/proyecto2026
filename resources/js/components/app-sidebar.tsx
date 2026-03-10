@@ -13,7 +13,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard} from '@/routes';
 import { movimientos} from '@/routes';
 import { contratos} from '@/routes';
 import {desactivados} from '@/routes';
@@ -41,30 +41,13 @@ const footerNavItems: NavItem[] = [
 export function AppSidebar() {
     const {auth} = usePage().props as any;
 
-    const canManage = auth.can.manejar_contratos;
+    //const canManage = auth.can.manejar_contratos;
 
     const mainNavItems: NavItem[] = [
         {
-            title: 'Inicio',
+            title: 'Panel de mantenimiento',
             href: dashboard()
         },
-        {
-            title: 'Movimientos',
-            href: movimientos()
-        },
-        {
-            title:'Procedimientos',
-            href:procedimientos()
-        },
-        {
-            title:'Tipos contrato',
-            href:tipos()
-        },
-        {
-            title:'Contratos',
-            href:contratos()
-        },
-        ...(canManage ? [{ title:'Contratos Desactivados', href: desactivados()}] : [])
 
     ];
 

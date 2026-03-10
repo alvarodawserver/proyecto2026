@@ -2,8 +2,6 @@ import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { movimientos as movimientosRoute } from '@/routes';
-import { Button } from '@headlessui/react';
-import { Link } from 'lucide-react';
 
 type Movimiento = {
     id: number;

@@ -16,6 +16,7 @@ type Contrato = {
         tipo_contrato:string
     }
     importe_estimado: number;
+    importe_final:number;
     tipo_procedimiento:{
         tipo_procedimiento:string,
     };
@@ -62,6 +63,8 @@ export default function Show({ contrato }:Props) {
                 <p><span className="font-semibold text-gray-800">Unidad promotora:</span> <span className="text-gray-600">{contrato.unidad_promotora}</span></p>
 
                 <p><span className="font-semibold text-gray-800">Importe estimado:</span> <span className="text-gray-600">{contrato.importe_estimado}</span></p>
+
+                <p><span className="font-semibold text-gray-800">Importe final:</span> <span className="text-gray-600">{contrato.importe_final}</span></p>
 
                 <p><span className="font-semibold text-gray-800">Procedimiento de adjudicación:</span> <span className="text-gray-600">{contrato.tipo_procedimiento.tipo_procedimiento}</span></p>
 

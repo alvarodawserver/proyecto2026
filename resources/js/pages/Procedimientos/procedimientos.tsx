@@ -34,8 +34,8 @@ export default function Procedimientos({ procedimientos }: Props) {
                         <table className="w-full min-w-[600px] divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
                             <thead>
                                 <tr className="bg-gray-100 dark:bg-gray-800">
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Id</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">Tipo de procedimiento</th>
+                                    <th className="px-4 py-2 text-left text-sm font-medium">Acciones</th>
 
                                 </tr>
                             </thead>

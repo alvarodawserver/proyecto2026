@@ -118,7 +118,7 @@ class ContratoController extends Controller
     }
 
     public function verDesactivados(){
-        $contratos_desactivados = Contrato::onlyTrashed()->with('user')->get();
+        $contratos_desactivados = Contrato::onlyTrashed()->with('usuario')->get();
         return Inertia::render('Contratos/desactivados',['desactivados' => $contratos_desactivados]);
     }
 

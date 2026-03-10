@@ -2,10 +2,12 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import {useState} from 'react';
+
 interface Procedimiento{
-        id:number,
-        tipo_procedimiento:string
-    }
+    id:number,
+    tipo_procedimiento:string
+}
+
 interface Tipo{
     id:number,
     tipo_contrato:string
@@ -244,15 +246,12 @@ export default function Create({procedimientos,tipos} : Props) {
                         </div>
                     </>
                 )}
-
-                    {Object.keys(errors).length > 0 && (
-                        <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md">
-                            Hay errores en el formulario. Revisa los campos.
-                        </div>
-                    )}
-
+                {Object.keys(errors).length > 0 && (
+                    <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md">
+                        Hay errores en el formulario. Revisa los campos.
+                    </div>
+                )}
                 </form>
-                {JSON.stringify(errors)}
             </div>
         </div>
         </AppLayout>

@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Adjudicacione;
 use App\Models\Contrato;
-use Illuminate\Container\Attributes\DB;
+use App\Models\Tipo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ContratoController extends Controller
@@ -25,7 +26,7 @@ class ContratoController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Contratos/create',['procedimientos' => Adjudicacione::all()]);
+        return Inertia::render('Contratos/create',['procedimientos' => Adjudicacione::all(),'tipos' => Tipo::all()]);
     }
 
     /**
@@ -33,22 +34,32 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
+        $rolJefe = DB::table('per_roles')->where('per_roles_nombre', 'Jefe de Servicio')->first();
+        $unidad_promotora = DB::table('per_distribucion')
+        ->join('departamentos','per_distribucion.per_distribucion_departamento','=','departamentos.id')
+        ->where('per_distribucion_empleado',Auth::id())
+        ->where('per_distribucion_rol',$rolJefe)
+        ->value('departamentos.nombre');
+
+
         $validated = $request->validate([
             'n_expediente' => 'required|max:255',
             'descripcion' => 'required|max:255',
             'responsable' => 'required|max:255',
-            'tipo_contrato' => 'required|max:255',
+            'tipos_id' => 'required|exists:tipos,id',
             'importe_estimado' => 'required|numeric|min:0',
-            'proc_adjudicacion' => 'required|max:255',
+            'importe_final' => 'required|numeric|min:0',
+            'tipo_procedimiento' => 'required|exists:adjudicaciones,id',
             'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
             'alerta_vencimiento' => 'nullable|date',
-            'unidad_promotora' => 'required|max:255',
             'duracion_estimada' => 'required|date|after:fecha_inicio',
         ]);
+
        Contrato::create(array_merge($validated, [
             'created_by' => Auth::id(),
             'estado_expediente' => 'Activo',
+            'unidad_promotora' => $unidad_promotora ?? ''
         ]));
 
 
@@ -60,7 +71,7 @@ class ContratoController extends Controller
      */
     public function show(Contrato $contrato)
     {
-        $contrato_user = $contrato->load('usuario');
+        $contrato_user = $contrato->load(['usuario', 'tipo', 'tipo_procedimiento']);;
         if (!$contrato_user) {
             return redirect()->route('contratos')->with('error', 'Contrato no encontrado');
         }

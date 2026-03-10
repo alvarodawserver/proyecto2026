@@ -2,28 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Movimiento;
+use App\Models\Tipo;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class MovimientoController extends Controller
+class TipoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $movimientos = Movimiento::with([
-        'usuario',
-        'contrato' => function($query) {
-            $query->withTrashed();
-        }
-        ])->orderBy('fecha_movimiento', 'desc')->get();
-
-        return Inertia::render('movimientos',['movimientos' => $movimientos]);
-
+        return Inertia::render('Tipos/tipos',['tipos' => Tipo::all()]);
     }
 
     /**
@@ -31,7 +21,7 @@ class MovimientoController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Tipos/create');
     }
 
     /**
@@ -39,13 +29,17 @@ class MovimientoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'tipo_contrato' => 'required|max:255',
+        ]);
+        Tipo::create($validated);
+        return redirect()->route('tipos');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Movimiento $movimiento)
+    public function show(Tipo $tipo)
     {
         //
     }
@@ -53,7 +47,7 @@ class MovimientoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Movimiento $movimiento)
+    public function edit(Tipo $tipo)
     {
         //
     }
@@ -61,7 +55,7 @@ class MovimientoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Movimiento $movimiento)
+    public function update(Request $request, Tipo $tipo)
     {
         //
     }
@@ -69,7 +63,7 @@ class MovimientoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Movimiento $movimiento)
+    public function destroy(Tipo $tipo)
     {
         //
     }

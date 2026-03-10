@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Movimiento extends Model
 {
-    protected $fillable = ['user_id','fecha_movimiento','contrato_id','observaciones','actuacion'];
+    protected $fillable = ['usuario_id','fecha_movimiento','contrato_id','observaciones','actuacion'];
 
 
     protected $casts = [
         'fecha_movimiento' => 'datetime:d/m/Y H:i',
     ];
+    
     public function usuario(){
         return $this->belongsTo(Usuario::class);
     }

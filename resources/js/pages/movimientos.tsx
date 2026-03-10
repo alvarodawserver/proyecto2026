@@ -8,9 +8,9 @@ import { Link } from 'lucide-react';
 type Movimiento = {
     id: number;
     observaciones: string;
-    user:{
+    usuario:{
         id:number;
-        name:string;
+        nombre:string;
     };
     fecha_movimiento: string;
     actuacion: string;
@@ -63,7 +63,7 @@ export default function Movimientos({ movimientos }: Props) {
                                             </span>
                                         </td>
 </td>
-                                        <td className="px-4 py-2">{mov.user?.name}</td>
+                                        <td className="px-4 py-2">{mov.usuario?.nombre}</td>
                                     </tr>
                                 ))}
                             </tbody>

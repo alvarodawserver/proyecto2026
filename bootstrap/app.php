@@ -22,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
+        $middleware->alias([
+            'force.login' => \App\Http\Middleware\ForceLogin::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

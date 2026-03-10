@@ -11,18 +11,10 @@ class Contrato extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'n_expediente',
-        'descripcion',
-        'responsable',
-        'created_by',
-        'tipo_contrato',
-        'importe_estimado',
-        'proc_adjudicacion',
-        'fecha_prevista',
-        'fecha_inicio',
-        'unidad_promotora',
-        'duracion_estimada',
-        'estado_expediente',
+        'n_expediente', 'descripcion', 'responsable', 'importe_estimado',
+    'tipo_procedimiento', 'fecha_prevista', 'fecha_inicio',
+    'unidad_promotora', 'duracion_estimada', 'estado_expediente',
+    'importe_final', 'tipos_id', 'created_by'
     ];
 
 
@@ -51,10 +43,14 @@ class Contrato extends Model
         return $this->belongsTo(Usuario::class,'created_by');//Importante pasar el nombre de la columna si es diferente a lo predeterminado
     }
 
-    public function tipoAdjudicacion(){
-        return $this->belongsTo(Adjudicacione::class);
+    public function tipo_procedimiento(){
+        return $this->belongsTo(Adjudicacione::class,'tipo_procedimiento');
     }
 
+    public function tipo()
+    {
+        return $this->belongsTo(Tipo::class,'tipos_id');
+    }
 
     private function format($date) {
         return $date ? \Carbon\Carbon::parse($date)->format('d/m/Y') : '---';
@@ -76,4 +72,6 @@ class Contrato extends Model
         ]);
 
     }
+
+
 }

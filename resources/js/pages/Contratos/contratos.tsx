@@ -10,9 +10,9 @@ type Contrato = {
     n_expediente:string,
     descripcion:string,
     responsable:string,
-    tipo_contrato:string,
+    tipos_id:number,
     importe_estimado:number | '',
-    proc_adjudicacion:string;
+    tipo_procedimiento:number;
     fecha_prevista:string,
     fecha_inicio:string,
     unidad_promotora:string,

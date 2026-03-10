@@ -13,6 +13,10 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
+    protected $table = 'usuarios';
+    protected $primaryKey = 'id';
+    public $timestamps = false;
+    protected $appends = ['name'];
     /**
      * The attributes that are mass assignable.
      *
@@ -48,6 +52,16 @@ class User extends Authenticatable
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->nombre;
+    }
+
+    public function username()
+    {
+        return 'nombre';
     }
 
     public function contratos()

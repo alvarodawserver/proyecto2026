@@ -163,13 +163,27 @@ export default function Create({procedimientos,tipos} : Props) {
 
                         <div className="flex flex-col gap-2">
                             <label htmlFor="duracion_estimada" className="text-sm font-medium">Duración estimada</label>
-                            <input
-                                id="duracion_estimada"
-                                type="date"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                                value={data.duracion_estimada}
-                                onChange={e => setData('duracion_estimada', e.target.value)}
-                            />
+                            <select name="duracion_estimada" id="duracion_estimada"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.duracion_estimada}
+                            onChange={e => setData('duracion_estimada',e.target.value)}>
+                                <option value="">Seleccione cuanto años va a durar</option>
+
+                                    <option key="1" value="1 anyo">
+                                        "1 año"
+                                    </option>
+
+                                    <option key="2" value="2 anyos">
+                                        "2 años"
+                                    </option>
+
+                                    <option key="3" value="3 anyos">
+                                        "3 años"
+                                    </option>
+
+                            </select>
+
+
                         </div>
 
                         <div className="md:col-span-2 mt-4">

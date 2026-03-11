@@ -135,4 +135,10 @@ class ContratoController extends Controller
         $contrato_recuperar->restore();
         return redirect()->route('contratos')->with('success','El contrato se ha recuperado con éxito');
     }
+
+    public function verMovimiento(Contrato $contrato){
+
+        $contrato->load(['movimientos', 'usuario']);
+        return Inertia::render('Contratos/movimientos',['contrato' => $contrato]);
+    }
 }

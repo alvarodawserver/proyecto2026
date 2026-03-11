@@ -60,6 +60,8 @@ Route::middleware(['force.login'])->group(function(){
     Route::get('/tipos/create',[TipoController::class,'create'])->name('tipos.create');
     Route::post('/tipos/store',[TipoController::class,'store'])->name('tipos.store');
     Route::delete('/tipos/{tipo}/destroy',[TipoController::class,'destroy'])->name('tipos.destroy');
+    
+    Route::get('/contratos/{contrato}/movimientos', [ContratoController::class, 'verMovimiento'])->name('contratos.movimientos');
 
 
 });

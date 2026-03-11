@@ -184,19 +184,19 @@ export default function Create({procedimientos,tipos} : Props) {
                             value={data.duracion_estimada}
                             onChange={e => setData('duracion_estimada',e.target.value)}>
                                 <option value="">Seleccione cuanto años va a durar</option>
-                                    <option key="1" value="1">
+                                    <option key="1" value="1 años">
                                         1 año
                                     </option>
 
-                                    <option key="2" value="2">
+                                    <option key="2" value="2 años">
                                         2 años
                                     </option>
 
-                                    <option key="3" value="3">
+                                    <option key="3" value="3 años">
                                         3 años
                                     </option>
 
-                                    <option key="4" value="4">
+                                    <option key="4" value="4 años">
                                         4 años
                                     </option>
 

@@ -24,7 +24,7 @@ type Contrato = {
     fecha_inicio_f: string;
     alerta_vencimiento_f: string;
     unidad_promotora: string;
-    duracion_estimada_f: string;
+    duracion_estimada: string;
     estado_expediente: string;
 
 };
@@ -74,9 +74,15 @@ export default function Show({ contrato }:Props) {
 
                 <p><span className="font-semibold text-gray-800">Alerta de vencimiento:</span> <span className="text-gray-600">{contrato.alerta_vencimiento_f}</span></p>
 
-                <p><span className="font-semibold text-gray-800">Duración estimada:</span> <span className="text-gray-600">{contrato.duracion_estimada_f}</span></p>
+                <p><span className="font-semibold text-gray-800">Duración estimada:</span> <span className="text-gray-600">{contrato.duracion_estimada}</span></p>
 
                 <div className="flex gap-4 mt-4">
+                    <Link
+                        href={`/contratos/${contrato.id}/movimientos`}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    >
+                        Registro de actividad
+                    </Link>
                     <Link
                         href={'/contratos'}
                         className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"

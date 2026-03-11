@@ -43,9 +43,7 @@ export default function Procedimientos({ tipos }: Props) {
                                 {(tipos).map((pro) => (
                                     <tr key={pro.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                         <td className="px-4 py-2 font-medium text-blue-600">
-                                            <Link href={`/tipos/show/${pro.id}`}>
                                                 {pro.tipo_contrato}
-                                            </Link>
                                         </td>
                                         <Can permission='manejar_tipos'>
                                             <Link href={`/tipos/edit/${pro.id}`}>

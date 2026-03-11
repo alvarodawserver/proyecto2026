@@ -13,20 +13,22 @@ return new class extends Migration
     {
         Schema::create('contratos', function (Blueprint $table) {
             $table->id();
-            $table->string('n_expediente');
+            $table->string('id_contrato')->unique()->nullable();
+            $table->string('n_expediente')->unique();
             $table->text('descripcion');
             $table->string('responsable');
             $table->foreignId('created_by')->nullable()->constrained('usuarios');
-            $table->string('tipo_contrato');
+            $table->string('n_resolucion');
+            $table->foreignId('tipos_id')->constrained('tipos');
             $table->decimal('importe_estimado',8,2);
+            $table->decimal('importe_final',8,2);
             $table->foreignId('tipo_procedimiento')->constrained('adjudicaciones')->onDelete('restrict');
             $table->date('fecha_prevista');
             $table->date('fecha_inicio')->nullable();
             $table->timestamp('alerta_vencimiento')->nullable();
             $table->string('unidad_promotora');
-            $table->date('duracion_estimada');
+            $table->string('duracion_estimada');
             $table->string('estado_expediente');
-            $table->unique('n_expediente');
             $table->softDeletes();
             $table->timestamps();
         });

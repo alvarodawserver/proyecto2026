@@ -17,4 +17,8 @@ class Usuario extends Model
     public function movimientos(){
         return $this->hasMany(Movimiento::class);
     }
+
+    public function empleado(){
+        return $this->belongsTo(Empleado::class,'empleado_id');
+    }
 }

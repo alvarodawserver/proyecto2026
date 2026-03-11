@@ -7,6 +7,7 @@ import { Link } from '@inertiajs/react';
 
 type Contrato = {
     id:number,
+    id_contrato:string,
     n_expediente:string,
     descripcion:string,
     responsable:string,
@@ -45,6 +46,7 @@ export default function Contratos({ contratos }: Props) {
                         <table className="w-full min-w-[600px] divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
                             <thead>
                                 <tr className="bg-gray-100 dark:bg-gray-800">
+                                    <th className="px-4 py-2 text-left text-sm font-medium">NºResolución</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">NºExpediente</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">Descripción</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">Estado</th>
@@ -58,12 +60,12 @@ export default function Contratos({ contratos }: Props) {
                             <tbody className="divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
                                 {(contratos).map((con) => (
                                     <tr key={con.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                        <td className="px-4 py-2 font-medium text-blue-600">
-                                            <Link href={`/contratos/show/${con.id}`}>
-                                                {con.n_expediente}
-                                            </Link>
+                                        <td className='px-4 py-2 font-medium text-blue-600'>
+                                                <Link href={`/contratos/show/${con.id}`}>
+                                                    {con.id_contrato}
+                                                </Link>
                                         </td>
-
+                                        <td className="px-4 py-2">{con.n_expediente}</td>
                                         <td className="px-4 py-2">{con.descripcion}</td>
                                         <td className="px-4 py-2">{con.estado_expediente}</td>
                                         <td className="px-4 py-2">{con.responsable}</td>
@@ -91,7 +93,7 @@ export default function Contratos({ contratos }: Props) {
                 <Can permission='manejar_contratos'>
                     <Link href={`/contratos/create`}
                     className='btn btn-info'>
-                        Crear Contrato
+                        Dar de alta a un contrato
                     </Link>
                 </Can>
             </div>

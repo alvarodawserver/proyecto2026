@@ -11,17 +11,17 @@ class Contrato extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'n_expediente', 'descripcion', 'responsable', 'importe_estimado',
+
+        'id_contrato','n_expediente', 'descripcion', 'responsable', 'importe_estimado',
     'tipo_procedimiento', 'fecha_prevista', 'fecha_inicio',
     'unidad_promotora', 'duracion_estimada', 'estado_expediente',
-    'importe_final', 'tipos_id', 'created_by'
+    'importe_final', 'tipos_id', 'created_by', 'n_resolucion'
     ];
 
 
     protected $casts = [
     'fecha_prevista' => 'date',
     'fecha_inicio' => 'date',
-    'duracion_estimada' => 'date',
     'alerta_vencimiento' => 'datetime',
     ];
 
@@ -30,7 +30,6 @@ class Contrato extends Model
     'fecha_inicio_f',
     'fecha_prevista_f',
     'alerta_vencimiento_f',
-    'duracion_estimada_f'
 ];
 
     public function movimientos()
@@ -60,18 +59,6 @@ class Contrato extends Model
     public function getFechaPrevistaFAttribute() { return $this->format($this->fecha_prevista); }
     public function getAlertaVencimientoFAttribute() { return $this->format($this->alerta_vencimiento); }
 
-    public function getDuracionEstimadaFAttribute() {
-        if (!$this->fecha_inicio || !$this->duracion_estimada) {
-        return 'Sin definir';
-        }
-        return \Carbon\Carbon::parse($this->fecha_inicio)
-        ->locale('es') // Forzamos el español
-        ->diffForHumans($this->duracion_estimada, [
-            'syntax' => CarbonInterface::DIFF_ABSOLUTE,
-            'parts' => 2,
-        ]);
-
-    }
 
 
 }

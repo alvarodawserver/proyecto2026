@@ -33,6 +33,7 @@ export default function Create({procedimientos,tipos} : Props) {
         fecha_prevista:'',
         fecha_inicio:'',
         duracion_estimada:'',
+        n_resolucion:'',
     });
 
 
@@ -67,7 +68,7 @@ export default function Create({procedimientos,tipos} : Props) {
                     className={`py-2 px-4 ${step === 2 ? 'border-b-2 border-blue-600 font-bold' : 'text-gray-500'}`}
                     onClick={() => setStep(2)}
                 >
-                    2. Finalizar detalles
+                    2. Datos de la formalización
                 </button>
             </div>
 
@@ -102,8 +103,21 @@ export default function Create({procedimientos,tipos} : Props) {
                             />
                         </div>
 
+
                         <div className="flex flex-col gap-2">
-                            <label htmlFor="tipos_id" className="text-sm font-medium">Proceso de adjudicación</label>
+                            <label htmlFor="n_resolucion" className="text-sm font-medium">NºResolución</label>
+                            <input
+                                id="n_resolucion"
+                                type="text"
+                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                                value={data.n_resolucion}
+                                onChange={e => setData('n_resolucion', e.target.value)}
+                            />
+                        </div>
+
+
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="tipos_id" className="text-sm font-medium">Tipo de contrato</label>
                             <select name="tipos_id" id="tipos_id"
                             className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
                             value={data.tipos_id}
@@ -149,7 +163,7 @@ export default function Create({procedimientos,tipos} : Props) {
 
 
                         <div className="flex flex-col gap-2">
-                            <label htmlFor="fecha_prevista" className="text-sm font-medium">Fecha prevista</label>
+                            <label htmlFor="fecha_prevista" className="text-sm font-medium">Fecha prevista de inicio</label>
                             <input
                                 id="fecha_prevista"
                                 type="date"
@@ -165,13 +179,28 @@ export default function Create({procedimientos,tipos} : Props) {
 
                         <div className="flex flex-col gap-2">
                             <label htmlFor="duracion_estimada" className="text-sm font-medium">Duración estimada</label>
-                            <input
-                                id="duracion_estimada"
-                                type="date"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                                value={data.duracion_estimada}
-                                onChange={e => setData('duracion_estimada', e.target.value)}
-                            />
+                            <select name="duracion_estimada" id="duracion_estimada"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.duracion_estimada}
+                            onChange={e => setData('duracion_estimada',e.target.value)}>
+                                <option value="">Seleccione cuanto años va a durar</option>
+                                    <option key="1" value="1">
+                                        1 año
+                                    </option>
+
+                                    <option key="2" value="2">
+                                        2 años
+                                    </option>
+
+                                    <option key="3" value="3">
+                                        3 años
+                                    </option>
+
+                                    <option key="4" value="4">
+                                        4 años
+                                    </option>
+
+                            </select>
                         </div>
 
                         <div className="md:col-span-2 mt-4">
@@ -199,7 +228,7 @@ export default function Create({procedimientos,tipos} : Props) {
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <label htmlFor="importe_final" className="text-sm font-medium">Importe</label>
+                            <label htmlFor="importe_final" className="text-sm font-medium">Importe de adjudicación</label>
                             <input
                                 id="importe_final"
                                 type="number"
@@ -218,7 +247,7 @@ export default function Create({procedimientos,tipos} : Props) {
 
 
                         <div className="flex flex-col gap-2">
-                            <label htmlFor="responsable" className="text-sm font-medium">Responsable</label>
+                            <label htmlFor="responsable" className="text-sm font-medium">Adjudicatario</label>
                             <input
                                 id="responsable"
                                 type="text"

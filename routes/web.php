@@ -41,6 +41,7 @@ Route::middleware(['force.login'])->group(function(){
 
 
 
+
     Route::get('/contratos/desactivados',[ContratoController::class,'verDesactivados'])->name('desactivados');
 
     Route::put('/contratos/recuperar/{contrato_id}',[ContratoController::class,'recuperarDesactivados'])->name('recuperar');
@@ -61,6 +62,8 @@ Route::middleware(['force.login'])->group(function(){
     Route::post('/tipos/store',[TipoController::class,'store'])->name('tipos.store');
     Route::delete('/tipos/{tipo}/destroy',[TipoController::class,'destroy'])->name('tipos.destroy');
 
+
+    Route::get('/contratos/{contrato}/movimientos', [ContratoController::class, 'verMovimiento'])->name('contratos.movimientos');
 
 });
 // Rutas de Contratos

@@ -19,7 +19,7 @@ class ContratoController extends Controller
     {
         $userID = Auth::id();
 
-        $contratos = Contrato::where('user_id', $userID)->get();
+        $contratos = Contrato::where('created_by', $userID)->get();
         return Inertia::render('Contratos/contratos',[
             'contratos' => $contratos,
         ]);
@@ -132,5 +132,11 @@ class ContratoController extends Controller
         $contrato_recuperar->save();
         $contrato_recuperar->restore();
         return redirect()->route('contratos')->with('success','El contrato se ha recuperado con éxito');
+    }
+
+    public function verMovimiento(Contrato $contrato){
+
+        $contrato->load(['movimientos', 'usuario']);
+        return Inertia::render('Contratos/movimientos',['contrato' => $contrato]);
     }
 }

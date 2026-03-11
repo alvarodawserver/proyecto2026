@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Usuario extends Model
 {
-    //
 
+    protected $fillable = [
+        'nombre', 'email', 'password', 'empleado_id',
+        'token',
+    ];
+
+    public $timestamps = false;
 
     public function contratos()
     {

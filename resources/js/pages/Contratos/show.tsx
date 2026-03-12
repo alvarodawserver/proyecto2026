@@ -8,6 +8,7 @@ type Contrato = {
     n_expediente: string;
     descripcion: string;
     responsable: string;
+    id_contrato:string;
     usuario?:{
         id:number,
         nombre:string,
@@ -44,13 +45,19 @@ export default function Show({ contrato }:Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Contrato ${contrato.id}`} />
-
+            <Head title={`Contrato ${contrato.id_contrato}`} />
             <div className="flex flex-col gap-3 p-4">
 
                 <h1 className="text-2xl font-bold mb-4">
                     Nº de expediente: {contrato.n_expediente}
                 </h1>
+                <div className=''>
+                    <Link
+                        href={`/contratos/${contrato.id}/movimientos`}
+                            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                                Registro de actividad
+                    </Link>
+                </div>
 
                 <p><span className="font-semibold text-gray-800">Tipo de contrato:</span> <span className="text-gray-600">{contrato.tipo.tipo_contrato}</span></p>
 
@@ -77,12 +84,6 @@ export default function Show({ contrato }:Props) {
                 <p><span className="font-semibold text-gray-800">Duración estimada:</span> <span className="text-gray-600">{contrato.duracion_estimada}</span></p>
 
                 <div className="flex gap-4 mt-4">
-                    <Link
-                        href={`/contratos/${contrato.id}/movimientos`}
-                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                    >
-                        Registro de actividad
-                    </Link>
                     <Link
                         href={'/contratos'}
                         className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"

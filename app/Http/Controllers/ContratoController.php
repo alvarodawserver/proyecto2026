@@ -17,8 +17,9 @@ class ContratoController extends Controller
      */
     public function index()
     {
+        $contratos = Contrato::all()->load('usuario');
         return Inertia::render('Contratos/contratos',[
-            'contratos' => Contrato::all(),]);
+            'contratos' => $contratos,]);
     }
 
     /**
@@ -140,5 +141,13 @@ class ContratoController extends Controller
 
         $contrato->load(['movimientos', 'usuario']);
         return Inertia::render('Contratos/movimientos',['contrato' => $contrato]);
+    }
+
+    public function formalizar($id){
+        $contrato = Contrato::findOrFail($id);
+        $contrato->estado_alerta = 'formalizado';
+        $contrato->save();
+
+        return "Contrato formalizado con éxito. Puedes cerrar esta ventana.";
     }
 }

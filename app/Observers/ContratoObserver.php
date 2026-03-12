@@ -13,12 +13,14 @@ class ContratoObserver
 {
     public function created(Contrato $contrato): void
     {
+        $actualizaciones = [];
+
         $distribucion = DB::table('per_distribucion')
         ->where('per_distribucion_empleado', Auth::user()->empleado_id)
         ->where('per_distribucion_dpto_principal', true)
         ->first();
 
-    // Si no tiene dpto principal, pillamos el primero que tenga asignado
+
         $departamento_id = $distribucion ? $distribucion->per_distribucion_departamento :
             DB::table('per_distribucion')
                 ->where('per_distribucion_empleado', Auth::user()->empleado_id)
@@ -31,6 +33,13 @@ class ContratoObserver
             $contrato->updateQuietly([
                 'id_contrato' => $id_contrato_formateado
             ]);
+        }
+
+        $actualizaciones['alerta_vencimiento'] = now()->addMonths(4);
+
+        if(!empty($actualizaciones)){
+            $contrato->timestamps = false;
+            $contrato->updateQuietly($actualizaciones);
         }
         $this->registrarMovimiento($contrato, 'Creación', 'Se ha registrado el contrato inicialmente.');
     }

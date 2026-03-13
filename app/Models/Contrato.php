@@ -30,7 +30,6 @@ class Contrato extends Model
     'fecha_inicio_f',
     'fecha_prevista_f',
     'alerta_vencimiento_f',
-    'duracion_estimada_f'
 ];
 
     public function movimientos()
@@ -60,18 +59,9 @@ class Contrato extends Model
     public function getFechaPrevistaFAttribute() { return $this->format($this->fecha_prevista); }
     public function getAlertaVencimientoFAttribute() { return $this->format($this->alerta_vencimiento); }
 
-    public function getDuracionEstimadaFAttribute() {
-        if (!$this->fecha_inicio || !$this->duracion_estimada) {
-        return 'Sin definir';
-        }
-        return \Carbon\Carbon::parse($this->fecha_inicio)
-        ->locale('es') // Forzamos el español
-        ->diffForHumans($this->duracion_estimada, [
-            'syntax' => CarbonInterface::DIFF_ABSOLUTE,
-            'parts' => 2,
-        ]);
+
 
     }
 
 
-}
+

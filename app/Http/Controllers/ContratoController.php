@@ -17,12 +17,9 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        $userID = Auth::id();
-
-        $contratos = Contrato::where('created_by', $userID)->get();
+        $contratos = Contrato::all()->load('usuario');
         return Inertia::render('Contratos/contratos',[
-            'contratos' => $contratos,
-        ]);
+            'contratos' => $contratos,]);
     }
 
     /**
@@ -57,7 +54,8 @@ class ContratoController extends Controller
             'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
             'alerta_vencimiento' => 'nullable|date',
-            'duracion_estimada' => 'required|date|after:fecha_inicio',
+            'n_resolucion' => 'required',
+            'duracion_estimada' => 'required',
         ]);
 
        Contrato::create(array_merge($validated, [
@@ -87,9 +85,14 @@ class ContratoController extends Controller
      */
     public function edit(Contrato $contrato)
     {
-        return Inertia::render('Contratos/edit',['contrato'=>$contrato,
-    'tipos' => Tipo::all(), // <-- ¡Asegúrate de que esta línea existe!
-        'procedimientos' => Adjudicacione::all()]);
+        return Inertia::render('Contratos/edit',
+        [
+            'contrato'=>$contrato,
+            'tipos' => Tipo::all(),
+            'procedimientos' => Adjudicacione::all()
+        ]);
+
+
     }
 
     /**
@@ -100,12 +103,12 @@ class ContratoController extends Controller
         $validated = $request->validate([
             'descripcion' => 'required|max:255',
             'responsable' => 'required|max:255',
-            'importe_estimado' => 'required|numeric|min:0',
+            'importe_final' => 'required|numeric|min:0',
             'tipo_procedimiento' => 'required|max:255',
-            'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
             'duracion_estimada' => 'required|date|after:fecha_inicio',
         ]);
+
         $contrato->update($validated);
         return redirect()->route('contratos');
     }
@@ -122,7 +125,7 @@ class ContratoController extends Controller
     }
 
     public function verDesactivados(){
-        $contratos_desactivados = Contrato::onlyTrashed()->with('user')->get();
+        $contratos_desactivados = Contrato::onlyTrashed()->with('usuario')->get();
         return Inertia::render('Contratos/desactivados',['desactivados' => $contratos_desactivados]);
     }
 
@@ -138,5 +141,13 @@ class ContratoController extends Controller
 
         $contrato->load(['movimientos', 'usuario']);
         return Inertia::render('Contratos/movimientos',['contrato' => $contrato]);
+    }
+
+    public function formalizar($id){
+        $contrato = Contrato::findOrFail($id);
+        $contrato->estado_alerta = 'formalizado';
+        $contrato->save();
+
+        return "Contrato formalizado con éxito. Puedes cerrar esta ventana.";
     }
 }

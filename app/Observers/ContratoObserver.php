@@ -3,57 +3,74 @@
 namespace App\Observers;
 
 use App\Models\Contrato;
+use App\Models\Departamento;
+use App\Models\Empleado;
 use App\Models\Movimiento;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ContratoObserver
 {
-    /**
-     * Handle the Contrato "created" event.
-     */
     public function created(Contrato $contrato): void
     {
+        $actualizaciones = [];
+
+        $distribucion = DB::table('per_distribucion')
+        ->where('per_distribucion_empleado', Auth::user()->empleado_id)
+        ->where('per_distribucion_dpto_principal', true)
+        ->first();
+
+
+        $departamento_id = $distribucion ? $distribucion->per_distribucion_departamento :
+            DB::table('per_distribucion')
+                ->where('per_distribucion_empleado', Auth::user()->empleado_id)
+                ->value('per_distribucion_departamento');
+
+        if ($departamento_id) {
+            $id_contrato_formateado = $departamento_id . '-' . str_pad($contrato->id, 2, '0', STR_PAD_LEFT);
+
+            $contrato->timestamps = false;
+            $contrato->updateQuietly([
+                'id_contrato' => $id_contrato_formateado
+            ]);
+        }
+
+        $actualizaciones['alerta_vencimiento'] = now()->addMonths(4);
+
+        if(!empty($actualizaciones)){
+            $contrato->timestamps = false;
+            $contrato->updateQuietly($actualizaciones);
+        }
         $this->registrarMovimiento($contrato, 'Creación', 'Se ha registrado el contrato inicialmente.');
     }
 
-    /**
-     * Handle the Contrato "updated" event.
-     */
     public function updated(Contrato $contrato): void
     {
+        if ($contrato->wasChanged('deleted_at')) {
+            return;
+        }
+
         $this->registrarMovimiento($contrato, 'Modificación', 'Se han actualizado los datos del contrato.');
     }
 
-    /**
-     * Handle the Contrato "deleted" event.
-     */
     public function deleted(Contrato $contrato): void
     {
-        $this->registrarMovimiento($contrato, 'Eliminación', 'El contrato ha sido desactivado');
+        $this->registrarMovimiento($contrato, 'Eliminación', 'El contrato ha sido desactivado (Soft Delete)');
     }
 
-    /**
-     * Handle the Contrato "restored" event.
-     */
     public function restored(Contrato $contrato): void
     {
         $this->registrarMovimiento($contrato, 'Restauración', 'El contrato ha sido restaurado');
     }
 
-    /**
-     * Handle the Contrato "force deleted" event.
-     */
-    public function forceDeleted(Contrato $contrato): void
+    private function registrarMovimiento($contrato, $actuacion, $observacion)
     {
-        //
-    }
-
-    private function registrarMovimiento($contrato,$actuacion,$observacion){
         Movimiento::create([
-        'usuario_id' => $contrato->created_by,
-        'contrato_id' => $contrato->id,
-        'fecha_movimiento' => now(),
-        'actuacion' => $actuacion,
-        'observaciones' => $observacion,
+            'usuario_id'        => Auth::id() ?? $contrato->created_by,
+            'contrato_id'       => $contrato->id,
+            'fecha_movimiento'  => now(),
+            'actuacion'         => $actuacion,
+            'observaciones'     => $observacion,
         ]);
     }
 }

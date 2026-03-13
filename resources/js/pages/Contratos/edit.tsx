@@ -6,16 +6,13 @@ interface ContratoForm {
     descripcion: string;
     responsable: string;
     tipos_id: number | string;
-    importe_estimado: number | string;
     importe_final: number | string;
-    tipo_procedimiento: string; // Nombre unificado
-    fecha_prevista: string;
+    tipo_procedimiento: string;
     fecha_inicio: string;
-    unidad_promotora: string;
     duracion_estimada: string;
 }
 
-// Actualizamos la interfaz Contrato para que incluya los campos que faltaban
+
 interface Contrato extends ContratoForm {
     id: number;
 }
@@ -43,10 +40,8 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
         descripcion: contrato.descripcion || '',
         responsable: contrato.responsable || '',
         tipos_id: contrato.tipos_id || '',
-        importe_estimado: contrato.importe_estimado || '',
         importe_final: contrato.importe_final || '',
         tipo_procedimiento: contrato.tipo_procedimiento || '',
-        fecha_prevista: contrato.fecha_prevista || '',
         fecha_inicio: contrato.fecha_inicio || '',
         duracion_estimada: contrato.duracion_estimada || '',
     });
@@ -65,15 +60,13 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
     function submit(e: React.FormEvent) {
         e.preventDefault();
 
-        // CAMBIO CRÍTICO: Añadimos la "/" inicial para que sea una ruta absoluta
-        // y usamos el ID directamente desde la prop 'contrato'
         if (contrato && contrato.id) {
             put(`/contratos/update/${contrato.id}`);
         } else {
             console.error("No se pudo encontrar el ID del contrato");
         }
     }
-    console.log(errors); // Mira la consola del navegador (F12) al pulsar "Finalizar Registro"
+    console.log(errors);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -82,7 +75,6 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                     <h2 className="mb-6 text-lg font-bold">Datos del Contrato</h2>
 
                     <form onSubmit={submit} className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        {/* Descripción */}
                         <div className="flex flex-col gap-2">
                             <label htmlFor="descripcion" className="text-sm font-medium">Descripción</label>
                             <input
@@ -95,9 +87,8 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                             {errors.descripcion && <div className="text-red-500 text-xs">{errors.descripcion}</div>}
                         </div>
 
-                        {/* Tipo de contrato */}
                          <div className="flex flex-col gap-2">
-                            <label htmlFor="tipos_id" className="text-sm font-medium">Proceso de adjudicación</label>
+                            <label htmlFor="tipos_id" className="text-sm font-medium">Tipo de contrato</label>
                             <select name="tipos_id" id="tipos_id"
                             className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
                             value={data.tipos_id}
@@ -111,7 +102,6 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                             </select>
                         </div>
 
-                        {/* Proceso adjudicación */}
                         <div className="flex flex-col gap-2">
                             <label htmlFor="tipo_procedimiento" className="text-sm font-medium">Proceso de adjudicación</label>
                             <select name="tipo_procedimiento" id="tipo_procedimiento"
@@ -127,7 +117,6 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                             </select>
                         </div>
 
-                        {/* Responsable */}
                         <div className="flex flex-col gap-2">
                             <label htmlFor="responsable" className="text-sm font-medium">Responsable del contrato</label>
                             <input
@@ -140,7 +129,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                         </div>
 
 
-                        {/* Fecha inicio */}
+
                         <div className="flex flex-col gap-2">
                             <label htmlFor="fecha_inicio" className="text-sm font-medium">Fecha de inicio</label>
                             <input
@@ -152,16 +141,30 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                             />
                         </div>
 
-                        {/* Duración estimada */}
+
                         <div className="flex flex-col gap-2">
                             <label htmlFor="duracion_estimada" className="text-sm font-medium">Duración estimada</label>
-                            <input
-                                id="duracion_estimada"
-                                type="date"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                                value={data.duracion_estimada}
-                                onChange={e => setData('duracion_estimada', e.target.value)}
-                            />
+                            <select name="duracion_estimada" id="duracion_estimada"
+                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                            value={data.duracion_estimada}
+                            onChange={e => setData('duracion_estimada',e.target.value)}>
+                                <option value="">Seleccione cuanto años va a durar</option>
+                                    <option key="1" value="1 años">
+                                        1 año
+                                    </option>
+
+                                    <option key="2" value="2 años">
+                                        2 años
+                                    </option>
+
+                                    <option key="3" value="3 años">
+                                        3 años
+                                    </option>
+
+                                    <option key="4" value="4 años">
+                                        4 años
+                                    </option>
+                            </select>
                         </div>
 
                         <div className="md:col-span-2 mt-4">

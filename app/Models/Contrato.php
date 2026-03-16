@@ -15,7 +15,7 @@ class Contrato extends Model
         'id_contrato','n_expediente', 'descripcion', 'responsable', 'importe_estimado',
     'tipo_procedimiento', 'fecha_prevista', 'fecha_inicio',
     'unidad_promotora', 'duracion_estimada', 'estado_expediente',
-    'importe_final', 'tipos_id', 'created_by', 'n_resolucion'
+    'importe_final', 'tipos_id', 'created_by', 'n_resolucion','alerta_vencimiento','avisado'
     ];
 
 
@@ -30,7 +30,8 @@ class Contrato extends Model
     'fecha_inicio_f',
     'fecha_prevista_f',
     'alerta_vencimiento_f',
-];
+    'unidad_promotora_nombre'
+    ];
 
     public function movimientos()
     {
@@ -41,6 +42,7 @@ class Contrato extends Model
     {
         return $this->belongsTo(Usuario::class,'created_by');//Importante pasar el nombre de la columna si es diferente a lo predeterminado
     }
+
 
     public function tipo_procedimiento(){
         return $this->belongsTo(Adjudicacione::class,'tipo_procedimiento');
@@ -55,9 +57,13 @@ class Contrato extends Model
         return $date ? \Carbon\Carbon::parse($date)->format('d/m/Y') : '---';
     }
 
-    public function getFechaInicioFAttribute() { return $this->format($this->fecha_inicio); }
-    public function getFechaPrevistaFAttribute() { return $this->format($this->fecha_prevista); }
-    public function getAlertaVencimientoFAttribute() { return $this->format($this->alerta_vencimiento); }
+    public function getFechaInicioFAttribute() { return $this->fecha_inicio->locale('es')->translatedFormat('d \d\e F \d\e Y'); }
+    public function getFechaPrevistaFAttribute() { return $this->fecha_prevista->locale('es')->translatedFormat('d \d\e F \d\e Y'); }
+    public function getAlertaVencimientoFAttribute() { return $this->alerta_vencimiento?->format('d/m/Y') ?? '---'; }
+
+    public function getUnidadPromotoraNombreAttribute(){
+        return $this->usuario?->empleado?->departamento;
+    }
 
 
 

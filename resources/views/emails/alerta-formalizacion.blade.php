@@ -15,9 +15,9 @@
     <p>Por favor, procede con los trámites de formalización necesarios.</p>
     <p>Saludos,<br>El sistema de Gestión.</p>
     <p>Si ya has iniciado los trámites, pulsa el siguiente botón para que dejemos de enviarte recordatorios:</p>
-    <a href="{{ URL::signedRoute('contrato.formalizar', ['id' => $contrato->id]) }}"
-    style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-        Marcar como Formalizado
-    </a>
+    <a href="{{ URL::signedRoute('contrato.silenciar', ['id' => $contrato->id]) }}"
+   style="background-color: #e67e22; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+    No avisar más sobre este contrato
+</a>
 </body>
 </html>

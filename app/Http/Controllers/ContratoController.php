@@ -53,13 +53,13 @@ class ContratoController extends Controller
             'tipo_procedimiento' => 'required|exists:adjudicaciones,id',
             'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
-            'alerta_vencimiento' => 'nullable|date',
             'n_resolucion' => 'required',
             'duracion_estimada' => 'required',
         ]);
 
        Contrato::create(array_merge($validated, [
             'created_by' => Auth::id(),
+            'alerta_vencimiento' => now()->addMonths(4),
             'estado_expediente' => 'Activo',
             'unidad_promotora' => $unidad_promotora ?? ''
         ]));
@@ -73,7 +73,7 @@ class ContratoController extends Controller
      */
     public function show(Contrato $contrato)
     {
-        $contrato_user = $contrato->load(['usuario', 'tipo', 'tipo_procedimiento']);;
+        $contrato_user = $contrato->load(['usuario.empleado', 'tipo', 'tipo_procedimiento']);;
         if (!$contrato_user) {
             return redirect()->route('contratos')->with('error', 'Contrato no encontrado');
         }
@@ -149,5 +149,14 @@ class ContratoController extends Controller
         $contrato->save();
 
         return "Contrato formalizado con éxito. Puedes cerrar esta ventana.";
+    }
+
+    public function silenciarAlerta(Contrato $contrato)
+    {
+        if (!$contrato->avisado) {
+            $contrato->update(['avisado' => true]);
+        }
+        
+        return view('emails.confirmacion_alerta',['expediente' => $contrato->n_expediente]);
     }
 }

@@ -13,7 +13,7 @@ class ContratoObserver
 {
     public function created(Contrato $contrato): void
     {
-        $actualizaciones = [];
+
 
         $distribucion = DB::table('per_distribucion')
         ->where('per_distribucion_empleado', Auth::user()->empleado_id)
@@ -35,12 +35,9 @@ class ContratoObserver
             ]);
         }
 
-        $actualizaciones['alerta_vencimiento'] = now()->addMonths(4);
 
-        if(!empty($actualizaciones)){
-            $contrato->timestamps = false;
-            $contrato->updateQuietly($actualizaciones);
-        }
+
+
         $this->registrarMovimiento($contrato, 'Creación', 'Se ha registrado el contrato inicialmente.');
     }
 
@@ -50,12 +47,19 @@ class ContratoObserver
             return;
         }
 
+
         $this->registrarMovimiento($contrato, 'Modificación', 'Se han actualizado los datos del contrato.');
     }
 
     public function deleted(Contrato $contrato): void
     {
         $this->registrarMovimiento($contrato, 'Eliminación', 'El contrato ha sido desactivado (Soft Delete)');
+    }
+
+    public function formalizado(Contrato $contrato): void{
+        if($contrato->estado_alerta != 'pendiente'){
+            $this->registrarMovimiento($contrato,'Formalización','El contrato ha sido formalizado');
+        }
     }
 
     public function restored(Contrato $contrato): void

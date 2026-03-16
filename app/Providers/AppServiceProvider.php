@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Contrato;
+use App\Models\Usuario;
 use App\Observers\ContratoObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -27,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         Contrato::observe(ContratoObserver::class);
+
+        Gate::define('update-contrato',function(Contrato $contrato){
+            return now()->between(now()->subDays(3),$contrato->alerta_vencimiento);
+        });
     }
 
     /**

@@ -30,23 +30,38 @@ class EnviarAlertasContratos extends Command
     public function handle()
     {
         $hoy = now()->toDateString();
-        $contratos = Contrato::whereDate('alerta_vencimiento','<=', $hoy)
-        ->where('estado_alerta','pendiente')
+
+
+    $contratos = Contrato::with('usuario')
+        ->whereDate('alerta_vencimiento', '<=', $hoy)
+        ->where('avisado', false)
         ->get();
 
-        if ($contratos->isEmpty()) {
-            $this->warn("No hay contratos con alerta para la fecha de hoy ($hoy).");
-            return;
-        }
+    if ($contratos->isEmpty()) {
+        $this->warn("No hay contratos con alerta para la fecha de hoy ($hoy).");
+        return;
+    }
 
-        $this->info("Se han encontrado " . $contratos->count() . " contratos.");
+    $this->info("Se han encontrado " . $contratos->count() . " contratos.");
 
-        foreach ($contratos as $contrato) {
-            $usuario = Usuario::find($contrato->created_by);
+    foreach ($contratos as $contrato) {
 
-            if ($usuario && $usuario->email) {
+        $usuario = $contrato->usuario;
+
+        if ($usuario && $usuario->email) {
+            try {
                 Mail::to($usuario->email)->send(new AlertaFormalizacionContrato($contrato));
+                $this->info("Email enviado para el expediente: {$contrato->n_expediente}");
+
+                // OPCIONAL: Si solo se quiere avisar UNA VEZ y ya:
+                // $contrato->update(['avisado' => true]);
+
+            } catch (\Exception $e) {
+                $this->error("Error enviando a {$usuario->email}: " . $e->getMessage());
             }
+        } else {
+            $this->error("El contrato {$contrato->n_expediente} no tiene un usuario con email válido.");
         }
+    }
     }
 }

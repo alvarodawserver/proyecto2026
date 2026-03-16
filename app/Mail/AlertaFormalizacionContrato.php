@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\Contrato;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -28,7 +29,8 @@ class AlertaFormalizacionContrato extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Recordatorio: Formalización de Contrato ' . $this->contrato->id_contrato,
+            from: new Address(config('mail.from.address'), config('mail.from.name')),
+            subject: 'Recordatorio Diario (' . now()->format('d/m') . '): Formalización ' . $this->contrato->n_expediente,
         );
     }
 

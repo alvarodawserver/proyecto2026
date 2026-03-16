@@ -40,8 +40,8 @@ Route::middleware(['force.login'])->group(function(){
 
     Route::get('/contratos/{contrato}/movimientos', [ContratoController::class, 'verMovimiento'])->name('contratos.movimientos');
 
-    Route::get('/contratos/{id}/formalizar', [ContratoController::class, 'formalizar'])
-        ->name('contrato.formalizar')
+    Route::get('/contratos/{id}/silenciar', [ContratoController::class, 'silenciarAlerta'])
+        ->name('contrato.silenciar')
         ->middleware(['signed','auth']);
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 

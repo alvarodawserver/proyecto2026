@@ -30,6 +30,7 @@ class Contrato extends Model
     'fecha_inicio_f',
     'fecha_prevista_f',
     'alerta_vencimiento_f',
+    'unidad_promotora_nombre',
 ];
 
     public function movimientos()
@@ -58,6 +59,8 @@ class Contrato extends Model
     public function getFechaInicioFAttribute() { return $this->format($this->fecha_inicio); }
     public function getFechaPrevistaFAttribute() { return $this->format($this->fecha_prevista); }
     public function getAlertaVencimientoFAttribute() { return $this->format($this->alerta_vencimiento); }
+
+    public function getUnidadPromotoraNombreAttribute() { return $this->format($this->usuario?->empleado?->departamento); }
 
 
 

@@ -150,4 +150,38 @@ class ContratoController extends Controller
 
         return "Contrato formalizado con éxito. Puedes cerrar esta ventana.";
     }
+
+    public function controlMando(Request $request)
+{
+    $idLaravel = Auth::id();
+
+    $rolJefe = DB::table('per_roles')
+        ->where('per_roles_nombre', 'Jefe de servicio')
+        ->first();
+
+    $miDepartamento = DB::table('per_distribucion')
+        ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+        ->where('per_distribucion_empleado', $idLaravel)
+        ->where('per_distribucion_rol', $rolJefe->id ?? null)
+        ->value('departamentos.nombre');
+
+    $query = Contrato::query();
+
+    if ($miDepartamento !== 'CONTRATACIÓN') {
+        $query->where('unidad_promotora', $miDepartamento);
+    }
+
+    if ($request->has('desde') && $request->desde) {
+        $query->whereDate('fecha_inicio', '>=', $request->desde);
+    }
+
+    if ($request->has('hasta') && $request->hasta) {
+        $query->whereDate('fecha_inicio', '<=', $request->hasta);
+    }
+
+    $contratos = $query->orderBy('fecha_inicio', 'desc')->get();
+
+    return response()->json($contratos);
 }
+}
+

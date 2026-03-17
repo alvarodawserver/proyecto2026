@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\DB;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,26 +35,49 @@ class HandleInertiaRequests extends Middleware
      * @return array<string, mixed>
      */
     public function share(Request $request): array
-    {
-        $user = $request->user();
-        return [
-            ...parent::share($request),
-            'name' => config('app.name'),
-            'auth' => [
-                'user' => $user ? [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                ] : null,
-                'can' => [
-                    'manejar_contratos' => $user ? $user->nombre === 'admin2' : false,
-                    'manejar_procedimientos' => $user ? $user->nombre === 'admin2' : false,
-                    'manejar_tipos' => $user ? $user->nombre === 'admin2' : false,
-                    'ver_historico' => $user ? $user->nombre === 'admin2' : false,
-                ],
-            ],
+{
+    $usuario = $request->user();
 
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-        ];
+    $isJefe = false;
+    $departamento = null;
+
+    if ($usuario) {
+        $rolJefeId = DB::table('per_roles')
+            ->where('per_roles_nombre', 'Jefe de servicio')
+            ->value('per_roles_id');
+
+        $distribucion = DB::table('per_distribucion')
+            ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+            ->where('per_distribucion_empleado', $usuario->empleado_id)
+            ->where('per_distribucion_rol', $rolJefeId)
+            ->where('per_distribucion_dpto_principal', 1)
+            ->select('departamentos.nombre')
+            ->first();
+
+        if ($distribucion) {
+            $isJefe = true;
+            $departamento = $distribucion->nombre;
+        }
     }
+
+    return [
+        ...parent::share($request),
+        'auth' => [
+            'user' => $usuario ? [
+                'id' => $usuario->id,
+                'nombre' => $usuario->nombre,
+                'name'   => $usuario->nombre,
+                'email' => $usuario->email,
+                'empleado_id' => $usuario->empleado_id,
+                'departamento' => $departamento,
+            ] : null,
+            'can' => [
+                'manejar_contratos' => $isJefe,
+                'manejar_procedimientos' => $isJefe,
+                'manejar_tipos' => $isJefe,
+                'ver_historico' => $isJefe,
+            ],
+        ],
+    ];
+}
 }

@@ -43,10 +43,10 @@ export default function Contratos({ contratos }: Props) {
                     <p className="text-gray-500">No tienes contratos aún.</p>
                 ) : (
                     <div className="overflow-x-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <table className="w-full min-w-[600px] divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
+                        <table className="w-full min-w-150 divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
                             <thead>
                                 <tr className="bg-gray-100 dark:bg-gray-800">
-                                    <th className="px-4 py-2 text-left text-sm font-medium">NºResolución</th>
+                                    <th className="px-4 py-2 text-left text-sm font-medium">Código contrato</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">NºExpediente</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">Descripción</th>
                                     <th className="px-4 py-2 text-left text-sm font-medium">Estado</th>

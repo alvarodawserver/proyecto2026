@@ -72,6 +72,17 @@ export default function Dashboard() {
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Tipos de contratos</h3>
                         <p className="text-sm text-gray-500">Gestión de los tipos de contratos.</p>
                     </Link>
+
+                    <Link
+                        href="/contratos/control-mando"
+                        className="group flex flex-col items-center text-center transition-transform hover:scale-105"
+                    >
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-green-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                            <ClipboardList className="size-12 text-purple-600" />
+                        </div>
+                        <h3 className="text-md font-semibold text-gray-900 dark:text-white">Control de mando</h3>
+                        <p className="text-sm text-gray-500">Control de mando.</p>
+                    </Link>
                 </div>
 
             </div>

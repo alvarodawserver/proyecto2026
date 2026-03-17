@@ -60,6 +60,16 @@ Route::middleware(['force.login'])->group(function(){
     Route::post('/tipos/store',[TipoController::class,'store'])->name('tipos.store');
     Route::delete('/tipos/{tipo}/destroy',[TipoController::class,'destroy'])->name('tipos.destroy');
 
+
+    Route::middleware(['auth'])->group(function(){
+        Route::get('/contratos/control-mando', [ContratoController::class, 'vistaControlMando'])
+        ->name('contratos.controlMando');
+        Route::get('/api/contratos/control-mando', [ContratoController::class, 'controlMando'])->name('control.data');
+
+    });
+
+
+
 });
 
 

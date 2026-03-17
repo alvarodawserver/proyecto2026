@@ -52,10 +52,8 @@ class EnviarAlertasContratos extends Command
             try {
                 Mail::to($usuario->email)->send(new AlertaFormalizacionContrato($contrato));
                 $this->info("Email enviado para el expediente: {$contrato->n_expediente}");
-
                 // OPCIONAL: Si solo se quiere avisar UNA VEZ y ya:
                 // $contrato->update(['avisado' => true]);
-
             } catch (\Exception $e) {
                 $this->error("Error enviando a {$usuario->email}: " . $e->getMessage());
             }

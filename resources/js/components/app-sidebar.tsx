@@ -14,13 +14,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard} from '@/routes';
-import { movimientos} from '@/routes';
-import { contratos} from '@/routes';
-import {desactivados} from '@/routes';
-import {procedimientos} from '@/routes';
-import {tipos} from '@/routes';
 import type { NavItem } from '@/types';
-import Can from '@/components/can';
 import {usePage} from '@inertiajs/react';
 
 

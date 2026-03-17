@@ -62,7 +62,7 @@ export default function Show({ contrato }: Props) {
                 </div>
 
                 <div className="overflow-hidden rounded-lg border border-sidebar-border/50">
-                    <table className="w-full min-w-[600px] table-fixed divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
+                    <table className="w-full min-w-150 table-fixed divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
                         <thead className="bg-gray-50 dark:bg-gray-800/50">
                             <tr>
                                 <th colSpan={2} className="px-4 py-2 text-left font-bold">Datos del contrato</th>
@@ -92,7 +92,7 @@ export default function Show({ contrato }: Props) {
                                 onClick={() => setMostrarDetalles(!mostrarDetalles)}
                             >
                                 <td colSpan={2} className="px-4 py-3 font-bold text-blue-600 dark:text-blue-400">
-                                    {mostrarDetalles ? '▼ Ocultar detalles adicionales' : '▶ Mostrar más detalles'}
+                                    {mostrarDetalles ? '▼ Ocultar detalles adicionales' : 'Mostrar más detalles'}
                                 </td>
                             </tr>
 

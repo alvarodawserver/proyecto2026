@@ -35,12 +35,12 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-        $rolJefe = DB::table('per_roles')->where('per_roles_nombre', 'Jefe de Servicio')->first();
+        $usuarioLogueado = Auth::user();
         $unidad_promotora = DB::table('per_distribucion')
-        ->join('departamentos','per_distribucion.per_distribucion_departamento','=','departamentos.id')
-        ->where('per_distribucion_empleado',Auth::id())
-        ->where('per_distribucion_rol',$rolJefe)
-        ->value('departamentos.nombre');
+            ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+            ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id) // <--- Cambio clave
+            ->where('per_distribucion_dpto_principal', true)
+            ->value('departamentos.nombre');
 
 
         $validated = $request->validate([
@@ -91,8 +91,6 @@ class ContratoController extends Controller
             'tipos' => Tipo::all(),
             'procedimientos' => Adjudicacione::all()
         ]);
-
-
     }
 
     /**
@@ -143,6 +141,56 @@ class ContratoController extends Controller
         return Inertia::render('Contratos/movimientos',['contrato' => $contrato]);
     }
 
+
+    public function vistaControlMando()
+    {
+
+        $todos_los_departamentos = DB::table('departamentos')
+            ->select('id', 'nombre')
+            ->get();
+
+        return Inertia::render('Contratos/control-mando', [
+            'todos_los_departamentos' => $todos_los_departamentos
+        ]);
+    }
+
+    public function controlMando(Request $request)
+    {
+    $usuarioLogueado = Auth::user();
+
+
+    $departamentoUsuario = DB::table('per_distribucion')
+        ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+        ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
+        ->where('per_distribucion_dpto_principal', true)
+        ->value('departamentos.nombre');
+
+    $query = Contrato::query();
+
+
+    $deptoUpper = mb_strtoupper($departamentoUsuario, 'UTF-8');
+
+    if ($deptoUpper === 'CONTRATACIÓN' || $deptoUpper === 'CONTRATACION') {
+
+        if ($request->filled('departamento')) {
+            $query->where('unidad_promotora', $request->departamento);
+        }
+    } elseif ($departamentoUsuario) {
+        $query->where('unidad_promotora', $departamentoUsuario);
+    } else {
+        return response()->json([]);
+    }
+
+    if ($request->filled('desde')) {
+        $query->whereDate('fecha_inicio', '>=', $request->desde);
+    }
+    if ($request->filled('hasta')) {
+        $query->whereDate('fecha_inicio', '<=', $request->hasta);
+    }
+
+    return response()->json($query->get());
+}
+
     public function formalizar($id){
         $contrato = Contrato::findOrFail($id);
         $contrato->estado_alerta = 'formalizado';
@@ -156,7 +204,7 @@ class ContratoController extends Controller
         if (!$contrato->avisado) {
             $contrato->update(['avisado' => true]);
         }
-        
+
         return view('emails.confirmacion_alerta',['expediente' => $contrato->n_expediente]);
     }
 }

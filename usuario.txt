@@ -1,0 +1,63 @@
+$empleado = new App\Models\Empleado;
+$empleado->dni = '87654321Z';
+$empleado->nombre = 'JEFE CONTRATACION';
+$empleado->sexo = 'Hombre';
+$empleado->alta = true;
+$empleado->empresa_id = 5;
+$empleado->save();
+
+$usuario = new App\Models\Usuario;
+$usuario->nombre = '87654321Z';
+$usuario->email = 'contratacion@ejemplo.com';
+$usuario->password = Hash::make('12345678');
+$usuario->empleado_id = $empleado->id;
+$usuario->save();
+
+use Illuminate\Support\Facades\DB;
+
+// Buscamos el ID dinámicamente
+$idContratacion = DB::table('departamentos')
+    ->where('nombre', 'LIKE', '%CONTRATAC%')
+    ->value('id');
+
+// Insertamos usando esa variable
+if ($idContratacion) {
+    DB::table('per_distribucion')->insert([
+        'per_distribucion_empleado'       => $empleado->id,
+        'per_distribucion_departamento'   => $idContratacion,
+        'per_distribucion_rol'            => 1,
+        'per_distribucion_dpto_principal' => true
+    ]);
+    echo "Usuario creado y asignado a CONTRATACIÓN (ID: $idContratacion)";
+} else {
+    echo "ERROR: No se encontró ningún departamento que contenga 'CONTRATACIÓN'";
+}
+
+____________________________
+
+// 1. Crear el Empleado
+$empleado = new App\Models\Empleado;
+$empleado->dni = '12345678X';
+$empleado->nombre = 'NUEVO JEFE SERVICIO';
+$empleado->sexo = 'Hombre';
+$empleado->alta = true;
+$empleado->empresa_id = 5;
+$empleado->save();
+
+// 2. Crear el Usuario vinculado
+$usuario = new App\Models\Usuario;
+$usuario->nombre = '12345678X';
+$usuario->email = 'jefe@ejemplo.com';
+$usuario->password = Hash::make('12345678');
+$usuario->empleado_id = $empleado->id;
+$usuario->save();
+
+// 3. Crear la distribución (Dpto: ID=2, Rol: Jefe=1)
+use Illuminate\Support\Facades\DB;
+
+DB::table('per_distribucion')->insert([
+     'per_distribucion_empleado'       => $empleado->id,
+     'per_distribucion_departamento'   => 2,
+     'per_distribucion_rol'            => 1,
+     'per_distribucion_dpto_principal' => true
+]);

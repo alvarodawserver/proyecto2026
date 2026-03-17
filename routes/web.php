@@ -63,12 +63,12 @@ Route::middleware(['force.login'])->group(function(){
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/control_mando', function () {
-        return inertia('control_mando');
-    })->name('control');
+    Route::get('/contratos/control-mando', [ContratoController::class, 'vistaControlMando'])
+    ->name('contratos.controlMando');
 
 
     Route::get('/api/contratos/control-mando', [ContratoController::class, 'controlMando'])->name('control.data');
+
 });
 
 

@@ -14,14 +14,13 @@ class Contrato extends Model
         'n_expediente', 'descripcion', 'responsable', 'importe_estimado',
     'tipo_procedimiento', 'fecha_prevista', 'fecha_inicio',
     'unidad_promotora', 'duracion_estimada', 'estado_expediente',
-    'importe_final', 'tipos_id', 'created_by'
+    'importe_final', 'tipos_id', 'created_by', 'id_contrato', 'n_resolucion'
     ];
 
 
     protected $casts = [
     'fecha_prevista' => 'date',
     'fecha_inicio' => 'date',
-    'duracion_estimada' => 'date',
     'alerta_vencimiento' => 'datetime',
     ];
 
@@ -60,7 +59,7 @@ class Contrato extends Model
     public function getFechaPrevistaFAttribute() { return $this->format($this->fecha_prevista); }
     public function getAlertaVencimientoFAttribute() { return $this->format($this->alerta_vencimiento); }
 
-    public function getUnidadPromotoraNombreAttribute() { return $this->format($this->usuario?->empleado?->departamento); }
+    public function getUnidadPromotoraNombreAttribute() { return $this->usuario?->empleado?->departamento; }
 
 
 

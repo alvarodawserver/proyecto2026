@@ -48,7 +48,7 @@ export function AppSidebar() {
         },
         {
             title: 'Control de Mando',
-            href: '/control_mando',
+            href: '/contratos/control-mando',
         },
         {
             title: 'Movimientos',

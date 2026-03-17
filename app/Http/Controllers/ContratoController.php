@@ -35,13 +35,14 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-        $rolJefe = DB::table('per_roles')->where('per_roles_nombre', 'Jefe de Servicio')->first();
-        $unidad_promotora = DB::table('per_distribucion')
-        ->join('departamentos','per_distribucion.per_distribucion_departamento','=','departamentos.id')
-        ->where('per_distribucion_empleado',Auth::id())
-        ->where('per_distribucion_rol',$rolJefe)
-        ->value('departamentos.nombre');
+        $usuarioLogueado = Auth::user();
 
+        // CORRECCIÓN: Usamos empleado_id, no Auth::id()
+        $unidad_promotora = DB::table('per_distribucion')
+            ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+            ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id) // <--- Cambio clave
+            ->where('per_distribucion_dpto_principal', true)
+            ->value('departamentos.nombre');
 
         $validated = $request->validate([
             'n_expediente' => 'required|max:255',
@@ -58,12 +59,12 @@ class ContratoController extends Controller
             'duracion_estimada' => 'required',
         ]);
 
-       Contrato::create(array_merge($validated, [
+        Contrato::create(array_merge($validated, [
             'created_by' => Auth::id(),
             'estado_expediente' => 'Activo',
-            'unidad_promotora' => $unidad_promotora ?? ''
+            // Si no encuentra depto, ponemos 'SIN DEP' para saber que falló
+            'unidad_promotora' => $unidad_promotora ?? 'SIN DEP'
         ]));
-
 
         return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');
     }
@@ -151,37 +152,52 @@ class ContratoController extends Controller
         return "Contrato formalizado con éxito. Puedes cerrar esta ventana.";
     }
 
+    public function vistaControlMando()
+{
+    // Obtenemos los departamentos como objetos (id y nombre) para el select
+    $todos_los_departamentos = DB::table('departamentos')
+        ->select('id', 'nombre')
+        ->get();
+
+    return Inertia::render('Contratos/control-mando', [
+        'todos_los_departamentos' => $todos_los_departamentos
+    ]);
+}
     public function controlMando(Request $request)
 {
-    $idLaravel = Auth::id();
+    $usuarioLogueado = Auth::user();
 
-    $rolJefe = DB::table('per_roles')
-        ->where('per_roles_nombre', 'Jefe de servicio')
-        ->first();
-
-    $miDepartamento = DB::table('per_distribucion')
+    // Obtenemos el departamento del empleado
+    $departamentoUsuario = DB::table('per_distribucion')
         ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
-        ->where('per_distribucion_empleado', $idLaravel)
-        ->where('per_distribucion_rol', $rolJefe->id ?? null)
+        ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
+        ->where('per_distribucion_dpto_principal', true)
         ->value('departamentos.nombre');
 
     $query = Contrato::query();
 
-    if ($miDepartamento !== 'CONTRATACIÓN') {
-        $query->where('unidad_promotora', $miDepartamento);
+    // Normalizamos a mayúsculas para comparar
+    $deptoUpper = mb_strtoupper($departamentoUsuario, 'UTF-8');
+
+    if ($deptoUpper === 'CONTRATACIÓN' || $deptoUpper === 'CONTRATACION') {
+        // Si se ha seleccionado un departamento específico en el filtro
+        if ($request->filled('departamento')) {
+            $query->where('unidad_promotora', $request->departamento);
+        }
+    } elseif ($departamentoUsuario) {
+        $query->where('unidad_promotora', $departamentoUsuario);
+    } else {
+        return response()->json([]);
     }
 
-    if ($request->has('desde') && $request->desde) {
+    if ($request->filled('desde')) {
         $query->whereDate('fecha_inicio', '>=', $request->desde);
     }
-
-    if ($request->has('hasta') && $request->hasta) {
+    if ($request->filled('hasta')) {
         $query->whereDate('fecha_inicio', '<=', $request->hasta);
     }
 
-    $contratos = $query->orderBy('fecha_inicio', 'desc')->get();
-
-    return response()->json($contratos);
+    return response()->json($query->get());
 }
 }
 

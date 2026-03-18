@@ -1,5 +1,6 @@
+import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import type { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 
 interface ContratoForm {
@@ -12,9 +13,9 @@ interface ContratoForm {
     duracion_estimada: string;
 }
 
-
 interface Contrato extends ContratoForm {
     id: number;
+    n_expediente: string; // Añadido para el título
 }
 
 interface Procedimiento {
@@ -33,10 +34,8 @@ interface Props {
     tipos: Tipo[];
 }
 
-
-
 export default function Edit({ contrato, tipos, procedimientos }: Props) {
-    const { data, setData, put, errors } = useForm({
+    const { data, setData, put, errors, processing } = useForm({
         descripcion: contrato.descripcion || '',
         responsable: contrato.responsable || '',
         tipos_id: contrato.tipos_id || '',
@@ -47,138 +46,168 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
     });
 
     const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Contratos',
-            href: '/contratos',
-        },
-        {
-            title: 'Editar Contrato',
-            href: `/contratos/edit/${contrato.id}`,
-        },
+        { title: 'Contratos', href: '/contratos' },
+        { title: `Expediente ${contrato.n_expediente}`, href: `/contratos/${contrato.id}` },
+        { title: 'Editar Datos', href: '#' },
     ];
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
-
-        if (contrato && contrato.id) {
-            put(`/contratos/update/${contrato.id}`);
-        } else {
-            console.error("No se pudo encontrar el ID del contrato");
-        }
+        put(`/contratos/update/${contrato.id}`);
     }
-    console.log(errors);
+
+    const inputClass = (field: keyof typeof data) => `
+        w-full border p-2 text-[11px] uppercase focus:outline-none focus:ring-1 focus:ring-[#e96b7d] dark:bg-gray-800
+        ${errors[field] ? 'border-red-500 bg-red-50' : 'border-gray-300 focus:border-[#e96b7d] dark:border-gray-700'}
+    `;
+
+    const labelClass = "text-[10px] font-bold text-gray-700 uppercase mb-1 flex items-center gap-1";
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="flex flex-1 flex-col gap-4 p-4">
-                <div className="rounded-xl border border-sidebar-border/70 bg-white p-6 shadow-sm dark:bg-gray-900">
-                    <h2 className="mb-6 text-lg font-bold">Datos del Contrato</h2>
+            <Head title={`Editar ${contrato.n_expediente}`} />
 
-                    <form onSubmit={submit} className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="descripcion" className="text-sm font-medium">Descripción</label>
-                            <input
+            {/* Banner Institucional con ID de registro */}
+            <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase flex justify-between items-center">
+                <span>Modificar Expediente: {contrato.n_expediente}</span>
+                <span className="text-[10px] bg-black/20 px-2 py-1 rounded">ID: {contrato.id}</span>
+            </div>
+
+            <div className="flex flex-1 flex-col gap-4 p-4 text-[11px]">
+
+                <div className="mb-2">
+                    <Link
+                        href={`/contratos/control-mando`}
+                        className="text-gray-500 hover:text-[#e96b7d] font-bold uppercase text-[10px] flex items-center gap-1 transition-colors"
+                    >
+                        ← Cancelar y volver
+                    </Link>
+                </div>
+
+                <div className="border border-gray-300 bg-white p-6 shadow-sm">
+                    <form onSubmit={submit} className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
+
+                        {/* Descripción ocupa las dos columnas */}
+                        <div className="md:col-span-2 flex flex-col">
+                            <label htmlFor="descripcion" className={labelClass}>Descripción del objeto del contrato</label>
+                            <textarea
                                 id="descripcion"
-                                type="text"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                                rows={3}
+                                className={inputClass('descripcion') + ' normal-case'}
                                 value={data.descripcion}
                                 onChange={e => setData('descripcion', e.target.value)}
                             />
-                            {errors.descripcion && <div className="text-red-500 text-xs">{errors.descripcion}</div>}
+                            {errors.descripcion && <span className="text-[10px] text-red-600 font-bold mt-1">{errors.descripcion}</span>}
                         </div>
 
-                         <div className="flex flex-col gap-2">
-                            <label htmlFor="tipos_id" className="text-sm font-medium">Tipo de contrato</label>
-                            <select name="tipos_id" id="tipos_id"
-                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                            value={data.tipos_id}
-                            onChange={e => setData('tipos_id',e.target.value)}>
-                                    <option value="">Selecciona un tipo de contrato...</option>
-                                    {tipos.map((tip) => (
-                                        <option key={tip.id} value={tip.id}>
-                                            {tip.tipo_contrato}
-                                        </option>
-                                    ))}
-                            </select>
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="tipo_procedimiento" className="text-sm font-medium">Proceso de adjudicación</label>
-                            <select name="tipo_procedimiento" id="tipo_procedimiento"
-                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                            value={data.tipo_procedimiento}
-                            onChange={e => setData('tipo_procedimiento',e.target.value)}>
-                                <option value="">Seleccione un proceso...</option>
-                                {procedimientos.map((proc)=>(
-                                    <option key={proc.id} value={proc.id}>
-                                        {proc.tipo_procedimiento}
-                                    </option>
+                        <div className="flex flex-col">
+                            <label htmlFor="tipos_id" className={labelClass}>Tipo de contrato</label>
+                            <select
+                                name="tipos_id"
+                                id="tipos_id"
+                                className={inputClass('tipos_id')}
+                                value={data.tipos_id}
+                                onChange={e => setData('tipos_id', e.target.value)}
+                            >
+                                <option value="">-- SELECCIONAR TIPO --</option>
+                                {tipos.map((tip) => (
+                                    <option key={tip.id} value={tip.id}>{tip.tipo_contrato}</option>
                                 ))}
                             </select>
                         </div>
 
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="responsable" className="text-sm font-medium">Responsable del contrato</label>
+                        <div className="flex flex-col">
+                            <label htmlFor="tipo_procedimiento" className={labelClass}>Proceso de adjudicación</label>
+                            <select
+                                name="tipo_procedimiento"
+                                id="tipo_procedimiento"
+                                className={inputClass('tipo_procedimiento')}
+                                value={data.tipo_procedimiento}
+                                onChange={e => setData('tipo_procedimiento', e.target.value)}
+                            >
+                                <option value="">-- SELECCIONAR PROCESO --</option>
+                                {procedimientos.map((proc) => (
+                                    <option key={proc.id} value={proc.id}>{proc.tipo_procedimiento}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label htmlFor="responsable" className={labelClass}>Responsable del contrato</label>
                             <input
                                 id="responsable"
                                 type="text"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                                className={inputClass('responsable')}
                                 value={data.responsable}
                                 onChange={e => setData('responsable', e.target.value)}
                             />
                         </div>
 
+                        <div className="flex flex-col">
+                            <label htmlFor="importe_final" className={labelClass}>Importe de adjudicación</label>
+                            <div className="relative">
+                                <input
+                                    id="importe_final"
+                                    type="number"
+                                    step="0.01"
+                                    className={inputClass('importe_final')}
+                                    value={data.importe_final}
+                                    onChange={e => setData('importe_final', e.target.value)}
+                                />
+                                <span className="absolute right-3 top-2 text-gray-400 font-bold">€</span>
+                            </div>
+                        </div>
 
-
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="fecha_inicio" className="text-sm font-medium">Fecha de inicio</label>
+                        <div className="flex flex-col">
+                            <label htmlFor="fecha_inicio" className={labelClass}>Fecha de inicio efectiva</label>
                             <input
                                 id="fecha_inicio"
                                 type="date"
-                                className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
+                                className={inputClass('fecha_inicio')}
                                 value={data.fecha_inicio}
                                 onChange={e => setData('fecha_inicio', e.target.value)}
                             />
                         </div>
 
-
-                        <div className="flex flex-col gap-2">
-                            <label htmlFor="duracion_estimada" className="text-sm font-medium">Duración estimada</label>
-                            <select name="duracion_estimada" id="duracion_estimada"
-                            className="rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
-                            value={data.duracion_estimada}
-                            onChange={e => setData('duracion_estimada',e.target.value)}>
-                                <option value="">Seleccione cuanto años va a durar</option>
-                                    <option key="1" value="1 años">
-                                        1 año
-                                    </option>
-
-                                    <option key="2" value="2 años">
-                                        2 años
-                                    </option>
-
-                                    <option key="3" value="3 años">
-                                        3 años
-                                    </option>
-
-                                    <option key="4" value="4 años">
-                                        4 años
-                                    </option>
+                        <div className="flex flex-col">
+                            <label htmlFor="duracion_estimada" className={labelClass}>Vigencia / Duración</label>
+                            <select
+                                name="duracion_estimada"
+                                id="duracion_estimada"
+                                className={inputClass('duracion_estimada')}
+                                value={data.duracion_estimada}
+                                onChange={e => setData('duracion_estimada', e.target.value)}
+                            >
+                                <option value="">-- SELECCIONAR --</option>
+                                <option value="1 años">1 AÑO</option>
+                                <option value="2 años">2 AÑOS</option>
+                                <option value="3 años">3 AÑOS</option>
+                                <option value="4 años">4 AÑOS</option>
                             </select>
                         </div>
 
-                        <div className="md:col-span-2 mt-4">
+                        {/* Botones de acción */}
+                        <div className="md:col-span-2 border-t border-gray-100 pt-6 flex gap-3 justify-end">
+                            <Link
+                                href={`/contratos/${contrato.id}`}
+                                className="bg-gray-100 text-gray-600 px-6 py-2 rounded-sm font-bold uppercase hover:bg-gray-200 border border-gray-300 transition-colors"
+                            >
+                                Descartar Cambios
+                            </Link>
                             <button
                                 type="submit"
-                                className="w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                                disabled={processing}
+                                className="bg-[#e96b7d] text-white px-10 py-2 rounded-sm font-bold uppercase hover:bg-[#d65a6c] shadow-md transition-all disabled:opacity-50"
                             >
-                                Finalizar Registro
+                                {processing ? 'Actualizando...' : 'Actualizar Expediente'}
                             </button>
                         </div>
 
+                        {/* Alerta de errores */}
                         {Object.keys(errors).length > 0 && (
-                            <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md">
-                                Hay errores en el formulario. Revisa los campos.
+                            <div className="md:col-span-2 mt-4 p-3 bg-red-50 border border-red-200 text-red-700 flex items-center gap-2">
+                                <span className="font-bold text-[10px] uppercase">⚠️ Errores en la edición:</span>
+                                <span className="text-[10px]">Por favor, revise los campos resaltados en rojo.</span>
                             </div>
                         )}
                     </form>

@@ -69,6 +69,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/api/contratos/control-mando', [ContratoController::class, 'controlMando'])->name('control.data');
 
+    // Fíjate que el patrón coincida con la URL manual que pusimos en React
+Route::get('/contratos/{id}/pdf', [ContratoController::class, 'generarPdf']);
+
 });
 
 

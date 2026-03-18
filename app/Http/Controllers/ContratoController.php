@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Adjudicacione;
 use App\Models\Contrato;
 use App\Models\Tipo;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -198,6 +199,23 @@ class ContratoController extends Controller
     }
 
     return response()->json($query->get());
+}
+public function generarPdf(Request $request, $id)
+{
+    // 1. Buscamos el contrato con las relaciones que usas en el Show
+    $contrato = Contrato::with(['usuario', 'tipo', 'tipo_procedimiento'])->findOrFail($id);
+
+    // 2. Capturamos el parámetro 'tipo' que enviamos desde React
+    $modo = $request->query('tipo', 'basico');
+
+    // 3. Cargamos la vista y le pasamos las variables
+    $pdf = Pdf::loadView('pdf.contrato', compact('contrato', 'modo'));
+
+    // 4. Configuración opcional de papel
+    $pdf->setPaper('a4', 'portrait');
+
+    // 5. Devolvemos el PDF (stream para abrir en pestaña, download para descargar directo)
+    return $pdf->stream("contrato_{$contrato->n_expediente}.pdf");
 }
 }
 

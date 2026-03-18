@@ -170,21 +170,24 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                         </div>
 
                         <div className="flex flex-col">
-                            <label htmlFor="duracion_estimada" className={labelClass}>Vigencia / Duración</label>
-                            <select
-                                name="duracion_estimada"
-                                id="duracion_estimada"
-                                className={inputClass('duracion_estimada')}
-                                value={data.duracion_estimada}
-                                onChange={e => setData('duracion_estimada', e.target.value)}
-                            >
-                                <option value="">-- SELECCIONAR --</option>
-                                <option value="1 años">1 AÑO</option>
-                                <option value="2 años">2 AÑOS</option>
-                                <option value="3 años">3 AÑOS</option>
-                                <option value="4 años">4 AÑOS</option>
-                            </select>
-                        </div>
+    <label htmlFor="duracion_estimada" className={labelClass}>Vigencia / Duración</label>
+    <select
+        id="duracion_estimada"
+        name="duracion_estimada"
+        title="Seleccione la duración del contrato" // Añadido para accesibilidad (axe/forms)
+        className={inputClass('duracion_estimada')}
+        value={data.duracion_estimada || ''} // Asegura que nunca sea null
+        onChange={e => setData('duracion_estimada', e.target.value)}
+    >
+        <option value="">-- SELECCIONAR --</option>
+        {/* Asegúrate de que estos valores coincidan EXACTAMENTE con tu base de datos */}
+        <option value="1 años">1 AÑO</option>
+        <option value="2 años">2 AÑOS</option>
+        <option value="3 años">3 AÑOS</option>
+        <option value="4 años">4 AÑOS</option>
+    </select>
+    {errors.duracion_estimada && <span className="text-[10px] text-red-600 font-bold mt-1">{errors.duracion_estimada}</span>}
+</div>
 
                         {/* Botones de acción */}
                         <div className="md:col-span-2 border-t border-gray-100 pt-6 flex gap-3 justify-end">

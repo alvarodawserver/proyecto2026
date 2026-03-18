@@ -108,7 +108,7 @@ class ContratoController extends Controller
             'importe_final' => 'required|numeric|min:0',
             'tipo_procedimiento' => 'required|max:255',
             'fecha_inicio' => 'nullable|date',
-            'duracion_estimada' => 'required|date|after:fecha_inicio',
+            'duracion_estimada' => 'required',
         ]);
 
         $contrato->update($validated);
@@ -139,11 +139,28 @@ class ContratoController extends Controller
         return redirect()->route('contratos')->with('success','El contrato se ha recuperado con éxito');
     }
 
-    public function verMovimiento(Contrato $contrato){
+    public function verMovimiento(Request $request, $id)
+{
+    // 1. Buscamos el contrato con sus movimientos filtrados
+    $contrato = Contrato::with(['movimientos' => function($query) use ($request) {
+        if ($request->actuacion) {
+            $query->where('actuacion', $request->actuacion);
+        }
+        if ($request->fecha_desde) {
+            $query->whereDate('fecha_movimiento', '>=', $request->fecha_desde);
+        }
+        if ($request->fecha_hasta) {
+            $query->whereDate('fecha_movimiento', '<=', $request->fecha_hasta);
+        }
+        $query->orderBy('fecha_movimiento', 'desc');
+    }, 'movimientos.usuario'])->findOrFail($id);
 
-        $contrato->load(['movimientos', 'usuario']);
-        return Inertia::render('Contratos/movimientos',['contrato' => $contrato]);
-    }
+    // 2. Retornamos a la vista
+    return Inertia::render('Contratos/movimientos', [
+        'contrato' => $contrato,
+        'filters' => $request->only(['actuacion', 'fecha_desde', 'fecha_hasta'])
+    ]);
+}
 
     public function formalizar($id){
         $contrato = Contrato::findOrFail($id);

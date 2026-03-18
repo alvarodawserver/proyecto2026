@@ -5,26 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Movimiento;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class MovimientoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $movimientos = Movimiento::with([
-        'usuario',
-        'contrato' => function($query) {
-            $query->withTrashed();
+        $query = Movimiento::with(['usuario', 'contrato']);
+
+        if ($request->filled('actuacion')) {
+            $query->where('actuacion', $request->actuacion);
         }
-        ])->orderBy('fecha_movimiento', 'desc')->get();
 
-        return Inertia::render('movimientos',['movimientos' => $movimientos]);
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_movimiento', '>=', $request->fecha_desde);
+        }
 
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_movimiento', '<=', $request->fecha_hasta);
+        }
+
+        $movimientos = $query->orderBy('fecha_movimiento', 'desc')->get();
+
+        return Inertia::render('movimientos', [
+            'movimientos' => $movimientos,
+            'filters' => $request->only(['actuacion', 'fecha_desde', 'fecha_hasta']),
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

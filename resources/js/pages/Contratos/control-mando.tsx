@@ -18,6 +18,7 @@ type Contrato = {
     duracion_estimada: string;
     estado_expediente: string;
     todos_los_departamentos?: string[]; // Agregado para el select de departamentos
+    user_rol?: number;           // <--- Nuevo
 };
 
 interface Departamento {
@@ -36,13 +37,20 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const ControlMando = ({ todos_los_departamentos = [] }: { todos_los_departamentos?: Departamento[] }) => {
+const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_departamentos?: Departamento[], user_rol?: number }) => {
     const { auth } = usePage().props as any;
     const user = auth.user;
 
     const miDepartamentoRaw = user?.empleado?.departamento_nombre || user?.departamento || '';
     const miDepartamento = miDepartamentoRaw.toUpperCase();
+    const miRolRaw = user?.empleado?.per_distribucion?.per_distribucion_rol || user?.rol || '';
     const esContratacion = miDepartamento.includes('CONTRATACIÓN') || miDepartamento.includes('CONTRATACION');
+    const esJefe = user_rol == 1;
+
+    // Debug para que lo veas en la consola
+    console.log("Rol recibido por Prop:", user_rol);
+    console.log("¿Es jefe?", esJefe);
+
 
     const [datos, setDatos] = useState<Contrato[]>([]);
     const [loading, setLoading] = useState(true);
@@ -111,7 +119,7 @@ const ControlMando = ({ todos_los_departamentos = [] }: { todos_los_departamento
                     </div>
 
 
-                    {esContratacion && (
+                    {esContratacion && esJefe && (
                         <div className="flex items-center gap-2 border-l border-gray-300 pl-4">
                             <label htmlFor="unidad-promotora" className="text-xs font-bold text-gray-700 dark:text-gray-300">UNIDAD:</label>
                             <select

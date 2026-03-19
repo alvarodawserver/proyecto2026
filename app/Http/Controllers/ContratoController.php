@@ -172,13 +172,25 @@ class ContratoController extends Controller
 
     public function vistaControlMando()
 {
-    // Obtenemos los departamentos como objetos (id y nombre) para el select
+    $usuarioLogueado = Auth::user();
+
+    // Obtenemos el rol y el nombre del departamento en una sola consulta
+    $distribucion = DB::table('per_distribucion')
+        ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+        ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
+        ->where('per_distribucion_dpto_principal', true)
+        ->select('per_distribucion_rol', 'departamentos.nombre as depto_nombre')
+        ->first();
+
     $todos_los_departamentos = DB::table('departamentos')
         ->select('id', 'nombre')
         ->get();
 
     return Inertia::render('Contratos/control-mando', [
-        'todos_los_departamentos' => $todos_los_departamentos
+        'todos_los_departamentos' => $todos_los_departamentos,
+        // Enviamos el rol y el depto detectado a la vista inicial
+        'user_rol' => $distribucion->per_distribucion_rol ?? null,
+        'user_depto_nombre' => $distribucion->depto_nombre ?? ''
     ]);
 }
     public function controlMando(Request $request)

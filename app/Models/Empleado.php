@@ -20,4 +20,9 @@ class Empleado extends Model
     {
         return $this->belongsTo(Departamento::class, 'departamento_id');
     }
+
+    public function per_distribuciones()
+    {
+        return $this->hasMany(Per_distribucion::class, 'per_distribucion_empleado');
+    }
 }

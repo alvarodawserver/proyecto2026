@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { contratos as contratoRoute } from '@/routes';
@@ -17,6 +17,7 @@ type Contrato = {
     unidad_promotora: string;
     duracion_estimada: string;
     estado_expediente: string;
+    n_resolucion:string;
     todos_los_departamentos?: string[]; // Agregado para el select de departamentos
 };
 
@@ -36,12 +37,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-
 const ControlMando = ({ todos_los_departamentos = [] }: { todos_los_departamentos?: Departamento[] }) => {
     const { auth } = usePage().props as any;
     const user = auth.user;
 
-    // Normalizamos el nombre para que no falle por una tilde o minúscula
     const miDepartamentoRaw = user?.empleado?.departamento_nombre || user?.departamento || '';
     const miDepartamento = miDepartamentoRaw.toUpperCase();
     const esContratacion = miDepartamento.includes('CONTRATACIÓN') || miDepartamento.includes('CONTRATACION');
@@ -74,111 +73,159 @@ const ControlMando = ({ todos_los_departamentos = [] }: { todos_los_departamento
         fetchContratos();
     }, [fechaInicio, fechaFin, departamentoFiltro]);
 
+    const descargarPDF = (id: number, tipo: 'basico' | 'completo') => {
+        window.open(`/contratos/${id}/pdf?tipo=${tipo}`, '_blank');
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Control de Mando" />
-            <div className="flex flex-col gap-6 p-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-                        Control de Mando
-                    </h1>
 
-                    <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-gray-800 p-2 px-4 rounded-xl shadow-sm border border-gray-200">
+            <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm">
+                Control de Mando
+            </div>
 
-                    {/* Filtro de Fechas */}
+            <div className="flex flex-col gap-4 p-4">
+
+                {/* Barra de Filtros */}
+                <div className="flex flex-wrap items-center gap-4 bg-gray-50 dark:bg-gray-800 p-3 border border-gray-300 rounded shadow-sm">
                     <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1">
-                            <label htmlFor="fecha-inicio" className="text-sm font-medium text-gray-700 dark:text-gray-300">Desde:</label>
-                            <input
-                                id="fecha-inicio"
-                                title="Seleccionar fecha de inicio"
-                                placeholder="dd/mm/aaaa"
-                                type="date"
-                                className="text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                value={fechaInicio}
-                                onChange={(e) => setFechaInicio(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                            <label htmlFor="fecha-fin" className="text-sm font-medium text-gray-700 dark:text-gray-300">Hasta:</label>
-                            <input
-                                id="fecha-fin"
-                                title="Seleccionar fecha de fin"
-                                placeholder="dd/mm/aaaa"
-                                type="date"
-                                className="text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                value={fechaFin}
-                                onChange={(e) => setFechaFin(e.target.value)}
-                            />
-                        </div>
-                </div>
-            </div>
-        {/* SELECT DE DEPARTAMENTOS */}
-        {esContratacion && (
-            <div className="flex items-center gap-2 border-l pl-3 border-gray-200">
-                <label htmlFor="select-unidad" className="text-sm font-medium text-gray-700 dark:text-gray-300">Unidad:</label>
-                <select
-                    id="select-unidad"
-                    title="Filtrar por unidad promotora"
-                    className="text-sm border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    value={departamentoFiltro}
-                    onChange={(e) => setDepartamentoFiltro(e.target.value)}
-                >
-                    <option value="">Todas las unidades</option>
-                    {todos_los_departamentos?.map((dept) => (
-                        <option key={dept.id} value={dept.nombre}>
-                            {dept.nombre}
-                        </option>
-                    ))}
-                </select>
-            </div>
-    )}
-
-                </div>
-
-                {/* TABLA (Misma estructura pero con retoques de diseño) */}
-                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden border border-gray-100 dark:border-gray-800">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-                                <tr>
-                                    <th className="px-6 py-4 text-xs font-semibold uppercase text-gray-500">Nº Expediente</th>
-                                    <th className="px-6 py-4 text-xs font-semibold uppercase text-gray-500">Descripción</th>
-                                    <th className="px-6 py-4 text-xs font-semibold uppercase text-gray-500">Unidad</th>
-                                    <th className="px-6 py-4 text-xs font-semibold uppercase text-gray-500">Fecha Inicio</th>
-                                    <th className="px-6 py-4 text-xs font-semibold uppercase text-gray-500">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                                {loading ? (
-                                    <tr><td colSpan={5} className="p-10 text-center text-gray-400 italic">Consultando expedientes...</td></tr>
-                                ) : datos.length > 0 ? (
-                                    datos.map((contrato) => (
-                                        <tr key={contrato.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                            <td className="px-6 py-4 text-sm font-bold text-blue-600 dark:text-blue-400">{contrato.n_expediente}</td>
-                                            <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{contrato.descripcion}</td>
-                                            <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                                <span className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs">{contrato.unidad_promotora}</span>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{contrato.fecha_inicio_f}</td>
-                                            <td className="px-6 py-4 text-sm">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold uppercase ${
-                                                    contrato.estado_expediente === 'Activo'
-                                                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                                                    : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                                                }`}>
-                                                    {contrato.estado_expediente}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr><td colSpan={5} className="p-10 text-center text-gray-400">No hay datos que coincidan con los filtros.</td></tr>
-                                )}
-                            </tbody>
-                        </table>
+                        <label htmlFor="fecha-desde" className="text-xs font-bold text-gray-700 dark:text-gray-300">DESDE:</label>
+                        <input
+                            id="fecha-desde"
+                            type="date"
+                            className="text-xs border-gray-300 rounded p-1 outline-none focus:ring-1 focus:ring-blue-500"
+                            value={fechaInicio}
+                            onChange={(e) => setFechaInicio(e.target.value)}
+                        />
                     </div>
+
+                    <div className="flex items-center gap-2">
+                        <label htmlFor="fecha-hasta" className="text-xs font-bold text-gray-700 dark:text-gray-300">HASTA:</label>
+                        <input
+                            id="fecha-hasta"
+                            type="date"
+                            className="text-xs border-gray-300 rounded p-1 outline-none focus:ring-1 focus:ring-blue-500"
+                            value={fechaFin}
+                            onChange={(e) => setFechaFin(e.target.value)}
+                        />
+                    </div>
+
+
+                    {esContratacion && (
+                        <div className="flex items-center gap-1 border-l border-gray-300 pl-4">
+                            <label htmlFor="unidad-promotora" className="text-xs font-bold text-gray-700 dark:text-gray-300">UNIDAD:</label>
+                            <select
+                                id="unidad-promotora"
+                                className="text-xs border-gray-300 rounded p-1 min-w-20.5"
+                                value={departamentoFiltro}
+                                onChange={(e) => setDepartamentoFiltro(e.target.value)}
+                            >
+                                <option value="">TODAS LAS UNIDADES</option>
+                                {todos_los_departamentos?.map((dept) => (
+                                    <option key={dept.id} value={dept.nombre}>
+                                        {dept.nombre.toUpperCase()}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                        <Link className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-[10px] font-bold py-1.5 px-3 border border-gray-300 rounded shadow-sm transition-colors uppercase tracking-wider" href={`/movimientos`}>Historial de movimientos</Link>
+                        </div>
+                </div>
+
+
+
+                <div className="overflow-x-auto border border-gray-300 bg-white shadow-sm">
+                    <table className="w-full text-left border-collapse text-[11px]">
+                        <thead>
+                            <tr className="bg-gray-100 border-b border-gray-300 uppercase">
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Nº Expediente</th>
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Descripción</th>
+
+                                {esContratacion && (
+                                    <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Unidad Promotora</th>
+                                )}
+
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Fecha Inicio</th>
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Estado</th>
+
+
+
+                                    <th className="px-4 py-2 font-bold text-blue-900 text-center">Acciones</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr><td colSpan={6} className="p-8 text-center italic text-gray-500">Cargando registros...</td></tr>
+                            ) : datos.map((contrato) => (
+                                <tr key={contrato.id} className="border-b border-gray-200 hover:bg-blue-50/50 transition-colors">
+                                    <td className="px-4 py-2 border-r border-gray-200 font-bold text-blue-600">
+                                        <Link href={`/contratos/show/${contrato.id}`}>{contrato.n_expediente}</Link>
+                                    </td>
+                                    <td className="px-4 py-2 border-r border-gray-200 uppercase text-gray-700">
+                                        {contrato.descripcion}
+                                    </td>
+
+
+                                    {esContratacion && (
+                                        <td className="px-4 py-2 border-r border-gray-200 uppercase text-center text-gray-600">
+                                            {contrato.unidad_promotora}
+                                        </td>
+                                    )}
+
+                                    <td className="px-4 py-2 border-r border-gray-200 text-center text-gray-600">
+                                        {contrato.fecha_inicio_f}
+                                    </td>
+
+                                    <td className={`px-4 py-2 border-r border-gray-200 text-center`}>
+                                        <span className={`px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase border ${
+                                            contrato.estado_expediente === 'Activo'
+                                            ? 'bg-green-50 border-green-200 text-green-700'
+                                            : 'bg-yellow-50 border-yellow-200 text-yellow-700'
+                                        }`}>
+                                            {contrato.estado_expediente}
+                                        </span>
+                                    </td>
+
+                                        <td className="px-2 py-2">
+                                            <div className="flex flex-col gap-1 items-center">
+                                                {contrato.estado_expediente !== 'Finalizado' && (
+                                                    <Link href={`/contratos/edit/${contrato.id}`} className="w-full max-w-32.5 bg-[#4fc3f7] hover:bg-blue-400 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm">
+                                                        COMPLETAR CONTRATO
+                                                    </Link>
+                                                )}
+
+                                                <div className="flex gap-1 w-full max-w-32.5">
+                                                    <button onClick={() => descargarPDF(contrato.id, 'basico')} className="flex-1 bg-gray-500 hover:bg-gray-600 text-white text-[9px] py-0.5 font-bold rounded shadow-sm">
+                                                        PDF BÁS.
+                                                    </button>
+                                                    <button onClick={() => descargarPDF(contrato.id, 'completo')} className="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white text-[9px] py-0.5 font-bold rounded shadow-sm">
+                                                        PDF COMP.
+                                                    </button>
+                                                </div>
+
+                                                <Link
+                                                    href={`/contratos/destroy/${contrato.id}`}
+                                                    method="delete"
+                                                    as="button"
+                                                    onBefore={() => confirm('¿Eliminar contrato?')}
+                                                    className="w-full max-w-32.5 bg-[#f2a154] hover:bg-orange-400 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm"
+                                                >
+                                                    ELIMINAR
+                                                </Link>
+                                                <Link href={`/contratos/${contrato.id}/movimientos`} className="w-full max-w-32.5 bg-[#beae18d0] hover:bg-yellow-400 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm">
+                                                        REGISTRO DE MOVIMIENTOS
+                                                    </Link>
+                                            </div>
+                                        </td>
+
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </AppLayout>

@@ -12,6 +12,7 @@ type Contrato = {
     responsable:string,
     tipo_contrato:string,
     importe_estimado:number | '',
+    importe_final:number | '',
     proc_adjudicacion:string;
     fecha_prevista:string,
     fecha_inicio:string,

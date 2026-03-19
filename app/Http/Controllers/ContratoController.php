@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Adjudicacione;
 use App\Models\Contrato;
 use App\Models\Tipo;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +39,7 @@ class ContratoController extends Controller
         $usuarioLogueado = Auth::user();
         $unidad_promotora = DB::table('per_distribucion')
             ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
-            ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id) // <--- Cambio clave
+            ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
             ->where('per_distribucion_dpto_principal', true)
             ->value('departamentos.nombre');
 
@@ -46,14 +47,14 @@ class ContratoController extends Controller
         $validated = $request->validate([
             'n_expediente' => 'required|max:255',
             'descripcion' => 'required|max:255',
-            'responsable' => 'required|max:255',
+            'responsable' => 'nullable|max:255',
             'tipos_id' => 'required|exists:tipos,id',
             'importe_estimado' => 'required|numeric|min:0',
-            'importe_final' => 'required|numeric|min:0',
+            'importe_final' => 'nullable|numeric|min:0',
             'tipo_procedimiento' => 'required|exists:adjudicaciones,id',
             'fecha_prevista' => 'required|date',
             'fecha_inicio' => 'nullable|date',
-            'n_resolucion' => 'required',
+            'n_resolucion' => 'nullable|max:255',
             'duracion_estimada' => 'required',
         ]);
 
@@ -100,11 +101,13 @@ class ContratoController extends Controller
     {
         $validated = $request->validate([
             'descripcion' => 'required|max:255',
-            'responsable' => 'required|max:255',
-            'importe_final' => 'required|numeric|min:0',
+            'responsable' => 'nullable|max:255',
+            'tipos_id' => 'required|exists:tipos,id',
+            'importe_final' => 'nullable|numeric|min:0',
             'tipo_procedimiento' => 'required|max:255',
             'fecha_inicio' => 'nullable|date',
-            'duracion_estimada' => 'required|date|after:fecha_inicio',
+            'duracion_estimada' => 'required',
+            'n_resolucion' => 'nullable|max:255',
         ]);
 
         $contrato->update($validated);
@@ -147,6 +150,7 @@ class ContratoController extends Controller
 
         $todos_los_departamentos = DB::table('departamentos')
             ->select('id', 'nombre')
+            ->orderBy('nombre','asc')
             ->get();
 
         return Inertia::render('Contratos/control-mando', [
@@ -175,8 +179,10 @@ class ContratoController extends Controller
         if ($request->filled('departamento')) {
             $query->where('unidad_promotora', $request->departamento);
         }
+
     } elseif ($departamentoUsuario) {
         $query->where('unidad_promotora', $departamentoUsuario);
+
     } else {
         return response()->json([]);
     }
@@ -189,7 +195,7 @@ class ContratoController extends Controller
     }
 
     return response()->json($query->get());
-}
+    }
 
     public function formalizar($id){
         $contrato = Contrato::findOrFail($id);
@@ -206,5 +212,22 @@ class ContratoController extends Controller
         }
 
         return view('emails.confirmacion_alerta',['expediente' => $contrato->n_expediente]);
+    }
+
+    public function generarPdf(Request $request, $id)
+    {
+
+        $contrato = Contrato::with(['usuario', 'tipo', 'tipo_procedimiento'])->findOrFail($id);
+
+
+        $modo = $request->query('tipo', 'basico');
+
+
+        $pdf = Pdf::loadView('pdf.contrato', compact('contrato', 'modo'));
+
+
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->stream("contrato_{$contrato->n_expediente}.pdf");
     }
 }

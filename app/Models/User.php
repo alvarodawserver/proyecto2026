@@ -2,75 +2,67 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable;
 
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $appends = ['name'];
+
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * IMPORTANTE: Como no tienes la columna 'remember_token' de Laravel,
+     * vamos a decirle a Laravel que no intente usarla para evitar errores de SQL.
      */
+    public function getRememberTokenName()
+    {
+        return null; // O si quieres usar 'token', cámbialo por 'token'
+    }
+
     protected $fillable = [
-        'name',
+        'nombre',
         'email',
         'password',
+        'token',
+        'empleado_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+
+
+    
     protected $hidden = [
         'password',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
-        'remember_token',
+        // 'token', // Descomenta esto si no quieres que el token de Yii viaje en los JSON
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'two_factor_confirmed_at' => 'datetime',
         ];
     }
 
+    /**
+     * Laravel busca la propiedad 'name' por defecto para muchas cosas (como Jetstream/Inertia).
+     * Con esto, cuando pidas $user->name, te dará el valor de la columna 'nombre'.
+     */
     public function getNameAttribute()
     {
         return $this->nombre;
     }
 
-    public function username()
+    // Relaciones
+    public function empleado()
     {
-        return 'nombre';
+        return $this->belongsTo(Empleado::class, 'empleado_id');
     }
 
     public function contratos()
     {
-        return $this->hasMany(Contrato::class);
-    }
-
-
-    public function movimientos(){
-        return $this->hasMany(Movimiento::class);
+        return $this->hasMany(Contrato::class, 'user_id'); // Asegúrate de que la FK en contratos sea user_id o el que corresponda
     }
 }

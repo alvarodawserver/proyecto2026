@@ -4,7 +4,7 @@ use App\Http\Controllers\AdjudicacioneController;
 use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\TipoController;
-use App\Models\Movimiento;
+use App\Http\Controllers\AuthBridgeController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -18,7 +18,6 @@ Route::inertia('/', 'welcome', [
 
 Route::middleware(['force.login'])->group(function(){
     Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('auth')->name('movimientos');
-
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     Route::get('/contratos', [ContratoController::class, 'index'])->name('contratos');
 
@@ -68,6 +67,9 @@ Route::middleware(['force.login'])->group(function(){
 
     });
 
+    Route::get('/contratos/{id}/pdf', [ContratoController::class, 'generarPdf']);
+
+    Route::get('/auth/bridge/{id}', [AuthBridgeController::class, 'loginFromYii']);
 
 
 });

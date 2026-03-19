@@ -1,5 +1,4 @@
-import { usePage } from '@inertiajs/react';
-import type { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
 type Props = {
@@ -7,14 +6,14 @@ type Props = {
     variant?: 'header' | 'sidebar';
 };
 
-export function AppShell({ children, variant = 'header' }: Props) {
-    const isOpen = usePage().props.sidebarOpen;
-
-    if (variant === 'header') {
-        return (
-            <div className="flex min-h-screen w-full flex-col">{children}</div>
-        );
-    }
-
-    return <SidebarProvider defaultOpen={isOpen}>{children}</SidebarProvider>;
+export function AppShell({ children }: Props) {
+    return (
+        // Mantenemos el Provider para evitar el error de "useSidebar"
+        // pero le decimos que por defecto esté cerrado (defaultOpen={false})
+        <SidebarProvider defaultOpen={false}>
+            <div className="flex min-h-screen w-full flex-col bg-white">
+                {children}
+            </div>
+        </SidebarProvider>
+    );
 }

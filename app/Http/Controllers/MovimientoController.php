@@ -19,11 +19,9 @@ class MovimientoController extends Controller
         'usuario',
         'contrato' => function($query) {
             $query->withTrashed();
-        }
-        ])->orderBy('fecha_movimiento', 'desc')->get();
+        }])->orderBy('fecha_movimiento', 'desc')->get();
 
         return Inertia::render('movimientos',['movimientos' => $movimientos]);
-
     }
 
     /**

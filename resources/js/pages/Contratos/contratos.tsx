@@ -72,7 +72,7 @@ export default function Contratos({ contratos }: Props) {
                                         <Can permission='manejar_contratos'>
                                             <Link href={`/contratos/edit/${con.id}`}>
                                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${'bg-blue-100 text-blue-500'}`}>
-                                                    Editar
+                                                    Completar contrato
                                                 </span>
                                             </Link>
                                             <Link href={`/contratos/destroy/${con.id}`}

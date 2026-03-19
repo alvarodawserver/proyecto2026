@@ -129,9 +129,18 @@ const ControlMando = ({ todos_los_departamentos = [] }: { todos_los_departamento
                             </select>
                         </div>
                     )}
-                    <div className="flex items-center gap-2">
-                        <Link className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-[10px] font-bold py-1.5 px-3 border border-gray-300 rounded shadow-sm transition-colors uppercase tracking-wider" href={`/movimientos`}>Historial de movimientos</Link>
-                        </div>
+<Link className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-[10px] font-bold py-1.5 px-3 border border-gray-300 rounded shadow-sm transition-colors uppercase tracking-wider" href={`/movimientos`}>
+    Historial de movimientos
+</Link>
+
+<Link className="flex items-center gap-2 bg-[#10b981] hover:bg-[#059669] text-white text-[10px] font-bold py-1.5 px-3 rounded shadow-sm transition-colors uppercase tracking-wider" href={`/contratos/create`}>
+    Crear Contrato
+</Link>
+{esContratacion && (
+<Link className="flex items-center gap-2 bg-[#ef4444] hover:bg-[#dc2626] text-white text-[10px] font-bold py-1.5 px-3 rounded shadow-sm transition-colors uppercase tracking-wider" href={`/contratos/desactivados`}>
+    Ver Contratos desactivados
+</Link>
+)}
                 </div>
 
 
@@ -218,7 +227,7 @@ const ControlMando = ({ todos_los_departamentos = [] }: { todos_los_departamento
                                                 >
                                                     ELIMINAR
                                                 </Link>
-                                                <Link href={`/contratos/${contrato.id}/movimientos`} className="w-full max-w-[130px] bg-[#beae18d0] hover:bg-yellow-400 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm">
+                                                <Link href={`/contratos/${contrato.id}/movimientos`} className="w-full max-w-[130px] bg-[#84cc16] hover:bg-[#65a30d] text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm">
                                                         REGISTRO DE MOVIMIENTOS
                                                     </Link>
                                             </div>

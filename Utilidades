@@ -1,0 +1,35 @@
+main.php
+$ts = 0;
+$hash = "";
+$secretKey = "contratacion_laravel";
+
+if (Yii::$app->user->id != null) {
+    $usuarioActual = Usuario::find()->where(['id' => Yii::$app->user->id])->one();
+    $idEmpleadoLogin = $usuarioActual->empleado_id;
+    $empleado = \app\models\Empleado::findOne($idEmpleadoLogin);
+
+    $ts = time();
+    $hash = md5(Yii::$app->user->id . $secretKey . $ts);
+} else {
+    $idEmpleadoLogin = null;
+    $empleado = null;
+}
+
+
+///////////////////////////////
+index.php de utilidades:
+$ts = time();
+$secretKey = "contratacion_laravel";
+$userId = Yii::$app->user->id;
+$hash = md5($userId . $secretKey . $ts);
+$urlContratos = "http://localhost:8000/auth/bridge/$userId?ts=$ts&hash=$hash";
+
+
+<a href="<?= $urlContratos ?>">
+                <div style="font-size: 5em; color: #337ab7;">
+                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                </div>
+                <span>📂 TEST CAMBIO CONTRATOS</span>
+            </a>
+            <br>
+            <span class="descripcion_enlaces">Acceso al nuevo sistema de gestión de contratos y proveedores.</span>

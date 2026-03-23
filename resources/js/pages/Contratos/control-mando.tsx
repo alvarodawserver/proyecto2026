@@ -28,8 +28,8 @@ interface Departamento {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Contratos',
-        href: contratoRoute(),
+        title: 'Utilidades',
+        href: '/ayudas/views/layouts/utilidades.php', // <--- El componente detectará el .php y usará <a>
     },
     {
         title: 'Control de Mando',

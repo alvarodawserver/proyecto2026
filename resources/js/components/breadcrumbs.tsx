@@ -14,18 +14,33 @@ export function Breadcrumbs({ breadcrumbs }: { breadcrumbs: BreadcrumbItemType[]
             <div className="flex items-center text-[13px]">
                 <a href="http://localhost:8080/index.php" className="text-[#337ab7] hover:underline">Inicio</a>
 
-                {breadcrumbs.map((item, index) => (
-                    <div key={index} className="flex items-center">
-                        <span className="mx-2 text-[#ccc]">/</span>
-                        {index === breadcrumbs.length - 1 ? (
-                            <span className="text-[#777] italic">{item.title}</span>
-                        ) : (
-                            <Link href={item.href} className="text-[#337ab7] hover:underline">
-                                {item.title}
-                            </Link>
-                        )}
-                    </div>
-                ))}
+                {breadcrumbs.map((item, index) => {
+                    const isLast = index === breadcrumbs.length - 1;
+
+                    
+                    const hrefStr = String(item.href || '');
+                    const isExternal = hrefStr.includes('.php');
+
+                    return (
+                        <div key={index} className="flex items-center">
+                            <span className="mx-2 text-[#ccc]">/</span>
+                            {isLast ? (
+                                <span className="text-[#777] italic">{item.title}</span>
+                            ) : (
+                                /* Si contiene .php usamos <a>, si no usamos <Link> de Inertia */
+                                isExternal ? (
+                                    <a href={hrefStr} className="text-[#337ab7] hover:underline">
+                                        {item.title}
+                                    </a>
+                                ) : (
+                                    <Link href={item.href} className="text-[#337ab7] hover:underline">
+                                        {item.title}
+                                    </Link>
+                                )
+                            )}
+                        </div>
+                    );
+                })}
             </div>
 
             <button

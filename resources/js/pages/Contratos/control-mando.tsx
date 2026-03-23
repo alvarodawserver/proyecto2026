@@ -28,8 +28,8 @@ interface Departamento {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Contratos',
-        href: contratoRoute(),
+        title: 'Utilidades',
+        href: 'http://localhost:8080/index.php?r=utilidades/index', // <--- El componente detectará el .php y usará <a>
     },
     {
         title: 'Control de Mando',
@@ -86,11 +86,11 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Control de Mando" />
-
+{/*
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm">
                 Control de Mando: {esContratacion ? 'GLOBAL' : miDepartamentoRaw.toUpperCase()}
             </div>
-
+*/}
             <div className="flex flex-col gap-4 p-4">
 
                 {/* Barra de Filtros */}

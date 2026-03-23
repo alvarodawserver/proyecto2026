@@ -147,6 +147,15 @@ class ContratoController extends Controller
 
     public function vistaControlMando()
     {
+        $usuarioLogueado = Auth::user();
+
+
+        $distribucion = DB::table('per_distribucion')
+            ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+            ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
+            ->where('per_distribucion_dpto_principal', true)
+            ->select('per_distribucion_rol', 'departamentos.nombre as depto_nombre')
+            ->first();
 
         $todos_los_departamentos = DB::table('departamentos')
             ->select('id', 'nombre')
@@ -154,7 +163,9 @@ class ContratoController extends Controller
             ->get();
 
         return Inertia::render('Contratos/control-mando', [
-            'todos_los_departamentos' => $todos_los_departamentos
+            'todos_los_departamentos' => $todos_los_departamentos,
+            'user_rol' => $distribucion->per_distribucion_rol ?? null,
+            'user_depto_nombre' => $distribucion->depto_nombre ?? ''
         ]);
     }
 
@@ -195,7 +206,7 @@ class ContratoController extends Controller
     }
 
     return response()->json($query->get());
-    }
+}
 
     public function formalizar($id){
         $contrato = Contrato::findOrFail($id);

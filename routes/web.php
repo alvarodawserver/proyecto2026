@@ -5,8 +5,13 @@ use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\AuthBridgeController;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
+use Illuminate\Support\Facades\DB;
+
 
 Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
@@ -15,6 +20,47 @@ Route::inertia('/', 'welcome', [
     Route::middleware(['auth'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });
+
+
+Route::get('/auth/bridge/{id}', function (Request $request, $id) {
+    $secretKey = "contratacion_laravel";
+    $ts = $request->query('ts');
+    $hash = $request->query('hash');
+
+    $expectedHash = md5($id . $secretKey . $ts);
+
+    // Si falla el hash o han pasado más de 60 segundos, fuera.
+    if ($hash !== $expectedHash || (time() - $ts) > 60) {
+        return abort(403, 'Acceso expirado o firma inválida');
+    }
+
+    $user = User::find($id);
+
+    if ($user) {
+        // Logueamos
+        Auth::login($user, true);
+
+        // Guardamos el rol de jefe
+        $idEmpleado = $user->empleado_id;
+        $esJefe = DB::table('per_distribucion')
+            ->where('per_distribucion_empleado', $idEmpleado)
+            ->where('per_distribucion_rol', 1)
+            ->exists();
+
+        session(['es_jefe_servicio' => $esJefe]);
+
+        $request->session()->regenerate();
+        $request->session()->save();
+
+
+        return redirect('/contratos/control-mando');
+    }
+
+    return redirect('/login');
+})->middleware('web');
+
+
+
 
 Route::middleware(['force.login'])->group(function(){
     Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('auth')->name('movimientos');
@@ -68,8 +114,6 @@ Route::middleware(['force.login'])->group(function(){
     });
 
     Route::get('/contratos/{id}/pdf', [ContratoController::class, 'generarPdf']);
-
-    Route::get('/auth/bridge/{id}', [AuthBridgeController::class, 'loginFromYii']);
 
 
 });

@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface Procedimiento {
     id: number,
@@ -186,13 +187,18 @@ export default function Create({ procedimientos, tipos }: Props) {
                                 </div>
 
                                 <div className="md:col-span-2 border-t border-gray-100 pt-4 flex justify-end">
-                                    <button
-                                        type='button'
+                                    <Button
                                         onClick={() => setStep(2)}
                                         className="bg-[#e96b7d] text-white px-8 py-2 rounded-sm font-bold uppercase hover:bg-[#d65a6c] shadow-md"
                                     >
                                         Siguiente paso →
-                                    </button>
+                                    </Button>
+                                    <Button
+                                        onClick={() => window.location.href = '/contratos/control-mando'}
+                                        className="ml-3 bg-gray-200 text-gray-700 px-6 py-2 rounded-sm font-bold uppercase hover:bg-gray-300 border border-gray-300"
+                                    >
+                                        Volver
+                                    </Button>
                                 </div>
                             </>
                         )}

@@ -41,7 +41,7 @@ $esCualquierJefe = (new \yii\db\Query())
     ->exists();
 
 $mostrarControlMando = $isAdmin || $isJefeContratacion;
-$mostrarMiExpediente = !$mostrarControlMando && $esCualquierJefe;
+$mostrarMiExpediente = $isAdmin || $esCualquierJefe;
 
 
 
@@ -51,6 +51,8 @@ $secretKey = "contratacion_laravel";
 $userId = Yii::$app->user->id;
 $hash = md5($userId . $secretKey . $ts);
 $urlContratos = "http://localhost:8000/auth/bridge/$userId?ts=$ts&hash=$hash";
+$urlControlMando = $urlContratos . "&dest=mando";
+$urlMisExpedientes = $urlContratos . "&dest=mis";
 // Renderizar los breadcrumbs personalizados 'utbreadcrumbs'
 echo Breadcrumbs::widget([
     'links' => isset($this->params['utbreadcrumbs']) ? $this->params['utbreadcrumbs'] : [],
@@ -139,27 +141,34 @@ echo Breadcrumbs::widget([
             <span class="descripcion_enlaces">Gestión de los presupuestos (solo admin y oficina de gestión presupuestaria).</span>
         </li>
     </ul>
-    <?php if ($mostrarControlMando): ?>
+    
     <ul>
+        <?php if ($mostrarControlMando): ?>
         <li>
-            <a href="<?= $urlContratos ?>">
+            <a href="<?= $urlControlMando ?>">
                 <div style="font-size: 5em; color: #337ab7;">
                     <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                 </div>
-                <span>Gestión de Contratos</span>
+                <span>Control de Mando Global</span>
             </a>
             <br>
-            <span class="descripcion_enlaces">Acceso al nuevo sistema de gestión de contratos y proveedores.</span>
-            <?php elseif ($mostrarMiExpediente): ?>
-                <a href="<?= $urlContratos ?>">
+            <span class="descripcion_enlaces">Gestión completa de todos los contratos y proveedores.</span>
+        </li>
+        <?php endif; ?>
+
+        <?php if ($mostrarMiExpediente): ?>
+        <li>
+            <a href="<?= $urlMisExpedientes ?>">
                 <div style="font-size: 5em; color: #5cb85c;">
                     <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>
                 </div>
-                <span>Mi Expediente de Contratación</span>
+                <span>Mis Expedientes de Contratación</span>
             </a>
+            <br>
+            <span class="descripcion_enlaces">Acceso a los expedientes de mi departamento.</span>
         </li>
+        <?php endif; ?>
     </ul>
-<?php endif; ?>
 </div>
 
 

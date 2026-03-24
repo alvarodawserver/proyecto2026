@@ -37,7 +37,7 @@ export default function Create({ procedimientos, tipos }: Props) {
     });
 
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Control de Mando', href: '/contratos/control-mando' },
+        { title: 'Contratos', href: '/contratos' },
         { title: 'Nuevo Expediente', href: '/contratos/create' },
     ];
 

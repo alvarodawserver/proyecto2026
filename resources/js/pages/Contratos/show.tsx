@@ -36,10 +36,9 @@ type Props = {
 
 export default function Show({ contrato }: Props) {
     const { auth } = usePage().props as any;
-    const user = auth.user;
 
-    // Lógica de departamento para el banner (coherencia con Control de Mando)
-    const miDepartamentoRaw = user?.empleado?.departamento_nombre || user?.departamento || '';
+
+
 
     const [mostrarDetalles, setMostrarDetalles] = useState(false);
 
@@ -49,7 +48,7 @@ export default function Show({ contrato }: Props) {
     };
 
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Control de Mando', href: '/contratos/control-mando' },
+        { title: 'Contratos', href: '/contratos' },
         { title: `Expediente ${contrato.n_expediente}`, href: '#' },
     ];
 

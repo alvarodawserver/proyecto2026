@@ -24,15 +24,15 @@ type Props = {
 
 export default function Desactivados({ desactivados }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Control de Mando', href: '/contratos/control-mando' },
-        { title: 'Archivo Desactivados', href: '#' },
+        { title: 'Contratos', href: '/contratos' },
+        { title: 'Contratos Desactivados', href: '#' },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Contratos Desactivados" />
 
-            {/* Banner superior - Color gris oscuro para indicar estado inactivo/archivo */}
+
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase flex justify-between items-center tracking-tight">
                 <span>Archivo Histórico: Contratos Desactivados</span>
                 <span className="text-[10px] bg-white/20 px-2 py-1 rounded">ESTADO: INACTIVO</span>

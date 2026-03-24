@@ -90,8 +90,9 @@ export default function Movimientos({ movimientos }: Props) {
                     <span>Entradas totales: {movimientos?.length}</span>
                 </div>
                 <Button
+                    variant="outline"
                     onClick={() => window.history.back()}
-                    className="text-[10px] uppercase tracking-widest text-black-400 bg-gray-100 hover:bg-gray-200">
+                    className="text-[10px] uppercase tracking-widest bg-gray-200 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none">
                     Volver
                 </Button>
             </div>

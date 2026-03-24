@@ -40,20 +40,26 @@ Route::get('/auth/bridge/{id}', function (Request $request, $id) {
 
         Auth::login($user, true);
 
+        $isAdmin = (strtolower($user->nombre) === 'admin');
+        $isJefeContratacion = false;
+        $distribucion = DB::table('per_distribucion')
+            ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+            ->where('per_distribucion_empleado', $user->empleado_id)
+            ->where('per_distribucion_rol', 1) 
+            ->where('per_distribucion_dpto_principal', 1)
+            ->select('departamentos.nombre')
+            ->first();
 
-        $idEmpleado = $user->empleado_id;
-        $esJefe = DB::table('per_distribucion')
-            ->where('per_distribucion_empleado', $idEmpleado)
-            ->where('per_distribucion_rol', 1)
-            ->exists();
-
-        session(['es_jefe_servicio' => $esJefe]);
-
-        $request->session()->regenerate();
-        $request->session()->save();
+        if ($distribucion && str_contains(strtoupper($distribucion->nombre), 'CONTRATACION')) {
+            $isJefeContratacion = true;
+        }
 
 
-        return redirect('/contratos/control-mando');
+        if ($isAdmin || $isJefeContratacion) {
+            return redirect('/contratos/control-mando');
+        } else {
+            return redirect('/contratos');
+        }
     }
 
     return redirect('/login');

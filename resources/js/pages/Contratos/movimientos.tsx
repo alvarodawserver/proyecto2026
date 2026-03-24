@@ -92,7 +92,7 @@ export default function Movimientos({ contrato }: Props) {
                     </div>
                 )}
 
-                {/* Footer Técnico */}
+
                 <div className="flex justify-between items-center text-[10px] text-gray-400 mt-2 px-1 uppercase font-bold tracking-widest">
                     <div className="flex gap-4">
                         <span>Expediente: {contrato.n_expediente}</span>
@@ -106,7 +106,7 @@ export default function Movimientos({ contrato }: Props) {
                 <Button
                     variant="outline"
                     onClick={() => window.history.back()}
-                    className="text-[10px] uppercase tracking-widest"
+                    className="text-[10px] uppercase tracking-widest hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
                 >
                     Volver
                 </Button>

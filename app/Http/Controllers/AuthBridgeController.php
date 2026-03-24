@@ -4,20 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB; // IMPORTANTE: Para las consultas de roles
+use Illuminate\Http\Request;
 
 class AuthBridgeController extends Controller
 {
-    public function loginFromYii($id)
+    public function loginFromYii(Request $request, $id)
     {
-        // 1. Buscamos al usuario en la tabla 'usuarios' por el ID que viene de Yii
+
+
         $user = User::find($id);
 
         if ($user) {
-            // 2. Iniciamos sesión manualmente en Laravel
             Auth::login($user);
 
-            // 3. Redirigimos a tu página de inicio de contratos
-            return redirect()->route('control-mando');
+            $isAdmin = ($user->nombre === 'admin');
+
+
+            $isJefeContratacion = false;
+
+            $rolJefeId = DB::table('per_roles')
+                ->where('per_roles_nombre', 'Jefe de servicio')
+                ->value('per_roles_id');
+
+            $distribucion = DB::table('per_distribucion')
+                ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+                ->where('per_distribucion_empleado', $user->empleado_id)
+                ->where('per_distribucion_rol', $rolJefeId)
+                ->where('per_distribucion_dpto_principal', 1)
+                ->select('departamentos.nombre')
+                ->first();
+
+            if ($distribucion && str_contains(strtoupper($distribucion->nombre), 'CONTRATACION')) {
+                $isJefeContratacion = true;
+            }
+            if ($isAdmin || $isJefeContratacion) {
+                return redirect('/contratos/control-mando');
+                }
+
+                dd(['Nombre' => $user->nombre, 'isAdmin' => $isAdmin, 'Depto' => $distribucion->nombre ?? 'N/A', 'isJefe' => $isJefeContratacion]);
+            return redirect('contratos');
         }
 
         return redirect('/login')->with('error', 'Acceso no autorizado');

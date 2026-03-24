@@ -1,0 +1,26 @@
+Poner en el index de utilidades del proyecto ayudas
+
+<div class="menu_index">
+<p> Contratos </p>
+    <ul>
+        <?php
+			$alcaldesa = false;
+			foreach (Yii::$app->user->identity->empleado->distribucion as $distribucion) {
+			if ($distribucion->distribucionRol && $distribucion->distribucionRol->per_roles_nombre == 'Concejal' && Yii::$app->user->identity->empleado->departamentoppal->nombre === 'ALCALDIA') {
+				$alcaldesa = true;
+				}
+			}
+            if (Yii::$app->controller->accesoFacturas() && !$alcaldesa):
+        ?>
+        <li>
+            <a href="<?= $urlContratos ?>">
+                <img src="<?= Yii::$app->request->baseUrl; ?>/imagenes/crear.png"><br>
+                <span>Control de mandos</span>
+            </a>
+            <br>
+            <span class="descripcion_enlaces">Acceso al nuevo sistema de gestión de contratos y proveedores.</span>
+        </li>
+        <?php endif; ?>
+		
+    </ul>
+</div>

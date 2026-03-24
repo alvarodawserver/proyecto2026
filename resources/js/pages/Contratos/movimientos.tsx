@@ -30,7 +30,6 @@ type Props = {
 export default function Movimientos({ contrato }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Contratos', href: '/contratos' },
-        { title: 'Control de Mando', href: '/contratos/control-mando' },
         { title: `Log: ${contrato.n_expediente}`, href: '#' },
     ];
 

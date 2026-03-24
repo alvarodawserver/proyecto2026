@@ -39,13 +39,13 @@ Route::get('/auth/bridge/{id}', function (Request $request, $id) {
     if ($user) {
 
         Auth::login($user, true);
-
+        $destino = $request->query('dest');
         $isAdmin = (strtolower($user->nombre) === 'admin');
         $isJefeContratacion = false;
         $distribucion = DB::table('per_distribucion')
             ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
             ->where('per_distribucion_empleado', $user->empleado_id)
-            ->where('per_distribucion_rol', 1) 
+            ->where('per_distribucion_rol', 1)
             ->where('per_distribucion_dpto_principal', 1)
             ->select('departamentos.nombre')
             ->first();
@@ -55,10 +55,13 @@ Route::get('/auth/bridge/{id}', function (Request $request, $id) {
         }
 
 
-        if ($isAdmin || $isJefeContratacion) {
-            return redirect('/contratos/control-mando');
-        } else {
+
+        if ($destino === 'mis') {
             return redirect('/contratos');
+        }
+
+        if (($isAdmin || $isJefeContratacion) && $destino === 'mando') {
+            return redirect('/contratos/control-mando');
         }
     }
 

@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
@@ -36,6 +36,8 @@ interface Props {
 }
 
 export default function Edit({ contrato, tipos, procedimientos }: Props) {
+     const { auth } = usePage().props as any;
+    const urlVolver = auth.can.ver_control_mando ? '/contratos/control-mando' : '/contratos';
     const { data, setData, put, errors, processing } = useForm({
         descripcion: contrato.descripcion || '',
         responsable: contrato.responsable || '',
@@ -79,8 +81,8 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
 
                 <div className="mb-2">
                     <Link
-                        href={`/contratos/control-mando`}
-                        className="text-gray-500 hover:text-[#e96b7d] font-bold uppercase text-[10px] flex items-center gap-1 transition-colors"
+                        href={urlVolver}
+                        className="text-gray-500 hover:text-[#e96b7d] font-bold uppercase text-[10px] flex items-center gap-1 transition-colors"    
                     >
                         ← Cancelar y volver
                     </Link>

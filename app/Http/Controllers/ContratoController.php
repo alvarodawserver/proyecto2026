@@ -66,7 +66,7 @@ class ContratoController extends Controller
         ]));
 
 
-        return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');
+        return redirect('contratos/control-mando')->with('message', 'Contrato creado con éxito');
     }
 
     /**
@@ -111,7 +111,7 @@ class ContratoController extends Controller
         ]);
 
         $contrato->update($validated);
-        return redirect()->route('contratos');
+        return redirect('contratos/control-mando');
     }
 
     /**
@@ -122,7 +122,7 @@ class ContratoController extends Controller
         $contrato->estado_expediente = 'Desactivado';
         $contrato->save();
         $contrato->delete();
-        return redirect()->route('contratos');
+        return redirect('contratos/control-mando');
     }
 
     public function verDesactivados(){
@@ -135,7 +135,7 @@ class ContratoController extends Controller
         $contrato_recuperar->estado_expediente = 'Activo';
         $contrato_recuperar->save();
         $contrato_recuperar->restore();
-        return redirect()->route('contratos')->with('success','El contrato se ha recuperado con éxito');
+        return redirect('contratos/control-mando')->with('success','El contrato se ha recuperado con éxito');
     }
 
     public function verMovimiento(Contrato $contrato){
@@ -230,12 +230,9 @@ class ContratoController extends Controller
 
         $contrato = Contrato::with(['usuario', 'tipo', 'tipo_procedimiento'])->findOrFail($id);
 
-
         $modo = $request->query('tipo', 'basico');
 
-
         $pdf = Pdf::loadView('pdf.contrato', compact('contrato', 'modo'));
-
 
         $pdf->setPaper('a4', 'portrait');
 

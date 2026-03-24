@@ -3,8 +3,6 @@
 namespace App\Observers;
 
 use App\Models\Contrato;
-use App\Models\Departamento;
-use App\Models\Empleado;
 use App\Models\Movimiento;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -77,4 +75,6 @@ class ContratoObserver
             'observaciones'     => $observacion,
         ]);
     }
+
+    
 }

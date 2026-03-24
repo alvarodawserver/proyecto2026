@@ -28,8 +28,8 @@ interface Departamento {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Contratos',
-        href: contratoRoute(),
+       title: 'Utilidades',
+        href: 'http://localhost:8080/index.php?r=utilidades%2Findex',
     },
     {
         title: 'Control de Mando',
@@ -46,9 +46,7 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
     const esContratacion = miDepartamento.includes('CONTRATACIÓN') || miDepartamento.includes('CONTRATACION');
     const esJefe = user_rol == 1;
 
-    // Debug para que lo veas en la consola
-    console.log("Rol recibido por Prop:", user_rol);
-    console.log("¿Es jefe?", esJefe);
+
 
 
     const [datos, setDatos] = useState<Contrato[]>([]);
@@ -93,7 +91,6 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
 
             <div className="flex flex-col gap-4 p-4">
 
-                {/* Barra de Filtros */}
                 <div className="flex flex-wrap items-center gap-4 bg-gray-50 dark:bg-gray-800 p-3 border border-gray-300 rounded shadow-sm">
                     <div className="flex items-center gap-2">
                         <label htmlFor="fecha-desde" className="text-xs font-bold text-gray-700 dark:text-gray-300">DESDE:</label>
@@ -159,7 +156,7 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Nº Expediente</th>
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Descripción</th>
 
-                                {/* Columna Central Condicional */}
+
                                 {esContratacion && (
                                     <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Unidad Promotora</th>
                                 )}
@@ -167,9 +164,8 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Fecha Inicio</th>
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Estado</th>
 
-                                {/* Columna Final Condicional */}
 
-                                    <th className="px-4 py-2 font-bold text-blue-900 text-center">Acciones</th>
+                                <th className="px-4 py-2 font-bold text-blue-900 text-center">Acciones</th>
 
                             </tr>
                         </thead>
@@ -185,7 +181,7 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
                                         {contrato.descripcion}
                                     </td>
 
-                                    {/* Celda Central: Solo Contratación */}
+
                                     {esContratacion && (
                                         <td className="px-4 py-2 border-r border-gray-200 uppercase text-center text-gray-600">
                                             {contrato.unidad_promotora}
@@ -206,7 +202,7 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
                                         </span>
                                     </td>
 
-                                    {/* Celda Final: Acciones para Usuarios Promotores */}
+
 
                                         <td className="px-2 py-2">
                                             <div className="flex flex-col gap-1 items-center">

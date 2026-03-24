@@ -49,7 +49,7 @@ export default function Show({ contrato }: Props) {
     };
 
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Contratos', href: '/contratos' },
+        { title: 'Control de Mando', href: '/contratos/control-mando' },
         { title: `Expediente ${contrato.n_expediente}`, href: '#' },
     ];
 
@@ -57,14 +57,14 @@ export default function Show({ contrato }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Contrato ${contrato.id_contrato}`} />
 
-            {/* Banner superior estilo administrativo */}
+
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase">
                 Vista de Expediente: {contrato.n_expediente}
             </div>
 
             <div className="flex flex-col gap-4 p-4 text-[11px]">
 
-                {/* --- BOTONES DE ACCIÓN Y PDF --- */}
+
                 <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-3 border border-gray-300 rounded shadow-sm">
                     <button
                         onClick={() => descargarPDF('basico')}
@@ -79,7 +79,7 @@ export default function Show({ contrato }: Props) {
                         PDF Completo
                     </button>
 
-                    <div className="h-6 w-[1px] bg-gray-300 mx-2" />
+                    <div className="h-6 w-px bg-gray-300 mx-2" />
 
                     <Link
                         href={`/contratos/${contrato.id}/movimientos`}
@@ -89,7 +89,6 @@ export default function Show({ contrato }: Props) {
                     </Link>
                 </div>
 
-                {/* Tabla Estilo Cuadrícula Administrativa */}
                 <div className="overflow-hidden border border-gray-300 bg-white shadow-sm">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -125,7 +124,7 @@ export default function Show({ contrato }: Props) {
                                 <td className="px-4 py-2 font-bold">{contrato.importe_estimado} €</td>
                             </tr>
 
-                            {/* Fila de expansión estilo técnico */}
+
                             <tr
                                 className='cursor-pointer bg-blue-100/30 hover:bg-blue-100/50 transition-colors border-t border-gray-300'
                                 onClick={() => setMostrarDetalles(!mostrarDetalles)}

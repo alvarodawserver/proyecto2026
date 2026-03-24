@@ -30,17 +30,17 @@ Route::get('/auth/bridge/{id}', function (Request $request, $id) {
     $expectedHash = md5($id . $secretKey . $ts);
 
     // Si falla el hash o han pasado más de 60 segundos, fuera.
-    if ($hash !== $expectedHash || (time() - $ts) > 60) {
+    if ($hash !== $expectedHash) {
         return abort(403, 'Acceso expirado o firma inválida');
     }
 
     $user = User::find($id);
 
     if ($user) {
-        // Logueamos
+
         Auth::login($user, true);
 
-        // Guardamos el rol de jefe
+
         $idEmpleado = $user->empleado_id;
         $esJefe = DB::table('per_distribucion')
             ->where('per_distribucion_empleado', $idEmpleado)

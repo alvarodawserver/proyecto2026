@@ -70,7 +70,6 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Editar ${contrato.n_expediente}`} />
 
-            {/* Banner Institucional con ID de registro */}
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase flex justify-between items-center">
                 <span>Modificar Expediente: {contrato.n_expediente}</span>
                 <span className="text-[10px] bg-black/20 px-2 py-1 rounded">ID: {contrato.id}</span>
@@ -204,7 +203,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                         {/* Botones de acción */}
                         <div className="md:col-span-2 border-t border-gray-100 pt-6 flex gap-3 justify-end">
                             <Link
-                                href={`/contratos/${contrato.id}`}
+                                href={'/contratos/control-mando'}
                                 className="bg-gray-100 text-gray-600 px-6 py-2 rounded-sm font-bold uppercase hover:bg-gray-200 border border-gray-300 transition-colors"
                             >
                                 Descartar Cambios

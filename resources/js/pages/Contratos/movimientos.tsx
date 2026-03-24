@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
+import { Button } from '@/components/ui/button';
 
 type Movimiento = {
     id: number;
@@ -22,6 +23,7 @@ type Props = {
             id: number;
             nombre: string;
         };
+        formalizado: boolean;
     };
 };
 
@@ -80,8 +82,8 @@ export default function Movimientos({ contrato }: Props) {
                                         <td className="px-4 py-2 border-r border-gray-200 normal-case text-gray-600 italic leading-relaxed">
                                             {mov.observaciones || '--- Sin observaciones registradas ---'}
                                         </td>
-                                        <td className="px-4 py-2 font-bold text-[#e96b7d]">
-                                            {mov.usuario?.nombre || 'USUARIO_DESCONOCIDO'}
+                                        <td className="px-4 py-2 font-bold text-gray-700">
+                                            {contrato.usuario?.nombre || 'USUARIO_DESCONOCIDO'}
                                         </td>
                                     </tr>
                                 ))}
@@ -93,14 +95,21 @@ export default function Movimientos({ contrato }: Props) {
                 {/* Footer Técnico */}
                 <div className="flex justify-between items-center text-[10px] text-gray-400 mt-2 px-1 uppercase font-bold tracking-widest">
                     <div className="flex gap-4">
-                        <span>Entradas: {contrato.movimientos?.length}</span>
                         <span>Expediente: {contrato.n_expediente}</span>
+
                     </div>
                     <div className="flex items-center gap-1 text-green-600">
                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                        Registro Verificado
+                        {contrato.formalizado ? 'Registro Formalizado' : 'No formalizado'}
                     </div>
                 </div>
+                <Button
+                    variant="outline"
+                    onClick={() => window.history.back()}
+                    className="text-[10px] uppercase tracking-widest"
+                >
+                    Volver
+                </Button>
             </div>
         </AppLayout>
     );

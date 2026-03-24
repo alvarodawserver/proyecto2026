@@ -1,7 +1,7 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
-import { movimientos as movimientosRoute } from '@/routes';
+import { Button } from '@/components/ui/button';
 
 type Movimiento = {
     id: number;
@@ -12,6 +12,10 @@ type Movimiento = {
     };
     fecha_movimiento_f: string;
     actuacion: string;
+    contrato: {
+        id_contrato: string;
+        n_expediente: string;
+    }
 };
 
 type Props = {
@@ -20,7 +24,7 @@ type Props = {
 
 export default function Movimientos({ movimientos }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Contratos', href: '/contratos' },
+        { title: 'Control de Mando', href: '/contratos/control-mando' },
         { title: 'Registro Global de Actividad', href: '#' },
     ];
 
@@ -28,10 +32,8 @@ export default function Movimientos({ movimientos }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Historial de Actividad" />
 
-            {/* Banner Institucional Rosa */}
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase flex justify-between items-center tracking-tight">
                 <span>Historial de Movimientos del Sistema</span>
-                <span className="text-[10px] bg-white/20 px-2 py-1 rounded">LOG_SISTEMA</span>
             </div>
 
             <div className="flex flex-col gap-4 p-4 text-[11px]">
@@ -48,13 +50,14 @@ export default function Movimientos({ movimientos }: Props) {
                                     <th className="px-4 py-2 text-left font-bold text-gray-700 border-r border-gray-200 w-40">Fecha</th>
                                     <th className="px-4 py-2 text-left font-bold text-gray-700 border-r border-gray-200 w-32">Actuación</th>
                                     <th className="px-4 py-2 text-left font-bold text-gray-700 border-r border-gray-200">Observaciones Técnicas</th>
-                                    <th className="px-4 py-2 text-left font-bold text-gray-700">Usuario Responsable</th>
+                                    <th className="px-4 py-2 text-left font-bold text-gray-700 border-r">Usuario Responsable</th>
+                                    <th className="px-4 py-2 text-left font-bold text-gray-700">Contrato afectado</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {movimientos.map((mov) => (
                                     <tr key={mov.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-4 py-2 font-medium text-blue-600 border-r border-gray-200 bg-gray-50/30">
+                                        <td className="px-4 py-2 font-medium  border-r border-gray-200 bg-gray-50/30">
                                             {mov.fecha_movimiento_f}
                                         </td>
                                         <td className="px-4 py-2 border-r border-gray-200 text-center">
@@ -67,11 +70,14 @@ export default function Movimientos({ movimientos }: Props) {
                                                 {mov.actuacion}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-2 border-r border-gray-200 normal-case text-gray-600 italic">
+                                        <td className="px-4 py-2 border-r border-gray-200 normal-case italic">
                                             {mov.observaciones || '---'}
                                         </td>
-                                        <td className="px-4 py-2 font-bold text-gray-700">
+                                        <td className="px-4 py-2 border-r font-bold text-gray-700">
                                             {mov.usuario?.nombre}
+                                        </td>
+                                        <td className="px-4 py-2 font-bold text-gray-700">
+                                            {mov.contrato?.n_expediente}
                                         </td>
                                     </tr>
                                 ))}
@@ -83,6 +89,11 @@ export default function Movimientos({ movimientos }: Props) {
                 <div className="flex justify-between items-center text-[10px] text-gray-400 mt-2 px-1 uppercase font-bold">
                     <span>Entradas totales: {movimientos?.length}</span>
                 </div>
+                <Button
+                    onClick={() => window.history.back()}
+                    className="text-[10px] uppercase tracking-widest text-black-400 bg-gray-100 hover:bg-gray-200">
+                    Volver
+                </Button>
             </div>
         </AppLayout>
     );

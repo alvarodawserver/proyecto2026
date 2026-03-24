@@ -37,7 +37,7 @@ export default function Create({ procedimientos, tipos }: Props) {
     });
 
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Contratos', href: '/contratos' },
+        { title: 'Control de Mando', href: '/contratos/control-mando' },
         { title: 'Nuevo Expediente', href: '/contratos/create' },
     ];
 
@@ -58,7 +58,7 @@ export default function Create({ procedimientos, tipos }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Nuevo Contrato" />
 
-            {/* Banner Institucional */}
+
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase">
                 Registro de Nuevo Expediente
             </div>

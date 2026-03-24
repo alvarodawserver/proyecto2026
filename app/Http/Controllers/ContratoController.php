@@ -170,10 +170,13 @@ class ContratoController extends Controller
     }
 
     public function controlMando(Request $request)
-    {
+{
     $usuarioLogueado = Auth::user();
+    if (!$usuarioLogueado) {
+        return response()->json([], 401);
+    }
 
-
+    // Buscamos su departamento
     $departamentoUsuario = DB::table('per_distribucion')
         ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
         ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
@@ -182,22 +185,25 @@ class ContratoController extends Controller
 
     $query = Contrato::query();
 
+    // --- LÓGICA PARA ADMIN O CONTRATACIÓN ---
+    $esAdmin = strtolower($usuarioLogueado->nombre) === 'admin';
+    $deptoUpper = mb_strtoupper($departamentoUsuario ?? '', 'UTF-8');
+    $esContratacion = str_contains($deptoUpper, 'CONTRATACIÓN') || str_contains($deptoUpper, 'CONTRATACION');
 
-    $deptoUpper = mb_strtoupper($departamentoUsuario, 'UTF-8');
-
-    if ($deptoUpper === 'CONTRATACIÓN' || $deptoUpper === 'CONTRATACION') {
-
+    if ($esAdmin || $esContratacion) {
+        // Si es admin o contratación, puede filtrar por el select o ver todo
         if ($request->filled('departamento')) {
             $query->where('unidad_promotora', $request->departamento);
         }
-
     } elseif ($departamentoUsuario) {
+        // Si es un usuario normal, solo ve lo suyo
         $query->where('unidad_promotora', $departamentoUsuario);
-
     } else {
+        // Si no hay departamento y no es admin, devolvemos vacío para seguridad
         return response()->json([]);
     }
 
+    // Filtros de fecha
     if ($request->filled('desde')) {
         $query->whereDate('fecha_inicio', '>=', $request->desde);
     }

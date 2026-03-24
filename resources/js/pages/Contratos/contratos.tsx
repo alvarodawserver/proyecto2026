@@ -1,25 +1,24 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
-import {contratos as contratoRoute} from '@/routes';
+import { contratos as contratoRoute } from '@/routes';
 import Can from '@/components/can';
-import { Link } from '@inertiajs/react';
+import { Fragment } from 'react';
 
 type Contrato = {
-    id:number,
-    id_contrato:string,
-    n_expediente:string,
-    descripcion:string,
-    responsable:string,
-    tipos_id:number,
-    importe_estimado:number | '',
-    tipo_procedimiento:number;
-    fecha_prevista:string,
-    fecha_inicio:string,
-    unidad_promotora:string,
-    duracion_estimada:string,
-    estado_expediente:string,
-
+    id: number;
+    id_contrato: string;
+    n_expediente: string;
+    descripcion: string;
+    responsable: string;
+    tipos_id: number;
+    importe_estimado: number | '';
+    tipo_procedimiento: number;
+    fecha_prevista: string;
+    fecha_inicio: string;
+    unidad_promotora: string;
+    duracion_estimada: string;
+    estado_expediente: string;
 };
 
 type Props = {
@@ -28,8 +27,12 @@ type Props = {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Utilidades',
+        href: 'http://localhost:8080/index.php?r=utilidades/index',
+    },
+    {
         title: 'Contratos',
-        href: contratoRoute(),
+        href: '#',
     },
 ];
 
@@ -37,65 +40,109 @@ export default function Contratos({ contratos }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Contratos" />
-            <div className="flex flex-col gap-4 p-4">
-                <h1 className="text-xl font-semibold">Tus contratos</h1>
-                {contratos?.length === 0 ? (
-                    <p className="text-gray-500">No tienes contratos aún.</p>
-                ) : (
-                    <div className="overflow-x-auto rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <table className="w-full min-w-150 divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
-                            <thead>
-                                <tr className="bg-gray-100 dark:bg-gray-800">
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Código contrato</th>
-                                    <th className="px-4 py-2 text-left text-sm font-medium">NºExpediente</th>
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Descripción</th>
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Estado</th>
-                                    <th className="px-4 py-2 text-left text-sm font-medium">Responsable</th>
-                                    <Can permission='manejar_contratos'>
-                                        <th className="px-4 py-2 text-left text-sm font-medium">Acciones</th>
-                                    </Can>
 
+            <div className="flex flex-col gap-4 p-4">
+                {/* Barra de Acciones Superior */}
+                <div className="flex flex-wrap items-center gap-4 bg-gray-50 dark:bg-gray-800 p-3 border border-gray-300 rounded shadow-sm">
+                    <h1 className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mr-auto">
+                        Panel de Gestión: Contratos Activos
+                    </h1>
+
+                    <Can permission="manejar_contratos">
+                        <Link
+                            className="flex items-center gap-2 bg-[#10b981] hover:bg-[#059669] text-white text-[10px] font-bold py-1.5 px-3 rounded shadow-sm transition-colors uppercase tracking-wider"
+                            href={`/contratos/create`}
+                        >
+                            + Nuevo Expediente
+                        </Link>
+                    </Can>
+                </div>
+
+                {/* Tabla con estilo Control de Mando */}
+                <div className="overflow-x-auto border border-gray-300 bg-white shadow-sm">
+                    <table className="w-full text-left border-collapse text-[11px]">
+                        <thead>
+                            <tr className="bg-gray-100 border-b border-gray-300 uppercase">
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Nº Expediente</th>
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Descripción Objeto</th>
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Estado</th>
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Responsable</th>
+                                <Can permission="manejar_contratos">
+                                    <th className="px-4 py-2 font-bold text-blue-900 text-center">Acciones</th>
+                                </Can>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {contratos?.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="p-8 text-center italic text-gray-500">
+                                        No hay expedientes activos registrados.
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="divide-y divide-sidebar-border/50 dark:divide-sidebar-border">
-                                {(contratos).map((con) => (
-                                    <tr key={con.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                        <td className='px-4 py-2 font-medium text-blue-600'>
-                                                <Link href={`/contratos/show/${con.id}`}>
-                                                    {con.id_contrato}
-                                                </Link>
+                            ) : (
+                                contratos.map((con) => (
+                                    <tr key={con.id} className="border-b border-gray-200 hover:bg-blue-50/50 transition-colors">
+                                        <td className="px-4 py-2 border-r border-gray-200 font-bold text-blue-600">
+                                            <Link href={`/contratos/show/${con.id}`}>
+                                                {con.n_expediente}
+                                            </Link>
                                         </td>
-                                        <td className="px-4 py-2">{con.n_expediente}</td>
-                                        <td className="px-4 py-2">{con.descripcion}</td>
-                                        <td className="px-4 py-2">{con.estado_expediente}</td>
-                                        <td className="px-4 py-2">{con.responsable}</td>
-                                        <Can permission='manejar_contratos'>
-                                            <Link href={`/contratos/edit/${con.id}`}>
-                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${'bg-blue-100 text-blue-500'}`}>
-                                                    Completar contrato
-                                                </span>
-                                            </Link>
-                                            <Link href={`/contratos/destroy/${con.id}`}
-                                            method='delete'
-                                            onBefore={() => confirm('¿Estás seguro de que deseas eliminar este contrato?')}
-                                            >
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${'bg-red-100 text-red-500'}`}>
-                                                    Eliminar
-                                                    </span>
-                                            </Link>
+                                        <td className="px-4 py-2 border-r border-gray-200 uppercase text-gray-700 italic">
+                                            {con.descripcion}
+                                        </td>
+                                        <td className="px-4 py-2 border-r border-gray-200 text-center">
+                                            <span className={`px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase border ${
+                                                con.estado_expediente === 'Activo'
+                                                ? 'bg-blue-50 border-blue-200 text-blue-600'
+                                                : 'bg-yellow-50 border-yellow-200 text-yellow-700'
+                                            }`}>
+                                                {con.estado_expediente || 'ACTIVO'}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-2 border-r border-gray-200 uppercase text-gray-600">
+                                            {con.responsable}
+                                        </td>
+                                        <Can permission="manejar_contratos">
+                                            <td className="px-2 py-2">
+                                                <div className="flex flex-col gap-1 items-center">
+                                                    <Link
+                        href={`/contratos/${con.id}/movimientos`}
+                        className="w-full min-w-24 bg-blue-600 hover:bg-blue-700 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm uppercase"
+                    >
+                        Registro de actividad
+                    </Link>
+                                                    <Link
+                                                        href={`/contratos/edit/${con.id}`}
+                                                        className="w-full min-w-24 bg-[#4fc3f7] hover:bg-blue-400 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm uppercase"
+                                                    >
+                                                        Completar contrato
+                                                    </Link>
+                                                    <Link
+                                                        href={`/contratos/destroy/${con.id}`}
+                                                        method="delete"
+                                                        as="button"
+                                                        onBefore={() => confirm('¿Eliminar contrato?')}
+                                                        className="w-full min-w-24 bg-[#e96b7d] hover:bg-red-400 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm uppercase"
+                                                    >
+                                                        Eliminar
+                                                    </Link>
+                                                </div>
+                                            </td>
                                         </Can>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-                <Can permission='manejar_contratos'>
-                    <Link href={`/contratos/create`}
-                    className='btn btn-info'>
-                        Dar de alta a un contrato
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Footer de la tabla */}
+                <div className="flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">
+                    <span>Total expedientes activos: {contratos?.length}</span>
+                    <Link href="/contratos/desactivados" className="text-[#e96b7d] hover:underline">
+                        Ir al archivo de desactivados
                     </Link>
-                </Can>
+                </div>
             </div>
         </AppLayout>
     );

@@ -64,7 +64,7 @@ Route::get('/auth/bridge/{id}', function (Request $request, $id) {
 Route::middleware(['force.login'])->group(function(){
     Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('auth')->name('movimientos');
 
-    Route::get('/contratos', [ContratoController::class, 'index'])->name('contratos');
+    Route::get('/contratos', [ContratoController::class, 'index'])->middleware(['auth', 'can:acceder-contratos'])->name('contratos');
     Route::get('/contratos/create', [ContratoController::class, 'create'])->name('contratos.create');
     Route::post('/contratos/store', [ContratoController::class, 'store'])->name('contratos.store');
     Route::get('/contratos/show/{contrato}', [ContratoController::class, 'show'])->name('contratos.show');
@@ -89,7 +89,7 @@ Route::middleware(['force.login'])->group(function(){
     Route::delete('/tipos/{tipo}/destroy',[TipoController::class,'destroy'])->name('tipos.destroy');
 
     Route::middleware(['auth'])->group(function(){
-        Route::get('/contratos/control-mando', [ContratoController::class, 'vistaControlMando'])->name('contratos.controlMando');
+        Route::get('/contratos/control-mando', [ContratoController::class, 'vistaControlMando'])->middleware(['auth', 'can:acceder-control-mando'])->name('contratos.controlMando');
         Route::get('/api/data/control-mando', [ContratoController::class, 'controlMando'])->name('control.data');
     });
 

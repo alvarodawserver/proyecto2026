@@ -3,6 +3,7 @@ import { Head, usePage, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { contratos as contratoRoute } from '@/routes';
+import Can from '@/components/can';
 
 type Contrato = {
     id: number;
@@ -145,7 +146,7 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
                     {/* El acceso a desactivados se abre también para el Admin */}
                     {(esContratacion || esAdmin) && (
                         <Link className="flex items-center gap-2 bg-[#ef4444] hover:bg-[#dc2626] text-white text-[10px] font-bold py-1.5 px-3 rounded shadow-sm transition-colors uppercase tracking-wider" href={`/contratos/desactivados`}>
-                            Ver Contratos desactivados
+                            Ver desactivados
                         </Link>
                     )}
                 </div>

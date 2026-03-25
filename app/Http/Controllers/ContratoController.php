@@ -18,7 +18,8 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        $contratos = Contrato::all()->load('usuario');
+        $usuarioLogueado = Auth::user();
+        $contratos = Contrato::where('created_by', $usuarioLogueado->id)->get();
         return Inertia::render('Contratos/contratos',[
             'contratos' => $contratos,]);
     }

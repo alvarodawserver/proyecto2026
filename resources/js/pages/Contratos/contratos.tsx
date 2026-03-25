@@ -67,7 +67,7 @@ export default function Contratos({ contratos }: Props) {
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Descripción Objeto</th>
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Estado</th>
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Responsable</th>
-                                <Can permission="manejar_contratos">
+                                <Can permission="ver-control-mando">
                                     <th className="px-4 py-2 font-bold text-blue-900 text-center">Acciones</th>
                                 </Can>
                             </tr>

@@ -29,6 +29,7 @@ type Contrato = {
     unidad_promotora: string;
     duracion_estimada: string;
     estado_expediente: string;
+    asignado_a: string;
 
 };
 
@@ -154,6 +155,10 @@ export default function Show({ contrato }: Props) {
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Importe final</td>
                                         <td className="px-4 py-2 text-gray-600">{contrato.importe_final != null ? `${contrato.importe_final} €` : '---'}</td>
+                                    </tr>
+                                    <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
+                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Asignado a</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.asignado_a || '---'}</td>
                                     </tr>
                                 </>
                             )}

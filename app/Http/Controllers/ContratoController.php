@@ -49,10 +49,14 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-        $usuarioLogueado = Auth::user();
+        $usuario_asignao = $request->input('asignado_a');
+        $id_empleado_asignado = DB::table('usuarios')
+            ->where('nombre', $usuario_asignao)
+            ->value('empleado_id');
+            
         $unidad_promotora = DB::table('per_distribucion')
             ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
-            ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
+            ->where('per_distribucion_empleado', $id_empleado_asignado)
             ->where('per_distribucion_dpto_principal', true)
             ->value('departamentos.nombre');
 

@@ -42,11 +42,11 @@ export default function Contratos({ contratos }: Props) {
             <Head title="Contratos" />
 
             <div className="flex flex-col gap-4 p-4">
-                {/* Barra de Acciones Superior */}
                 <div className="flex flex-wrap items-center gap-4 bg-gray-50 dark:bg-gray-800 p-3 border border-gray-300 rounded shadow-sm">
                     <h1 className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mr-auto">
                         Panel de Gestión: Contratos Activos
                     </h1>
+
 
                     <Can permission="manejar_contratos">
                         <Link
@@ -58,13 +58,13 @@ export default function Contratos({ contratos }: Props) {
                     </Can>
                 </div>
 
-                {/* Tabla con estilo Control de Mando */}
+
                 <div className="overflow-x-auto border border-gray-300 bg-white shadow-sm">
                     <table className="w-full text-left border-collapse text-[11px]">
                         <thead>
                             <tr className="bg-gray-100 border-b border-gray-300 uppercase">
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Nº Expediente</th>
-                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Descripción Objeto</th>
+                                <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Descripción</th>
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Estado</th>
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Responsable</th>
                                 <Can permission="manejar_contratos">
@@ -136,7 +136,6 @@ export default function Contratos({ contratos }: Props) {
                     </table>
                 </div>
 
-                {/* Footer de la tabla */}
                 <div className="flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">
                     <span>Total expedientes activos: {contratos?.length}</span>
                     <Link href="/contratos/desactivados" className="text-[#e96b7d] hover:underline">

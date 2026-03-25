@@ -15,12 +15,19 @@ interface Tipo {
     tipo_contrato: string
 }
 
-interface Props {
-    procedimientos: Procedimiento[],
-    tipos: Tipo[]
+interface Jefes{
+    id: number,
+    nombre: string
 }
 
-export default function Create({ procedimientos, tipos }: Props) {
+interface Props {
+    procedimientos: Procedimiento[],
+    tipos: Tipo[],
+    jefes: Jefes[],
+}
+
+
+export default function Create({ procedimientos, tipos, jefes }: Props) {
     const [step, setStep] = useState(1);
     const { data, setData, post, errors, processing } = useForm({
         n_expediente: '',
@@ -34,6 +41,7 @@ export default function Create({ procedimientos, tipos }: Props) {
         fecha_inicio: '',
         duracion_estimada: '',
         n_resolucion: '',
+        asignado_a: '',
     });
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -157,6 +165,22 @@ export default function Create({ procedimientos, tipos }: Props) {
                                         ))}
                                     </select>
                                 </div>
+
+                                <div className="flex flex-col">
+                                    <label htmlFor="asignado_a" className={labelClass}>Jefe de servicio asignado</label>
+                                    <select
+                                        id="asignado_a"
+                                        className={inputClass('asignado_a')}
+                                        value={data.asignado_a}
+                                        onChange={e => setData('asignado_a', e.target.value)}
+                                    >
+                                        <option value="">-- SELECCIONAR --</option>
+                                        {jefes.map((jefe) => (
+                                            <option key={jefe.id} value={jefe.id}>{jefe.nombre}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
 
                                 <div className="flex flex-col">
                                     <label htmlFor="fecha_prevista" className={labelClass}>Fecha prevista de inicio</label>

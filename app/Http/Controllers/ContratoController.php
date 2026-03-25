@@ -19,7 +19,7 @@ class ContratoController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $contratos = Contrato::where('created_by', $user->id)->get();
+        $contratos = Contrato::where('asignado_a', $user->nombre)->get();
         return Inertia::render('Contratos/contratos',[
             'contratos' => $contratos,]);
     }
@@ -29,7 +29,19 @@ class ContratoController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Contratos/create',['procedimientos' => Adjudicacione::all(),'tipos' => Tipo::all()]);
+        $jefes = DB::table('usuarios')
+            ->join('empleados', 'usuarios.empleado_id', '=', 'empleados.id')
+            ->join('per_distribucion', 'empleados.id', '=', 'per_distribucion.per_distribucion_empleado')
+            ->where('per_distribucion.per_distribucion_rol', 1)
+            ->where('per_distribucion.per_distribucion_dpto_principal', 1)
+            ->select('usuarios.nombre')
+            ->get();
+
+        return Inertia::render('Contratos/create',[
+            'procedimientos' => Adjudicacione::all(),
+            'tipos' => Tipo::all(),
+            'jefes' => $jefes
+        ]);
     }
 
     /**
@@ -57,6 +69,7 @@ class ContratoController extends Controller
             'fecha_inicio' => 'nullable|date',
             'n_resolucion' => 'nullable|max:255',
             'duracion_estimada' => 'required',
+            'asignado_a' => 'required|max:255',
         ]);
 
        Contrato::create(array_merge($validated, [

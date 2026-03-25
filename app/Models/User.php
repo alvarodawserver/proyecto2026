@@ -33,7 +33,7 @@ class User extends Authenticatable
 
 
 
-    
+
     protected $hidden = [
         'password',
         // 'token', // Descomenta esto si no quieres que el token de Yii viaje en los JSON
@@ -63,6 +63,6 @@ class User extends Authenticatable
 
     public function contratos()
     {
-        return $this->hasMany(Contrato::class, 'user_id'); // Asegúrate de que la FK en contratos sea user_id o el que corresponda
+        return $this->hasMany(Contrato::class, 'user_id'); 
     }
 }

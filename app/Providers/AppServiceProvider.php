@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Contrato;
+use App\Models\User;
 use App\Models\Usuario;
 use App\Observers\ContratoObserver;
 use Carbon\CarbonImmutable;
@@ -32,6 +33,14 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('update-contrato',function(Contrato $contrato){
             return now()->between(now()->subDays(3),$contrato->alerta_vencimiento);
+        });
+
+        Gate::define('acceder-contratos', function (User $user) {
+        return $user->isAdmin() || $user->esCualquierJefe();
+    });
+
+        Gate::define('ver-control-mando', function (User $user) {
+            return $user->isAdmin() || $user->esJefeContratacion();
         });
     }
 

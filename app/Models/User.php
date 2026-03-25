@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+
+use function Symfony\Component\Translation\t;
 
 class User extends Authenticatable
 {
@@ -63,6 +66,37 @@ class User extends Authenticatable
 
     public function contratos()
     {
-        return $this->hasMany(Contrato::class, 'user_id'); 
+        return $this->hasMany(Contrato::class, 'user_id'); // Asegúrate de que la FK en contratos sea user_id o el que corresponda
     }
+
+    public function isAdmin(): bool {
+    return $this->nombre === 'admin';
+}
+
+public function esCualquierJefe(): bool {
+    $rolJefeId = DB::table('per_roles')->where('per_roles_nombre', 'Jefe de servicio')->value('per_roles_id');
+
+    return DB::table('per_distribucion')
+        ->where('per_distribucion_empleado', $this->empleado_id)
+        ->where('per_distribucion_rol', $rolJefeId)
+        ->where('per_distribucion_dpto_principal', 1)
+        ->exists();
+}
+
+public function esJefeContratacion(): bool
+    {
+        $rolJefeId = DB::table('per_roles')
+            ->where('per_roles_nombre', 'Jefe de servicio')
+            ->value('per_roles_id');
+
+        return DB::table('per_distribucion')
+            ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
+            ->where('per_distribucion_empleado', $this->empleado_id)
+            ->where('per_distribucion_rol', $rolJefeId)
+            ->where('per_distribucion_dpto_principal', true)
+            ->where('departamentos.nombre', 'LIKE', '%CONTRATACION%')
+            ->exists();
+
+}
+
 }

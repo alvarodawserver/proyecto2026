@@ -37,44 +37,8 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
 {
     $usuario = $request->user();
-    $isJefeContratacion = false;
-    $isAdmin = false;
-    $departamento = null;
-    $puedeAccederControlMando = false;
-    if ($usuario) {
-        if ($usuario->nombre === 'admin') {
-            $isAdmin = true;
-        }
 
-        $rolJefeId = DB::table('per_roles')
-            ->where('per_roles_nombre', 'Jefe de servicio')
-            ->value('per_roles_id');
 
-        $distribucion = DB::table('per_distribucion')
-            ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
-            ->where('per_distribucion_empleado', $usuario->empleado_id)
-            ->where('per_distribucion_rol', $rolJefeId)
-            ->where('per_distribucion_dpto_principal', 1)
-            ->select('departamentos.nombre')
-            ->first();
-            
-        $esCualquierJefe = DB::table('per_distribucion')
-        ->where([
-        'per_distribucion_empleado' => $usuario->empleado_id,
-        'per_distribucion_rol' => $rolJefeId,
-        'per_distribucion_dpto_principal' => 1
-        ])
-        ->exists();
-        if ($distribucion) {
-            $departamento = $distribucion->nombre;
-            if (str_contains(strtoupper($departamento), 'CONTRATACION')) {
-                $isJefeContratacion = true;
-            }
-        }
-
-        $puedeAccederControlMando = $isAdmin || $isJefeContratacion;
-        $puedeHacerContratos = $isAdmin || $esCualquierJefe;
-    }
 
     return [
         ...parent::share($request),
@@ -85,14 +49,11 @@ class HandleInertiaRequests extends Middleware
                 'name'   => $usuario->nombre,
                 'email' => $usuario->email,
                 'empleado_id' => $usuario->empleado_id,
-                'departamento' => $departamento,
+                'departamento' => $usuario->empleado->departamento ? $usuario->empleado->departamento : null,
             ] : null,
             'can' => [
-                'manejar_contratos' => $puedeHacerContratos,
-                'manejar_procedimientos' => $puedeAccederControlMando,
-                'manejar_tipos' => $puedeAccederControlMando,
-                'ver_historico' => $puedeAccederControlMando,
-                'ver_control_mando' => $puedeAccederControlMando,
+                'ver_control_mando' => $usuario ? $usuario->can('ver-control-mando') : false,
+
             ],
         ],
     ];

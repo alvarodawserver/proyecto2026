@@ -67,9 +67,6 @@ export default function Contratos({ contratos }: Props) {
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Descripción</th>
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900 text-center">Estado</th>
                                 <th className="px-4 py-2 border-r border-gray-300 font-bold text-blue-900">Responsable</th>
-                                <Can permission="manejar_contratos">
-                                    <th className="px-4 py-2 font-bold text-blue-900 text-center">Acciones</th>
-                                </Can>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,33 +99,7 @@ export default function Contratos({ contratos }: Props) {
                                         <td className="px-4 py-2 border-r border-gray-200 uppercase text-gray-600">
                                             {con.responsable}
                                         </td>
-                                        <Can permission="manejar_contratos">
-                                            <td className="px-2 py-2">
-                                                <div className="flex flex-col gap-1 items-center">
-                                                    <Link
-                                                        href={`/contratos/${con.id}/movimientos`}
-                                                        className="w-full min-w-24 bg-blue-600 hover:bg-blue-700 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm uppercase"
-                                                    >
-                                                        Registro de actividad
-                                                    </Link>
-                                                    <Link
-                                                        href={`/contratos/edit/${con.id}`}
-                                                        className="w-full min-w-24 bg-[#4fc3f7] hover:bg-blue-400 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm uppercase"
-                                                    >
-                                                        Completar contrato
-                                                    </Link>
-                                                    <Link
-                                                        href={`/contratos/destroy/${con.id}`}
-                                                        method="delete"
-                                                        as="button"
-                                                        onBefore={() => confirm('¿Eliminar contrato?')}
-                                                        className="w-full min-w-24 bg-[#e96b7d] hover:bg-red-400 text-white text-[9px] py-0.5 text-center font-bold rounded shadow-sm uppercase"
-                                                    >
-                                                        Eliminar
-                                                    </Link>
-                                                </div>
-                                            </td>
-                                        </Can>
+
                                     </tr>
                                 ))
                             )}

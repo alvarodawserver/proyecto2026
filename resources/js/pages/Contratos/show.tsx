@@ -2,6 +2,8 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { useState } from 'react';
+import { Button } from '@headlessui/react';
+import Can from '@/components/can';
 
 type Contrato = {
     id: number;
@@ -64,7 +66,7 @@ export default function Show({ contrato }: Props) {
 
             <div className="flex flex-col gap-4 p-4 text-[11px]">
 
-
+            <Can permission="manejar_contratos">
                 <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-3 border border-gray-300 rounded shadow-sm">
                     <button
                         onClick={() => descargarPDF('basico')}
@@ -88,6 +90,7 @@ export default function Show({ contrato }: Props) {
                         Registro de actividad
                     </Link>
                 </div>
+            </Can>
 
                 <div className="overflow-hidden border border-gray-300 bg-white shadow-sm">
                     <table className="w-full text-left border-collapse">
@@ -121,7 +124,7 @@ export default function Show({ contrato }: Props) {
                             </tr>
                             <tr className='hover:bg-blue-50/50 transition-colors'>
                                 <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Importe estimado</td>
-                                <td className="px-4 py-2 font-bold">{contrato.importe_estimado} €</td>
+                                <td className="px-4 py-2 font-bold">{contrato.importe_estimado != null ? `${contrato.importe_estimado} €` : '---'}</td>
                             </tr>
 
 
@@ -150,7 +153,7 @@ export default function Show({ contrato }: Props) {
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Importe final</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.importe_final} €</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.importe_final != null ? `${contrato.importe_final} €` : '---'}</td>
                                     </tr>
                                 </>
                             )}
@@ -159,12 +162,12 @@ export default function Show({ contrato }: Props) {
                 </div>
 
                 <div className="mt-2">
-                    <Link
-                        href={'/contratos/control-mando'}
+                    <Button
+                        onClick={() => window.history.length > 1 ? window.history.back() : window.location.href = '/contratos'}
                         className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-sm hover:bg-gray-300 font-bold uppercase border border-gray-300 text-[10px]"
                     >
                         ← Volver al listado
-                    </Link>
+                    </Button>
                 </div>
             </div>
         </AppLayout>

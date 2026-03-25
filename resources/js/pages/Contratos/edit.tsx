@@ -52,7 +52,6 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Contratos', href: '/contratos' },
-        { title: `Expediente ${contrato.n_expediente}`, href: `/contratos/${contrato.id}` },
         { title: 'Editar Datos', href: '#' },
     ];
 
@@ -82,7 +81,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                 <div className="mb-2">
                     <Link
                         href={urlVolver}
-                        className="text-gray-500 hover:text-[#e96b7d] font-bold uppercase text-[10px] flex items-center gap-1 transition-colors"    
+                        className="text-gray-500 hover:text-[#e96b7d] font-bold uppercase text-[10px] flex items-center gap-1 transition-colors"
                     >
                         ← Cancelar y volver
                     </Link>
@@ -205,7 +204,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                         {/* Botones de acción */}
                         <div className="md:col-span-2 border-t border-gray-100 pt-6 flex gap-3 justify-end">
                             <Link
-                                href={'/contratos/control-mando'}
+                                href={window.history.state.back || urlVolver}
                                 className="bg-gray-100 text-gray-600 px-6 py-2 rounded-sm font-bold uppercase hover:bg-gray-200 border border-gray-300 transition-colors"
                             >
                                 Descartar Cambios

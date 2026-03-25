@@ -36,11 +36,11 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
 {
-   $usuario = $request->user();
+    $usuario = $request->user();
     $isJefeContratacion = false;
     $isAdmin = false;
     $departamento = null;
-
+    $puedeAccederControlMando = false;
     if ($usuario) {
         if ($usuario->nombre === 'admin') {
             $isAdmin = true;
@@ -57,14 +57,23 @@ class HandleInertiaRequests extends Middleware
             ->where('per_distribucion_dpto_principal', 1)
             ->select('departamentos.nombre')
             ->first();
-
+            
+        $esCualquierJefe = DB::table('per_distribucion')
+        ->where([
+        'per_distribucion_empleado' => $usuario->empleado_id,
+        'per_distribucion_rol' => $rolJefeId,
+        'per_distribucion_dpto_principal' => 1
+        ])
+        ->exists();
         if ($distribucion) {
             $departamento = $distribucion->nombre;
             if (str_contains(strtoupper($departamento), 'CONTRATACION')) {
                 $isJefeContratacion = true;
             }
         }
+
         $puedeAccederControlMando = $isAdmin || $isJefeContratacion;
+        $puedeHacerContratos = $isAdmin || $esCualquierJefe;
     }
 
     return [
@@ -79,11 +88,11 @@ class HandleInertiaRequests extends Middleware
                 'departamento' => $departamento,
             ] : null,
             'can' => [
-                'manejar_contratos' => $puedeAccederControlMando,
+                'manejar_contratos' => $puedeHacerContratos,
                 'manejar_procedimientos' => $puedeAccederControlMando,
                 'manejar_tipos' => $puedeAccederControlMando,
                 'ver_historico' => $puedeAccederControlMando,
-                'ver_control_mando' => ($isAdmin || $isJefeContratacion),
+                'ver_control_mando' => $puedeAccederControlMando,
             ],
         ],
     ];

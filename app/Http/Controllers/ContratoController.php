@@ -18,8 +18,8 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        $user = Auth::user()->id;
-        $contratos = Contrato::where('created_by', $user)->get()->load('usuario');
+        $user = Auth::user();
+        $contratos = Contrato::where('created_by', $user->id)->get();
         return Inertia::render('Contratos/contratos',[
             'contratos' => $contratos,]);
     }
@@ -67,7 +67,7 @@ class ContratoController extends Controller
         ]));
 
 
-        return redirect('contratos/control-mando')->with('message', 'Contrato creado con éxito');
+        return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');
     }
 
     /**
@@ -112,7 +112,7 @@ class ContratoController extends Controller
         ]);
 
         $contrato->update($validated);
-        return redirect('contratos/control-mando');
+        return redirect()->route('contratos');
     }
 
     /**
@@ -123,7 +123,7 @@ class ContratoController extends Controller
         $contrato->estado_expediente = 'Desactivado';
         $contrato->save();
         $contrato->delete();
-        return redirect('contratos/control-mando');
+        return redirect()->route('contratos');
     }
 
     public function verDesactivados(){
@@ -136,7 +136,7 @@ class ContratoController extends Controller
         $contrato_recuperar->estado_expediente = 'Activo';
         $contrato_recuperar->save();
         $contrato_recuperar->restore();
-        return redirect('contratos/control-mando')->with('success','El contrato se ha recuperado con éxito');
+        return redirect()->route('contratos')->with('success','El contrato se ha recuperado con éxito');
     }
 
     public function verMovimiento(Contrato $contrato){
@@ -171,8 +171,11 @@ class ContratoController extends Controller
     }
 
     public function controlMando(Request $request)
-    {
+{
     $usuarioLogueado = Auth::user();
+    if (!$usuarioLogueado) {
+        return response()->json([], 401);
+    }
 
 
     $departamentoUsuario = DB::table('per_distribucion')
@@ -183,21 +186,23 @@ class ContratoController extends Controller
 
     $query = Contrato::query();
 
+    $esAdmin = strtolower($usuarioLogueado->nombre) === 'admin';
+    $deptoUpper = mb_strtoupper($departamentoUsuario ?? '', 'UTF-8');
+    $esContratacion = str_contains($deptoUpper, 'CONTRATACIÓN') || str_contains($deptoUpper, 'CONTRATACION');
 
-    $deptoUpper = mb_strtoupper($departamentoUsuario, 'UTF-8');
-
-    if ($deptoUpper === 'CONTRATACIÓN' || $deptoUpper === 'CONTRATACION') {
+    if ($esAdmin || $esContratacion) {
 
         if ($request->filled('departamento')) {
             $query->where('unidad_promotora', $request->departamento);
         }
-
     } elseif ($departamentoUsuario) {
-        $query->where('unidad_promotora', $departamentoUsuario);
 
+        $query->where('unidad_promotora', $departamentoUsuario);
     } else {
+
         return response()->json([]);
     }
+
 
     if ($request->filled('desde')) {
         $query->whereDate('fecha_inicio', '>=', $request->desde);
@@ -231,9 +236,12 @@ class ContratoController extends Controller
 
         $contrato = Contrato::with(['usuario', 'tipo', 'tipo_procedimiento'])->findOrFail($id);
 
+
         $modo = $request->query('tipo', 'basico');
 
+
         $pdf = Pdf::loadView('pdf.contrato', compact('contrato', 'modo'));
+
 
         $pdf->setPaper('a4', 'portrait');
 

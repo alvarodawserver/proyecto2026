@@ -49,6 +49,7 @@ export default function Show({ contrato }: Props) {
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Contratos', href: '/contratos' },
+
         { title: `Expediente ${contrato.n_expediente}`, href: '#' },
     ];
 

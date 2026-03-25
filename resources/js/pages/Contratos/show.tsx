@@ -66,7 +66,7 @@ export default function Show({ contrato }: Props) {
 
             <div className="flex flex-col gap-4 p-4 text-[11px]">
 
-            <Can permission="manejar_contratos">
+            <Can permission="ver_control_mando">
                 <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-3 border border-gray-300 rounded shadow-sm">
                     <button
                         onClick={() => descargarPDF('basico')}

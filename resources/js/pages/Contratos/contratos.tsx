@@ -80,7 +80,7 @@ export default function Contratos({ contratos }: Props) {
                                 contratos.map((con) => (
                                     <tr key={con.id} className="border-b border-gray-200 hover:bg-blue-50/50 transition-colors">
                                         <td className="px-4 py-2 border-r border-gray-200 font-bold text-blue-600">
-                                            <Link href={`/contratos/show/${con.id}`}>
+                                            <Link href={`/contratos/show/${con.id}?from=mando`}>
                                                 {con.n_expediente}
                                             </Link>
                                         </td>

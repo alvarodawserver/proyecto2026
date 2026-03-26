@@ -173,7 +173,9 @@ const ControlMando = ({ todos_los_departamentos = [], user_rol }: { todos_los_de
                             ) : datos.map((contrato) => (
                                 <tr key={contrato.id} className="border-b border-gray-200 hover:bg-blue-50/50 transition-colors">
                                     <td className="px-4 py-2 border-r border-gray-200 font-bold text-blue-600">
-                                        <Link href={`/contratos/show/${contrato.id}`}>{contrato.n_expediente}</Link>
+                                        <Link href={`/contratos/show/${contrato.id}?from=mando`}>
+                                            {contrato.n_expediente}
+                                        </Link>
                                     </td>
                                     <td className="px-4 py-2 border-r border-gray-200 uppercase text-gray-700">
                                         {contrato.descripcion}

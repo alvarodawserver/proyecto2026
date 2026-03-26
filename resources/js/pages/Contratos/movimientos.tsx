@@ -25,12 +25,12 @@ type Props = {
         };
         formalizado: boolean;
     };
+    vieneDeMando: boolean;
 };
 
-export default function Movimientos({ contrato }: Props) {
+export default function Movimientos({ contrato, vieneDeMando }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Contratos', href: '/contratos' },
-        {title: `Expediente ${contrato.n_expediente}`, href: `/contratos/show/${contrato.id}` },
+        { title: 'Control de Mando', href: vieneDeMando ? `/contratos/${contrato.id}?from=mando` : `/contratos/show/${contrato.id}` },
         { title: `Log: ${contrato.n_expediente}`, href: '#' },
     ];
 

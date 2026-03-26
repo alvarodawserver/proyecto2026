@@ -14,7 +14,7 @@ class Contrato extends Model
         'id_contrato','n_expediente', 'descripcion', 'responsable',
          'importe_estimado','tipo_procedimiento', 'fecha_prevista','fecha_inicio',
         'unidad_promotora', 'duracion_estimada', 'estado_expediente','importe_final',
-         'tipos_id', 'created_by', 'n_resolucion','alerta_vencimiento','avisado','formalizado', 'asignado_a'
+         'tipos_id', 'created_by', 'n_resolucion','alerta_vencimiento','avisado','formalizado'
     ];
 
 

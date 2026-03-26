@@ -24,7 +24,7 @@ type Props = {
 
 export default function Desactivados({ desactivados }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Contratos', href: '/contratos' },
+        { title: 'Control de Mando', href: '/contratos/control-mando' },
         { title: 'Contratos Desactivados', href: '#' },
     ];
 

@@ -35,9 +35,10 @@ type Contrato = {
 
 type Props = {
     contrato: Contrato;
+    vieneDeMando: boolean;
 };
 
-export default function Show({ contrato }: Props) {
+export default function Show({ contrato, vieneDeMando }: Props) {
     const { auth } = usePage().props as any;
 
 
@@ -51,8 +52,10 @@ export default function Show({ contrato }: Props) {
     };
 
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Contratos', href: '/contratos' },
-
+        {
+            title: vieneDeMando ? 'Control de Mando' : 'Mis Expedientes',
+            href: vieneDeMando ? '/contratos/control-mando' : '/contratos'
+        },
         { title: `Expediente ${contrato.n_expediente}`, href: '#' },
     ];
 

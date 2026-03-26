@@ -10,36 +10,33 @@ import { usePage } from '@inertiajs/react';
 //);
 
 export default function AppLayout({ children, breadcrumbs = [] }: { children: React.ReactNode; breadcrumbs?: BreadcrumbItem[] }) {
-    const { auth } = usePage().props as any;
-    const fixedBreadcrumbs = breadcrumbs.map((item, index) => {
-        const hrefStr = String(item.href);
-        if (index === 0 && hrefStr.includes('control-mando')) {
-            if (!auth.can.ver_control_mando) {
-                return { ...item, title: 'Mis Expedientes', href: '/contratos' };
-            }
-            return {
-            ...item,
-            title: 'Control de Mando',
-            href: '/contratos/control-mando'
-            };
-        }
+    const { props } = usePage();
+    const urls = (props as any).urls || { home: '#', utilidades: '#' };
 
-        return item;
+    const breadcrumbsDinamicos = breadcrumbs.map((item) => {
+
+        let nuevoHref = item.href;
+
+        if (item.href === 'home') nuevoHref = urls.home;
+        if (item.href === 'utilidades') nuevoHref = urls.utilidades;
+
+        return {
+            ...item,
+            href: nuevoHref,
+        };
     });
 
     return (
         <div className="min-h-screen bg-gray-100">
-
+            {/* Header rosa/rojo */}
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm">
                 <h1 className="text-xl font-medium">Gestión de Contratos</h1>
             </div>
 
-
-            <div className="max-w-[1400px] mx-auto px-4">
-
-
+            <div className="max-w-350 mx-auto px-4">
+                {/* Ahora el breadcrumb anterior será "Utilidades" */}
                 <div className="py-4">
-                    <Breadcrumbs breadcrumbs={fixedBreadcrumbs} />
+                    <Breadcrumbs breadcrumbs={breadcrumbsDinamicos} />
                 </div>
 
                 <main>

@@ -19,7 +19,7 @@ class ContratoController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $contratos = Contrato::where('asignado_a', $user->nombre)->get();
+        $contratos = Contrato::where('created_by', $user->id)->get();
         return Inertia::render('Contratos/contratos',[
             'contratos' => $contratos,]);
     }
@@ -49,14 +49,10 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-        $usuario_asignao = $request->input('asignado_a');
-        $id_empleado_asignado = DB::table('usuarios')
-            ->where('nombre', $usuario_asignao)
-            ->value('empleado_id');
-            
+
         $unidad_promotora = DB::table('per_distribucion')
             ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
-            ->where('per_distribucion_empleado', $id_empleado_asignado)
+            ->where('per_distribucion_empleado', Auth::user()->empleado_id)
             ->where('per_distribucion_dpto_principal', true)
             ->value('departamentos.nombre');
 
@@ -73,7 +69,6 @@ class ContratoController extends Controller
             'fecha_inicio' => 'nullable|date',
             'n_resolucion' => 'nullable|max:255',
             'duracion_estimada' => 'required',
-            'asignado_a' => 'required|max:255',
         ]);
 
        Contrato::create(array_merge($validated, [
@@ -84,19 +79,20 @@ class ContratoController extends Controller
         ]));
 
 
-        return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');
+        return redirect('/contratos/control-mando')->with('message', 'Contrato creado con éxito');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Contrato $contrato)
+    public function show(Request $request,Contrato $contrato)
     {
+        $vieneDeMando = $request->query('from') === 'mando';
         $contrato_user = $contrato->load(['usuario.empleado', 'tipo', 'tipo_procedimiento']);;
         if (!$contrato_user) {
             return redirect()->route('contratos')->with('error', 'Contrato no encontrado');
         }
-        return Inertia::render('Contratos/show',['contrato' => $contrato_user]);
+        return Inertia::render('Contratos/show',['contrato' => $contrato_user, 'vieneDeMando' => $vieneDeMando]);
     }
 
     /**
@@ -129,7 +125,7 @@ class ContratoController extends Controller
         ]);
 
         $contrato->update($validated);
-        return redirect()->route('contratos');
+        return redirect('/contratos/control-mando')->with('success','Contrato actualizado con éxito');
     }
 
     /**
@@ -140,7 +136,7 @@ class ContratoController extends Controller
         $contrato->estado_expediente = 'Desactivado';
         $contrato->save();
         $contrato->delete();
-        return redirect()->route('contratos');
+        return redirect('/contratos/control-mando')->with('success','Contrato desactivado con éxito');
     }
 
     public function verDesactivados(){
@@ -153,13 +149,13 @@ class ContratoController extends Controller
         $contrato_recuperar->estado_expediente = 'Activo';
         $contrato_recuperar->save();
         $contrato_recuperar->restore();
-        return redirect()->route('contratos')->with('success','El contrato se ha recuperado con éxito');
+        return redirect('/contratos/control-mando')->with('success','El contrato se ha recuperado con éxito');
     }
 
-    public function verMovimiento(Contrato $contrato){
-
+    public function verMovimiento(Request $request,Contrato $contrato){
+        $vieneDeMando = $request->query('from') === 'mando';
         $contrato->load(['movimientos', 'usuario']);
-        return Inertia::render('Contratos/movimientos',['contrato' => $contrato]);
+        return Inertia::render('Contratos/movimientos',['contrato' => $contrato, 'vieneDeMando' => $vieneDeMando]);
     }
 
 

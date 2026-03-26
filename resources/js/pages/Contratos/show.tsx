@@ -2,6 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { useState } from 'react';
+import Can from '@/components/can';
 
 type Contrato = {
     id: number;
@@ -65,6 +66,7 @@ export default function Show({ contrato }: Props) {
             <div className="flex flex-col gap-4 p-4 text-[11px]">
 
                 {/* --- BOTONES DE ACCIÓN Y PDF --- */}
+                <Can permission="manejar_contratos">
                 <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-3 border border-gray-300 rounded shadow-sm">
                     <button
                         onClick={() => descargarPDF('basico')}
@@ -88,6 +90,7 @@ export default function Show({ contrato }: Props) {
                         Registro de actividad
                     </Link>
                 </div>
+                </Can>
 
                 {/* Tabla Estilo Cuadrícula Administrativa */}
                 <div className="overflow-hidden border border-gray-300 bg-white shadow-sm">
@@ -122,7 +125,7 @@ export default function Show({ contrato }: Props) {
                             </tr>
                             <tr className='hover:bg-blue-50/50 transition-colors'>
                                 <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Importe estimado</td>
-                                <td className="px-4 py-2 font-bold">{contrato.importe_estimado} €</td>
+                                <td className="px-4 py-2 font-bold">{contrato.importe_estimado != null ? `${contrato.importe_estimado} €` : '---'}</td>
                             </tr>
 
                             {/* Fila de expansión estilo técnico */}
@@ -160,12 +163,13 @@ export default function Show({ contrato }: Props) {
                 </div>
 
                 <div className="mt-2">
-                    <Link
-                        href={'/contratos/control-mando'}
-                        className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-sm hover:bg-gray-300 font-bold uppercase border border-gray-300 text-[10px]"
-                    >
-                        ← Volver al listado
-                    </Link>
+                    <button
+    type="button"
+    onClick={() => window.history.length > 1 ? window.history.back() : window.location.href = '/contratos'}
+    className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-sm hover:bg-gray-300 font-bold uppercase border border-gray-300 text-[10px]"
+>
+    ← Volver al listado
+</button>
                 </div>
             </div>
         </AppLayout>

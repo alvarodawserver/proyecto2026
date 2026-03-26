@@ -15,12 +15,18 @@ interface Tipo {
     tipo_contrato: string
 }
 
-interface Props {
-    procedimientos: Procedimiento[],
-    tipos: Tipo[]
+interface Jefe {
+    id: number,
+    nombre: string
 }
 
-export default function Create({ procedimientos, tipos }: Props) {
+interface Props {
+    procedimientos: Procedimiento[],
+    tipos: Tipo[],
+    jefes: Jefe[]
+}
+
+export default function Create({ procedimientos, tipos, jefes }: Props) {
     const [step, setStep] = useState(1);
     const { data, setData, post, errors, processing } = useForm({
         n_expediente: '',
@@ -34,6 +40,7 @@ export default function Create({ procedimientos, tipos }: Props) {
         fecha_inicio: '',
         duracion_estimada: '',
         n_resolucion: '',
+            asignado_a: '',
     });
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -116,8 +123,24 @@ export default function Create({ procedimientos, tipos }: Props) {
                                     {errors.tipos_id && <span className="text-[10px] text-red-600 font-bold mt-1">{errors.tipos_id}</span>}
                                 </div>
 
+                                <div className="flex flex-col">
+                                    <label htmlFor="asignado_a" className={labelClass}>Jefe de servicio asignado</label>
+                                    <select
+                                        name="asignado_a"
+                                        id="asignado_a"
+                                        className={inputClass('asignado_a')}
+                                        value={data.asignado_a}
+                                        onChange={e => setData('asignado_a', e.target.value)}
+                                    >
+                                        <option value="">-- SELECCIONAR --</option>
+                                        {jefes.map((jefe) => (
+                                            <option key={jefe.id} value={jefe.id}>{jefe.nombre}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
                                 <div className="md:col-span-2 flex flex-col">
-                                    <label htmlFor="descripcion" className={labelClass}>Descripción del objeto del contrato</label>
+                                    <label htmlFor="descripcion" className={labelClass}>Descripción del contrato</label>
                                     <textarea
                                         id="descripcion"
                                         rows={2}

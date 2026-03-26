@@ -89,7 +89,7 @@ Route::middleware(['force.login'])->group(function(){
     Route::delete('/tipos/{tipo}/destroy',[TipoController::class,'destroy'])->name('tipos.destroy');
 
     Route::middleware(['auth'])->group(function(){
-        Route::get('/contratos/control-mando', [ContratoController::class, 'vistaControlMando'])->middleware(['auth', 'can:acceder-control-mando'])->name('contratos.controlMando');
+        Route::get('/contratos/control-mando', [ContratoController::class, 'vistaControlMando'])->middleware(['auth', 'can:ver-control-mando'])->name('contratos.controlMando');
         Route::get('/api/data/control-mando', [ContratoController::class, 'controlMando'])->name('control.data');
     });
 

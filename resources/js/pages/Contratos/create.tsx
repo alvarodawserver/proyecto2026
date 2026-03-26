@@ -123,21 +123,6 @@ export default function Create({ procedimientos, tipos, jefes }: Props) {
                                     {errors.tipos_id && <span className="text-[10px] text-red-600 font-bold mt-1">{errors.tipos_id}</span>}
                                 </div>
 
-                                <div className="flex flex-col">
-                                    <label htmlFor="asignado_a" className={labelClass}>Jefe de servicio asignado</label>
-                                    <select
-                                        name="asignado_a"
-                                        id="asignado_a"
-                                        className={inputClass('asignado_a')}
-                                        value={data.asignado_a}
-                                        onChange={e => setData('asignado_a', e.target.value)}
-                                    >
-                                        <option value="">-- SELECCIONAR --</option>
-                                        {jefes.map((jefe) => (
-                                            <option key={jefe.id} value={jefe.id}>{jefe.nombre}</option>
-                                        ))}
-                                    </select>
-                                </div>
 
                                 <div className="md:col-span-2 flex flex-col">
                                     <label htmlFor="descripcion" className={labelClass}>Descripción del contrato</label>
@@ -229,7 +214,7 @@ export default function Create({ procedimientos, tipos, jefes }: Props) {
                         {step === 2 && (
                             <>
                                 <div className="flex flex-col">
-                                    <label htmlFor="fecha_inicio" className={labelClass}>Fecha de formalización</label>
+                                    <label htmlFor="fecha_inicio" className={labelClass}>Fecha de Inicio</label>
                                     <input
                                         id="fecha_inicio"
                                         type="date"

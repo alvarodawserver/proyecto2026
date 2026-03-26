@@ -2,6 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { useState } from 'react';
+import { Button } from '@headlessui/react';
 import Can from '@/components/can';
 
 type Contrato = {
@@ -24,6 +25,7 @@ type Contrato = {
     };
     fecha_prevista_f: string;
     fecha_inicio_f: string;
+    fecha_fin_f: string;
     alerta_vencimiento_f: string;
     unidad_promotora: string;
     duracion_estimada: string;
@@ -33,14 +35,14 @@ type Contrato = {
 
 type Props = {
     contrato: Contrato;
+    vieneDeMando: boolean;
 };
 
-export default function Show({ contrato }: Props) {
+export default function Show({ contrato, vieneDeMando }: Props) {
     const { auth } = usePage().props as any;
-    const user = auth.user;
 
-    // Lógica de departamento para el banner (coherencia con Control de Mando)
-    const miDepartamentoRaw = user?.empleado?.departamento_nombre || user?.departamento || '';
+
+
 
     const [mostrarDetalles, setMostrarDetalles] = useState(false);
 
@@ -50,7 +52,10 @@ export default function Show({ contrato }: Props) {
     };
 
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Contratos', href: '/contratos' },
+        {
+            title: vieneDeMando ? 'Control de Mando' : 'Mis Expedientes',
+            href: vieneDeMando ? '/contratos/control-mando' : '/contratos'
+        },
         { title: `Expediente ${contrato.n_expediente}`, href: '#' },
     ];
 
@@ -58,15 +63,14 @@ export default function Show({ contrato }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Contrato ${contrato.id_contrato}`} />
 
-            {/* Banner superior estilo administrativo */}
+
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase">
                 Vista de Expediente: {contrato.n_expediente}
             </div>
 
             <div className="flex flex-col gap-4 p-4 text-[11px]">
 
-                {/* --- BOTONES DE ACCIÓN Y PDF --- */}
-                <Can permission="manejar_contratos">
+            <Can permission="ver_control_mando">
                 <div className="flex flex-wrap gap-2 items-center bg-gray-50 p-3 border border-gray-300 rounded shadow-sm">
                     <button
                         onClick={() => descargarPDF('basico')}
@@ -81,7 +85,7 @@ export default function Show({ contrato }: Props) {
                         PDF Completo
                     </button>
 
-                    <div className="h-6 w-[1px] bg-gray-300 mx-2" />
+                    <div className="h-6 w-px bg-gray-300 mx-2" />
 
                     <Link
                         href={`/contratos/${contrato.id}/movimientos`}
@@ -90,9 +94,8 @@ export default function Show({ contrato }: Props) {
                         Registro de actividad
                     </Link>
                 </div>
-                </Can>
+            </Can>
 
-                {/* Tabla Estilo Cuadrícula Administrativa */}
                 <div className="overflow-hidden border border-gray-300 bg-white shadow-sm">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -120,15 +123,15 @@ export default function Show({ contrato }: Props) {
                                 </td>
                             </tr>
                             <tr className='hover:bg-blue-50/50 transition-colors'>
-                                <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Responsable</td>
-                                <td className="px-4 py-2">{contrato.responsable}</td>
-                            </tr>
-                            <tr className='hover:bg-blue-50/50 transition-colors'>
                                 <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Importe estimado</td>
                                 <td className="px-4 py-2 font-bold">{contrato.importe_estimado != null ? `${contrato.importe_estimado} €` : '---'}</td>
                             </tr>
 
-                            {/* Fila de expansión estilo técnico */}
+                            <tr className='hover:bg-blue-50/50 transition-colors'>
+                                <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Fecha prevista</td>
+                                <td className="px-4 py-2 font-bold">{contrato.fecha_prevista_f}</td>
+                            </tr>
+
                             <tr
                                 className='cursor-pointer bg-blue-100/30 hover:bg-blue-100/50 transition-colors border-t border-gray-300'
                                 onClick={() => setMostrarDetalles(!mostrarDetalles)}
@@ -141,7 +144,7 @@ export default function Show({ contrato }: Props) {
                             {mostrarDetalles && (
                                 <>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
-                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Creado por</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Dado de alta por</td>
                                         <td className="px-4 py-2 text-gray-600">{contrato.usuario?.nombre || 'N/A'}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
@@ -149,13 +152,23 @@ export default function Show({ contrato }: Props) {
                                         <td className="px-4 py-2 text-gray-600">{contrato.unidad_promotora}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
-                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Fecha prevista</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_prevista_f}</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Fecha de inicio efectiva</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_inicio_f}</td>
+                                    </tr>
+                                    <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
+                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Fecha de fin efectiva</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_fin_f}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Importe final</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.importe_final} €</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.importe_final != null ? `${contrato.importe_final} €` : '---'}</td>
                                     </tr>
+
+                                    <tr className='hover:bg-blue-50/50 transition-colors'>
+                                        <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Responsable</td>
+                                        <td className="px-4 py-2">{contrato.responsable}</td>
+                                    </tr>
+
                                 </>
                             )}
                         </tbody>
@@ -163,13 +176,12 @@ export default function Show({ contrato }: Props) {
                 </div>
 
                 <div className="mt-2">
-                    <button
-    type="button"
-    onClick={() => window.history.length > 1 ? window.history.back() : window.location.href = '/contratos'}
-    className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-sm hover:bg-gray-300 font-bold uppercase border border-gray-300 text-[10px]"
->
-    ← Volver al listado
-</button>
+                    <Button
+                        onClick={() => window.history.length > 1 ? window.history.back() : window.location.href = '/contratos'}
+                        className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-sm hover:bg-gray-300 font-bold uppercase border border-gray-300 text-[10px]"
+                    >
+                        ← Volver al listado
+                    </Button>
                 </div>
             </div>
         </AppLayout>

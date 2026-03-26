@@ -52,7 +52,6 @@ class ContratoController extends Controller
             ->where('per_distribucion_dpto_principal', true)
             ->value('departamentos.nombre');
 
-
         $validated = $request->validate([
             'n_expediente' => 'required|max:255',
             'descripcion' => 'required|max:255',
@@ -65,16 +64,16 @@ class ContratoController extends Controller
             'fecha_inicio' => 'nullable|date',
             'n_resolucion' => 'nullable|max:255',
             'duracion_estimada' => 'required',
-            'asignado_a' => 'nullable|max:255',
         ]);
 
-       Contrato::create(array_merge($validated, [
+
+
+        Contrato::create(array_merge($validated, [
             'created_by' => Auth::id(),
             'alerta_vencimiento' => now()->addMonths(4),
             'estado_expediente' => 'Activo',
-            'unidad_promotora' => $unidad_promotora ?? ''
+            'unidad_promotora' => $unidad_promotora ?? '',
         ]));
-
 
         return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');
     }
@@ -120,7 +119,17 @@ class ContratoController extends Controller
             'n_resolucion' => 'nullable|max:255',
         ]);
 
+        // 1. CORRECCIÓN LÓGICA DE FORMALIZACIÓN
+        // Cambiamos $data (que no existe) por $validated
+        $validated['formalizado'] = $contrato->formalizado ?: (
+            !empty($validated['fecha_inicio']) &&
+            !empty($validated['importe_final']) &&
+            !empty($validated['n_resolucion'])
+        );
+
+        // 2. ACTUALIZACIÓN
         $contrato->update($validated);
+
         return redirect()->route('contratos');
     }
 

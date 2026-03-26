@@ -64,7 +64,7 @@ Route::get('/auth/bridge/{id}', function (Request $request, $id) {
 Route::middleware(['force.login'])->group(function(){
     Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('auth')->name('movimientos');
 
-    Route::get('/contratos', [ContratoController::class, 'index'])->middleware(['auth', 'can:acceder-contratos'])->name('contratos');
+    Route::get('/contratos', [ContratoController::class, 'index'])->name('contratos');
     Route::get('/contratos/create', [ContratoController::class, 'create'])->name('contratos.create');
     Route::post('/contratos/store', [ContratoController::class, 'store'])->name('contratos.store');
     Route::get('/contratos/show/{contrato}', [ContratoController::class, 'show'])->name('contratos.show');

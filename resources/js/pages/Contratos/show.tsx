@@ -29,7 +29,6 @@ type Contrato = {
     unidad_promotora: string;
     duracion_estimada: string;
     estado_expediente: string;
-    asignado_a: string;
 
 };
 
@@ -123,14 +122,14 @@ export default function Show({ contrato, vieneDeMando }: Props) {
                                 </td>
                             </tr>
                             <tr className='hover:bg-blue-50/50 transition-colors'>
-                                <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Responsable</td>
-                                <td className="px-4 py-2">{contrato.responsable}</td>
-                            </tr>
-                            <tr className='hover:bg-blue-50/50 transition-colors'>
                                 <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Importe estimado</td>
                                 <td className="px-4 py-2 font-bold">{contrato.importe_estimado != null ? `${contrato.importe_estimado} €` : '---'}</td>
                             </tr>
 
+                            <tr className='hover:bg-blue-50/50 transition-colors'>
+                                <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Fecha prevista</td>
+                                <td className="px-4 py-2 font-bold">{contrato.fecha_prevista_f}</td>
+                            </tr>
 
                             <tr
                                 className='cursor-pointer bg-blue-100/30 hover:bg-blue-100/50 transition-colors border-t border-gray-300'
@@ -144,7 +143,7 @@ export default function Show({ contrato, vieneDeMando }: Props) {
                             {mostrarDetalles && (
                                 <>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
-                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Creado por</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Dado de alta por</td>
                                         <td className="px-4 py-2 text-gray-600">{contrato.usuario?.nombre || 'N/A'}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
@@ -152,17 +151,19 @@ export default function Show({ contrato, vieneDeMando }: Props) {
                                         <td className="px-4 py-2 text-gray-600">{contrato.unidad_promotora}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
-                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Fecha prevista</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_prevista_f}</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Fecha de inicio efectiva</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_inicio_f}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Importe final</td>
                                         <td className="px-4 py-2 text-gray-600">{contrato.importe_final != null ? `${contrato.importe_final} €` : '---'}</td>
                                     </tr>
-                                    <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
-                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Asignado a</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.asignado_a || '---'}</td>
+
+                                    <tr className='hover:bg-blue-50/50 transition-colors'>
+                                        <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Responsable</td>
+                                        <td className="px-4 py-2">{contrato.responsable}</td>
                                     </tr>
+
                                 </>
                             )}
                         </tbody>

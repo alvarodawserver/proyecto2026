@@ -36,7 +36,7 @@ interface Props {
 }
 
 export default function Edit({ contrato, tipos, procedimientos }: Props) {
-     const { auth } = usePage().props as any;
+    const { auth } = usePage().props as any;
     const urlVolver = auth.can.ver_control_mando ? '/contratos/control-mando' : '/contratos';
     const { data, setData, put, errors, processing } = useForm({
         descripcion: contrato.descripcion || '',
@@ -49,6 +49,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
         n_resolucion: contrato.n_resolucion || '',
 
     });
+    const cumplimentado = data.fecha_inicio && data.importe_final && data.n_resolucion;
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Contratos', href: '/contratos' },
@@ -103,37 +104,6 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                             {errors.descripcion && <span className="text-[10px] text-red-600 font-bold mt-1">{errors.descripcion}</span>}
                         </div>
 
-                        <div className="flex flex-col">
-                            <label htmlFor="tipos_id" className={labelClass}>Tipo de contrato</label>
-                            <select
-                                name="tipos_id"
-                                id="tipos_id"
-                                className={inputClass('tipos_id')}
-                                value={data.tipos_id}
-                                onChange={e => setData('tipos_id', e.target.value)}
-                            >
-                                <option value="">-- SELECCIONAR TIPO --</option>
-                                {tipos.map((tip) => (
-                                    <option key={tip.id} value={tip.id}>{tip.tipo_contrato}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label htmlFor="tipo_procedimiento" className={labelClass}>Proceso de adjudicación</label>
-                            <select
-                                name="tipo_procedimiento"
-                                id="tipo_procedimiento"
-                                className={inputClass('tipo_procedimiento')}
-                                value={data.tipo_procedimiento}
-                                onChange={e => setData('tipo_procedimiento', e.target.value)}
-                            >
-                                <option value="">-- SELECCIONAR PROCESO --</option>
-                                {procedimientos.map((proc) => (
-                                    <option key={proc.id} value={proc.id}>{proc.tipo_procedimiento}</option>
-                                ))}
-                            </select>
-                        </div>
 
                         <div className="flex flex-col">
                             <label htmlFor="responsable" className={labelClass}>Responsable del contrato</label>

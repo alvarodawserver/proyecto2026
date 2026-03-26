@@ -116,13 +116,14 @@ class ContratoController extends Controller
         $validated = $request->validate([
             'descripcion' => 'required|max:255',
             'responsable' => 'nullable|max:255',
-            'tipos_id' => 'required|exists:tipos,id',
             'importe_final' => 'nullable|numeric|min:0',
-            'tipo_procedimiento' => 'required|max:255',
             'fecha_inicio' => 'nullable|date',
-            'duracion_estimada' => 'required',
             'n_resolucion' => 'nullable|max:255',
         ]);
+        $validated['formalizado'] = $contrato->formalizado ?: (
+                           !empty($data['fecha_inicio']) &&
+                           !empty($data['importe_final']) &&
+                           !empty($data['n_resolucion']));
 
         $contrato->update($validated);
         return redirect('/contratos/control-mando')->with('success','Contrato actualizado con éxito');

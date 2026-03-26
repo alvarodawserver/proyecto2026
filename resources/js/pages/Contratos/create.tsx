@@ -210,7 +210,7 @@ export default function Create({ procedimientos, tipos}: Props) {
                         {step === 2 && (
                             <>
                                 <div className="flex flex-col">
-                                    <label htmlFor="fecha_inicio" className={labelClass}>Fecha de formalización</label>
+                                    <label htmlFor="fecha_inicio" className={labelClass}>Fecha de inicio</label>
                                     <input
                                         id="fecha_inicio"
                                         type="date"

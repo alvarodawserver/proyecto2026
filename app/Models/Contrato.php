@@ -29,7 +29,8 @@ class Contrato extends Model
     'fecha_inicio_f',
     'fecha_prevista_f',
     'alerta_vencimiento_f',
-    'unidad_promotora_nombre'
+    'unidad_promotora_nombre',
+    'fecha_fin',
     ];
 
     public function movimientos()
@@ -62,6 +63,27 @@ class Contrato extends Model
 
     public function getUnidadPromotoraNombreAttribute(){
         return $this->usuario?->empleado?->departamento;
+    }
+
+    public function getFechaFinAttribute()
+    {
+        if (!$this->fecha_inicio || !$this->duracion_estimada) {
+            return null;
+        }
+
+        $años = (int) filter_var($this->duracion_estimada, FILTER_SANITIZE_NUMBER_INT);
+
+
+        if ($años <= 0) {
+            return $this->fecha_inicio;
+        }
+
+        return $this->fecha_inicio->copy()->addYears($años)->format('d-m-Y');
+    }
+
+    public function getFechaFinFAttribute()
+    {
+        return $this->fecha_fin?->format('d-m-Y') ?? '---';
     }
 
 

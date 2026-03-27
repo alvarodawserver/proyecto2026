@@ -75,6 +75,7 @@ Route::middleware(['force.login'])->group(function(){
     Route::put('/contratos/recuperar/{contrato_id}',[ContratoController::class,'recuperarDesactivados'])->name('recuperar');
     Route::get('/contratos/{contrato}/movimientos', [ContratoController::class, 'verMovimiento'])->name('contratos.movimientos');
     Route::get('/contratos/{id}/silenciar', [ContratoController::class, 'silenciarAlerta'])->name('contrato.silenciar')->middleware(['signed','auth']);
+    Route::put('/contratos/formalizar/{id}', [ContratoController::class, 'formalizar'])->name('contrato.formalizar');
 
     Route::get('/procedimientos',[AdjudicacioneController::class,'index'])->name('procedimientos');
     Route::get('/procedimientos/create',[AdjudicacioneController::class,'create'])->name('procedimientos.create');

@@ -70,10 +70,10 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Editar ${contrato.n_expediente}`} />
+            <Head title={`Formalizar ${contrato.n_expediente}`} />
 
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase flex justify-between items-center">
-                <span>Modificar Expediente: {contrato.n_expediente}</span>
+                <span>Completar Expediente: {contrato.n_expediente}</span>
                 <span className="text-[10px] bg-black/20 px-2 py-1 rounded">ID: {contrato.id}</span>
             </div>
 

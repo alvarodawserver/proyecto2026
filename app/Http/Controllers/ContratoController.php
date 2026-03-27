@@ -79,7 +79,7 @@ class ContratoController extends Controller
         ]));
 
 
-        return redirect('/contratos/control-mando')->with('message', 'Contrato creado con éxito');
+        return redirect('/contratos')->with('message', 'Contrato creado con éxito');
     }
 
     /**
@@ -119,12 +119,8 @@ class ContratoController extends Controller
             'importe_final' => 'nullable|numeric|min:0',
             'fecha_inicio' => 'nullable|date',
             'n_resolucion' => 'nullable|max:255',
+            'fecha_final' => 'nullable|date',
         ]);
-        $validated['formalizado'] = $contrato->formalizado ?: (
-                           !empty($data['fecha_inicio']) &&
-                           !empty($data['importe_final']) &&
-                           !empty($data['n_resolucion']));
-
         $contrato->update($validated);
         return redirect('/contratos/control-mando')->with('success','Contrato actualizado con éxito');
     }
@@ -137,8 +133,9 @@ class ContratoController extends Controller
         $contrato->estado_expediente = 'Desactivado';
         $contrato->save();
         $contrato->delete();
-        return redirect('/contratos/control-mando')->with('success','Contrato desactivado con éxito');
+        return redirect()->back()->with('success','Contrato desactivado con éxito');
     }
+
 
     public function verDesactivados(){
         $contratos_desactivados = Contrato::onlyTrashed()->with('usuario')->get();
@@ -230,10 +227,10 @@ class ContratoController extends Controller
 
     public function formalizar($id){
         $contrato = Contrato::findOrFail($id);
-        $contrato->estado_alerta = 'formalizado';
+        $contrato->formalizado = true;
         $contrato->save();
 
-        return "Contrato formalizado con éxito. Puedes cerrar esta ventana.";
+        return redirect()->back()->with('success','Contrato formalizado con éxito');
     }
 
     public function silenciarAlerta(Contrato $contrato)

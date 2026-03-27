@@ -45,19 +45,27 @@ class ContratoObserver
             return;
         }
 
+        if ($contrato->wasChanged('formalizado') && $contrato->formalizado) {
+            $this->formalizado($contrato);
+            return;
+        }
 
         $this->registrarMovimiento($contrato, 'Modificación', 'Se han actualizado los datos del contrato.');
     }
 
     public function deleted(Contrato $contrato): void
     {
-        $this->registrarMovimiento($contrato, 'Eliminación', 'El contrato ha sido desactivado (Soft Delete)');
+        $this->registrarMovimiento($contrato, 'Dado de baja', 'El contrato ha sido desactivado');
     }
 
+    public function forceDeleted(Contrato $contrato): void
+    {
+        $this->registrarMovimiento($contrato, 'Eliminación Permanente', 'El contrato ha sido eliminado permanentemente');
+    }
+
+
     public function formalizado(Contrato $contrato): void{
-        if($contrato->estado_alerta != 'pendiente'){
             $this->registrarMovimiento($contrato,'Formalización','El contrato ha sido formalizado');
-        }
     }
 
     public function restored(Contrato $contrato): void
@@ -65,6 +73,7 @@ class ContratoObserver
         $this->registrarMovimiento($contrato, 'Restauración', 'El contrato ha sido restaurado');
     }
 
+    
     private function registrarMovimiento($contrato, $actuacion, $observacion)
     {
         Movimiento::create([
@@ -76,5 +85,5 @@ class ContratoObserver
         ]);
     }
 
-    
+
 }

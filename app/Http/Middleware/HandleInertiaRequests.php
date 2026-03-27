@@ -55,6 +55,10 @@ class HandleInertiaRequests extends Middleware
                 'ver_control_mando' => $usuario ? $usuario->can('ver-control-mando') : false,
 
             ],
+            'urls' => [
+                'yii_utilidades_url' => env('YII_URL', 'http://localhost:8080/index.php?r=utilidades%2Findex' ),
+                'home' => env('YII_HOME_URL', 'http://localhost:8080/index.php')
+            ]
         ],
     ];
 }

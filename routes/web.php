@@ -75,7 +75,8 @@ Route::middleware(['force.login'])->group(function(){
     Route::put('/contratos/recuperar/{contrato_id}',[ContratoController::class,'recuperarDesactivados'])->name('recuperar');
     Route::get('/contratos/{contrato}/movimientos', [ContratoController::class, 'verMovimiento'])->name('contratos.movimientos');
     Route::get('/contratos/{id}/silenciar', [ContratoController::class, 'silenciarAlerta'])->name('contrato.silenciar')->middleware(['signed','auth']);
-
+    Route::put('/contratos/formalizar/{id}', [ContratoController::class, 'formalizar'])->name('contrato.formalizar');
+    
     Route::get('/procedimientos',[AdjudicacioneController::class,'index'])->name('procedimientos');
     Route::get('/procedimientos/create',[AdjudicacioneController::class,'create'])->name('procedimientos.create');
     Route::get('/procedimientos/{procedimiento}/edit',[AdjudicacioneController::class,'edit'])->name('procedimientos.edit');
@@ -95,5 +96,6 @@ Route::middleware(['force.login'])->group(function(){
 
     Route::get('/contratos/{id}/pdf', [ContratoController::class, 'generarPdf']);
 });
+
 
 require __DIR__.'/settings.php';

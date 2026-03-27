@@ -25,11 +25,12 @@ type Contrato = {
     };
     fecha_prevista_f: string;
     fecha_inicio_f: string;
-    fecha_fin_f: string;
     alerta_vencimiento_f: string;
     unidad_promotora: string;
     duracion_estimada: string;
     estado_expediente: string;
+    n_resolucion: string;
+    fecha_fin: string;
 
 };
 
@@ -153,22 +154,22 @@ export default function Show({ contrato, vieneDeMando }: Props) {
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Fecha de inicio efectiva</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_inicio_f}</td>
-                                    </tr>
-                                    <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
-                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Fecha de fin efectiva</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_fin_f}</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_fin}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Importe final</td>
                                         <td className="px-4 py-2 text-gray-600">{contrato.importe_final != null ? `${contrato.importe_final} €` : '---'}</td>
                                     </tr>
 
-                                    <tr className='hover:bg-blue-50/50 transition-colors'>
-                                        <td className="px-4 py-2 font-bold text-gray-700 border-r border-gray-200 bg-gray-50/50">Responsable</td>
-                                        <td className="px-4 py-2">{contrato.responsable}</td>
+                                   <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
+                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Responsable</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.responsable}</td>
                                     </tr>
 
+                                    <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
+                                        <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Número de resolución</td>
+                                        <td className="px-4 py-2 text-gray-600">{contrato.n_resolucion}</td>
+                                    </tr>
                                 </>
                             )}
                         </tbody>

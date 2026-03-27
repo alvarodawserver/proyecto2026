@@ -12,6 +12,7 @@ interface ContratoForm {
     fecha_inicio: string;
     duracion_estimada: string;
     n_resolucion:string;
+    fecha_fin: string
 }
 
 interface Contrato extends ContratoForm {
@@ -45,6 +46,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
         fecha_inicio: contrato.fecha_inicio || '',
         duracion_estimada: contrato.duracion_estimada || '',
         n_resolucion: contrato.n_resolucion || '',
+        fecha_fin: contrato.fecha_fin || '',
 
     });
 
@@ -70,11 +72,11 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Editar ${contrato.n_expediente}`} />
+            <Head title={`Formalizar ${contrato.n_expediente}`} />
 
             {/* Banner Institucional con ID de registro */}
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase flex justify-between items-center">
-                <span>Modificar Expediente: {contrato.n_expediente}</span>
+                <span>Completar Expediente: {contrato.n_expediente}</span>
                 <span className="text-[10px] bg-black/20 px-2 py-1 rounded">ID: {contrato.id}</span>
             </div>
 
@@ -107,7 +109,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
 
 
 
-                        
+
 
                         <div className="flex flex-col">
                             <label htmlFor="responsable" className={labelClass}>Responsable del contrato</label>
@@ -155,6 +157,17 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                                 className={inputClass('fecha_inicio')}
                                 value={data.fecha_inicio}
                                 onChange={e => setData('fecha_inicio', e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label htmlFor="fecha_fin" className={labelClass}>Fecha final</label>
+                            <input
+                                id="fecha_fin"
+                                type="date"
+                                className={inputClass('fecha_fin')}
+                                value={data.fecha_fin}
+                                onChange={e => setData('fecha_fin', e.target.value)}
                             />
                         </div>
 

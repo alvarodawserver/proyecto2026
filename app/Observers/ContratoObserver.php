@@ -53,13 +53,24 @@ class ContratoObserver
 
     public function deleted(Contrato $contrato): void
     {
-        $this->registrarMovimiento($contrato, 'Eliminación', 'El contrato ha sido desactivado (Soft Delete)');
+        $this->registrarMovimiento($contrato, 'Dado de baja', 'El contrato ha sido desactivado');
+
+
+
     }
 
-    public function formalizado(Contrato $contrato): void{
-        if($contrato->estado_alerta != 'pendiente'){
-            $this->registrarMovimiento($contrato,'Formalización','El contrato ha sido formalizado');
-        }
+
+
+
+
+    public function forceDeleted(Contrato $contrato): void
+
+
+    {
+
+
+        $this->registrarMovimiento($contrato, 'Eliminación Permanente', 'El contrato ha sido eliminado permanentemente');
+
     }
 
     public function restored(Contrato $contrato): void

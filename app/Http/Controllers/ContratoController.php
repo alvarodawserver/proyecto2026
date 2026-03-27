@@ -64,16 +64,21 @@ class ContratoController extends Controller
             'fecha_inicio' => 'nullable|date',
             'n_resolucion' => 'nullable|max:255',
             'duracion_estimada' => 'required',
+            'fecha_fin' => 'nullable|date'
         ]);
 
 
 
-        Contrato::create(array_merge($validated, [
+        $contrato = Contrato::create(array_merge($validated, [
             'created_by' => Auth::id(),
             'alerta_vencimiento' => now()->addMonths(4),
             'estado_expediente' => 'Activo',
             'unidad_promotora' => $unidad_promotora ?? '',
         ]));
+
+        $contrato->fecha_fin = $contrato->getFechaFinAttribute();
+
+        $contrato->save();
 
         return redirect()->route('contratos')->with('message', 'Contrato creado con éxito');
     }
@@ -117,7 +122,14 @@ class ContratoController extends Controller
             'fecha_inicio' => 'nullable|date',
             'duracion_estimada' => 'required',
             'n_resolucion' => 'nullable|max:255',
+            'fecha_fin' => 'nullable|date'
         ]);
+
+        if (empty($validated['fecha_fin'])){
+        $contrato->fill($validated);
+        $validated['fecha_fin'] = $contrato->calcularFechaFin();
+        };
+
 
         // 1. CORRECCIÓN LÓGICA DE FORMALIZACIÓN
         // Cambiamos $data (que no existe) por $validated
@@ -235,10 +247,10 @@ class ContratoController extends Controller
 
     public function formalizar($id){
         $contrato = Contrato::findOrFail($id);
-        $contrato->estado_alerta = 'formalizado';
+        $contrato->formalizado = true;
         $contrato->save();
 
-        return "Contrato formalizado con éxito. Puedes cerrar esta ventana.";
+        return redirect()->back()->with('success','Contrato formalizado con éxito');
     }
 
     public function silenciarAlerta(Contrato $contrato)

@@ -1,6 +1,7 @@
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import type { AppLayoutProps, BreadcrumbItem } from '@/types';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { usePage } from '@inertiajs/react';
 
 //export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
 //    <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
@@ -9,6 +10,19 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 //);
 
 export default function AppLayout({ children, breadcrumbs = [] }: { children: React.ReactNode; breadcrumbs?: BreadcrumbItem[] }) {
+
+    const {props}=usePage();
+    const urls = (props as any).urls || {home:'#', utilidades:'#'}
+    const breadcrumbsDinamicos= breadcrumbs.map((item => {
+        let nuevoHref = item.href;
+        if (item.href === 'home') nuevoHref=urls.home
+        if (item.href === 'utilidades') nuevoHref=urls.utilidades
+
+        return {
+            ...item,
+            href:nuevoHref
+        };
+    }))
     return (
         <div className="min-h-screen bg-gray-100">
             {/* CABECERA NARANJA: Ocupa el 100% del ancho de la pantalla */}
@@ -21,7 +35,7 @@ export default function AppLayout({ children, breadcrumbs = [] }: { children: Re
 
                 {/* El Breadcrumb ahora está aquí, dentro del margen, debajo del color */}
                 <div className="py-4">
-                    <Breadcrumbs breadcrumbs={breadcrumbs} />
+                    <Breadcrumbs breadcrumbs={breadcrumbsDinamicos} />
                 </div>
 
                 <main>

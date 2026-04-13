@@ -16,8 +16,8 @@
     <p>Saludos,<br>El sistema de Gestión.</p>
     <p>Si ya has iniciado los trámites, pulsa el siguiente botón para que dejemos de enviarte recordatorios:</p>
     <a href="{{ URL::signedRoute('contrato.silenciar', ['id' => $contrato->id]) }}"
-   style="background-color: #e67e22; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+    style="background-color: #e67e22; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
     No avisar más sobre este contrato
-</a>
+    </a>
 </body>
 </html>

@@ -67,13 +67,13 @@ class ContratoObserver
     public function formalizado(Contrato $contrato): void{
             $this->registrarMovimiento($contrato,'Formalización','El contrato ha sido formalizado');
     }
-
+    
     public function restored(Contrato $contrato): void
     {
         $this->registrarMovimiento($contrato, 'Restauración', 'El contrato ha sido restaurado');
     }
 
-    
+
     private function registrarMovimiento($contrato, $actuacion, $observacion)
     {
         Movimiento::create([

@@ -4,12 +4,9 @@ use App\Http\Controllers\AdjudicacioneController;
 use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\TipoController;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthBridgeController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
-use Illuminate\Support\Facades\DB;
 
 Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
@@ -19,49 +16,10 @@ Route::middleware(['auth'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });
 
-Route::get('/auth/bridge/{id}', function (Request $request, $id) {
-    $secretKey = "contratacion_laravel";
-    $ts = $request->query('ts');
-    $hash = $request->query('hash');
-    $expectedHash = md5($id . $secretKey . $ts);
-
-    if ($hash !== $expectedHash) {
-        return abort(403, 'Acceso expirado o firma inválida');
-    }
-
-    $user = User::find($id);
-
-    if ($user) {
-        Auth::login($user, true);
-        $destino = $request->query('dest');
-        $isAdmin = (strtolower($user->nombre) === 'admin');
-        $isJefeContratacion = false;
-
-        $distribucion = DB::table('per_distribucion')
-            ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
-            ->where('per_distribucion_empleado', $user->empleado_id)
-            ->where('per_distribucion_rol', 1)
-            ->where('per_distribucion_dpto_principal', 1)
-            ->select('departamentos.nombre')
-            ->first();
-
-        if ($distribucion && str_contains(strtoupper($distribucion->nombre), 'CONTRATACION')) {
-            $isJefeContratacion = true;
-        }
-
-        if ($destino === 'mis') {
-            return redirect('/contratos');
-        }
-
-        if (($isAdmin || $isJefeContratacion) && $destino === 'mando') {
-            return redirect('/contratos/control-mando');
-        }
-    }
-
-    return redirect('/login');
-})->middleware('web');
+Route::get('/auth/bridge/{id}', [AuthBridgeController::class, 'loginFromYii'])->middleware('web');
 
 Route::middleware(['force.login'])->group(function(){
+
     Route::get('/movimientos',[MovimientoController::class,'index'])->middleware('auth')->name('movimientos');
 
     Route::get('/contratos', [ContratoController::class, 'index'])->middleware(['auth'])->name('contratos');

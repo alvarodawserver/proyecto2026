@@ -56,8 +56,8 @@ class HandleInertiaRequests extends Middleware
 
             ],
             'urls' => [
-                'yii_utilidades_url' => env('YII_URL', 'http://localhost:8080/index.php?r=utilidades%2Findex'),
-                'home' => env('YII_HOME_URL','http://localhost:8080/index.php'),
+                'yii_utilidades_url' => env('YII_URL', 'https://empleados2.sanlucardebarrameda.es/ayudas/web/index.php?r=utilidades%2Findex'),
+                'home' => env('YII_HOME_URL','https://empleados2.sanlucardebarrameda.es/ayudas/web/index.php'),
             ],
         ],
     ];

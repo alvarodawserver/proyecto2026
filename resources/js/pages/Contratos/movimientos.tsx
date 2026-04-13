@@ -19,10 +19,6 @@ type Props = {
         id: number;
         n_expediente: string;
         movimientos: Movimiento[];
-        usuario: {
-            id: number;
-            nombre: string;
-        };
         formalizado: boolean;
     };
     vieneDeMando: boolean;
@@ -83,7 +79,7 @@ export default function Movimientos({ contrato, vieneDeMando }: Props) {
                                             {mov.observaciones || '--- Sin observaciones registradas ---'}
                                         </td>
                                         <td className="px-4 py-2 font-bold text-gray-700">
-                                            {contrato.usuario?.nombre || 'USUARIO_DESCONOCIDO'}
+                                            {mov.usuario?.nombre || 'USUARIO_DESCONOCIDO'}
                                         </td>
                                     </tr>
                                 ))}

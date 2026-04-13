@@ -18,8 +18,8 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $contratos = Contrato::where('created_by', $user->id)->get();
+        $usuarioLogueado = Auth::user();
+        $contratos = Contrato::where('created_by', $usuarioLogueado->id)->get();
         return Inertia::render('Contratos/contratos',[
             'contratos' => $contratos,]);
     }
@@ -29,19 +29,9 @@ class ContratoController extends Controller
      */
     public function create()
     {
-        $jefes = DB::table('usuarios')
-            ->join('empleados', 'usuarios.empleado_id', '=', 'empleados.id')
-            ->join('per_distribucion', 'empleados.id', '=', 'per_distribucion.per_distribucion_empleado')
-            ->where('per_distribucion.per_distribucion_rol', 1)
-            ->where('per_distribucion.per_distribucion_dpto_principal', 1)
-            ->select('usuarios.nombre')
-            ->get();
-
         return Inertia::render('Contratos/create',[
             'procedimientos' => Adjudicacione::all(),
-            'tipos' => Tipo::all(),
-            'jefes' => $jefes
-        ]);
+            'tipos' => Tipo::all()]);
     }
 
     /**
@@ -49,13 +39,12 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-
+        $usuarioLogueado = Auth::user();
         $unidad_promotora = DB::table('per_distribucion')
             ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
-            ->where('per_distribucion_empleado', Auth::user()->empleado_id)
+            ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
             ->where('per_distribucion_dpto_principal', true)
             ->value('departamentos.nombre');
-
 
         $validated = $request->validate([
             'n_expediente' => 'required|max:255',
@@ -69,30 +58,35 @@ class ContratoController extends Controller
             'fecha_inicio' => 'nullable|date',
             'n_resolucion' => 'nullable|max:255',
             'duracion_estimada' => 'required',
+            'fecha_fin' => 'nullable|date'
         ]);
 
-       Contrato::create(array_merge($validated, [
+
+
+        $contrato = Contrato::create(array_merge($validated, [
             'created_by' => Auth::id(),
             'alerta_vencimiento' => now()->addMonths(4),
             'estado_expediente' => 'Activo',
-            'unidad_promotora' => $unidad_promotora ?? ''
+            'unidad_promotora' => $unidad_promotora ?? '',
         ]));
 
+        $contrato->fecha_fin = $contrato->getFechaFinAttribute();
 
-        return redirect('/contratos')->with('message', 'Contrato creado con éxito');
+        $contrato->save();
+
+        return redirect()->back()->with('message', 'Contrato creado con éxito');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request,Contrato $contrato)
+    public function show(Contrato $contrato)
     {
-        $vieneDeMando = $request->query('from') === 'mando';
         $contrato_user = $contrato->load(['usuario.empleado', 'tipo', 'tipo_procedimiento']);;
         if (!$contrato_user) {
             return redirect()->route('contratos')->with('error', 'Contrato no encontrado');
         }
-        return Inertia::render('Contratos/show',['contrato' => $contrato_user, 'vieneDeMando' => $vieneDeMando]);
+        return Inertia::render('Contratos/show',['contrato' => $contrato_user]);
     }
 
     /**
@@ -116,13 +110,33 @@ class ContratoController extends Controller
         $validated = $request->validate([
             'descripcion' => 'required|max:255',
             'responsable' => 'nullable|max:255',
+            'tipos_id' => 'required|exists:tipos,id',
             'importe_final' => 'nullable|numeric|min:0',
+            'tipo_procedimiento' => 'required|max:255',
             'fecha_inicio' => 'nullable|date',
+            'duracion_estimada' => 'required',
             'n_resolucion' => 'nullable|max:255',
-            'fecha_final' => 'nullable|date',
+            'fecha_fin' => 'nullable|date'
         ]);
+
+        if (empty($validated['fecha_fin'])){
+        $contrato->fill($validated);
+        $validated['fecha_fin'] = $contrato->calcularFechaFin();
+        };
+
+
+        // 1. CORRECCIÓN LÓGICA DE FORMALIZACIÓN
+        // Cambiamos $data (que no existe) por $validated
+        $validated['formalizado'] = $contrato->formalizado ?: (
+            !empty($validated['fecha_inicio']) &&
+            !empty($validated['importe_final']) &&
+            !empty($validated['n_resolucion'])
+        );
+
+        // 2. ACTUALIZACIÓN
         $contrato->update($validated);
-        return redirect('/contratos/control-mando')->with('success','Contrato actualizado con éxito');
+
+        return redirect()->back();
     }
 
     /**
@@ -133,9 +147,8 @@ class ContratoController extends Controller
         $contrato->estado_expediente = 'Desactivado';
         $contrato->save();
         $contrato->delete();
-        return redirect()->back()->with('success','Contrato desactivado con éxito');
+        return redirect()->back();
     }
-
 
     public function verDesactivados(){
         $contratos_desactivados = Contrato::onlyTrashed()->with('usuario')->get();
@@ -147,13 +160,12 @@ class ContratoController extends Controller
         $contrato_recuperar->estado_expediente = 'Activo';
         $contrato_recuperar->save();
         $contrato_recuperar->restore();
-        return redirect('/contratos/control-mando')->with('success','El contrato se ha recuperado con éxito');
+        return redirect()->route('control-mando')->with('success','El contrato se ha recuperado con éxito');
     }
 
-    public function verMovimiento(Request $request,Contrato $contrato){
-        $vieneDeMando = $request->query('from') === 'mando';
-        $contrato->load(['movimientos', 'usuario']);
-        return Inertia::render('Contratos/movimientos',['contrato' => $contrato, 'vieneDeMando' => $vieneDeMando]);
+    public function verMovimiento(Contrato $contrato){
+        $contrato->load(['movimientos.usuario']);
+        return Inertia::render('Contratos/movimientos',['contrato' => $contrato]);
     }
 
 
@@ -188,7 +200,7 @@ class ContratoController extends Controller
         return response()->json([], 401);
     }
 
-
+    // Buscamos su departamento
     $departamentoUsuario = DB::table('per_distribucion')
         ->join('departamentos', 'per_distribucion.per_distribucion_departamento', '=', 'departamentos.id')
         ->where('per_distribucion_empleado', $usuarioLogueado->empleado_id)
@@ -197,24 +209,25 @@ class ContratoController extends Controller
 
     $query = Contrato::query();
 
+    // --- LÓGICA PARA ADMIN O CONTRATACIÓN ---
     $esAdmin = strtolower($usuarioLogueado->nombre) === 'admin';
     $deptoUpper = mb_strtoupper($departamentoUsuario ?? '', 'UTF-8');
     $esContratacion = str_contains($deptoUpper, 'CONTRATACIÓN') || str_contains($deptoUpper, 'CONTRATACION');
 
     if ($esAdmin || $esContratacion) {
-
+        // Si es admin o contratación, puede filtrar por el select o ver todo
         if ($request->filled('departamento')) {
             $query->where('unidad_promotora', $request->departamento);
         }
     } elseif ($departamentoUsuario) {
-
+        // Si es un usuario normal, solo ve lo suyo
         $query->where('unidad_promotora', $departamentoUsuario);
     } else {
-
+        // Si no hay departamento y no es admin, devolvemos vacío para seguridad
         return response()->json([]);
     }
 
-
+    // Filtros de fecha
     if ($request->filled('desde')) {
         $query->whereDate('fecha_inicio', '>=', $request->desde);
     }

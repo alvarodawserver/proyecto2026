@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/react';
@@ -12,32 +12,20 @@ interface ContratoForm {
     fecha_inicio: string;
     duracion_estimada: string;
     n_resolucion:string;
+    fecha_fin: string
 }
 
 interface Contrato extends ContratoForm {
     id: number;
-    n_expediente: string; // Añadido para el título
+    n_expediente: string; 
 }
 
-interface Procedimiento {
-    id: number;
-    tipo_procedimiento: string;
-}
-
-interface Tipo {
-    id: number;
-    tipo_contrato: string;
-}
 
 interface Props {
     contrato: Contrato;
-    procedimientos: Procedimiento[];
-    tipos: Tipo[];
 }
 
-export default function Edit({ contrato, tipos, procedimientos }: Props) {
-    const { auth } = usePage().props as any;
-    const urlVolver = auth.can.ver_control_mando ? '/contratos/control-mando' : '/contratos';
+export default function Edit({ contrato }: Props) {
     const { data, setData, put, errors, processing } = useForm({
         descripcion: contrato.descripcion || '',
         responsable: contrato.responsable || '',
@@ -47,12 +35,14 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
         fecha_inicio: contrato.fecha_inicio || '',
         duracion_estimada: contrato.duracion_estimada || '',
         n_resolucion: contrato.n_resolucion || '',
+        fecha_fin: contrato.fecha_fin || '',
 
     });
-    const cumplimentado = data.fecha_inicio && data.importe_final && data.n_resolucion;
+
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Contratos', href: '/contratos' },
+        { title: `Expediente ${contrato.n_expediente}`, href: `/contratos/${contrato.id}` },
         { title: 'Editar Datos', href: '#' },
     ];
 
@@ -72,6 +62,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Formalizar ${contrato.n_expediente}`} />
 
+            {/* Banner Institucional con ID de registro */}
             <div className="bg-[#e96b7d] p-2 px-4 text-white font-bold text-lg shadow-sm uppercase flex justify-between items-center">
                 <span>Completar Expediente: {contrato.n_expediente}</span>
                 <span className="text-[10px] bg-black/20 px-2 py-1 rounded">ID: {contrato.id}</span>
@@ -81,7 +72,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
 
                 <div className="mb-2">
                     <Link
-                        href={urlVolver}
+                        href={`/contratos/control-mando`}
                         className="text-gray-500 hover:text-[#e96b7d] font-bold uppercase text-[10px] flex items-center gap-1 transition-colors"
                     >
                         ← Cancelar y volver
@@ -103,6 +94,9 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                             />
                             {errors.descripcion && <span className="text-[10px] text-red-600 font-bold mt-1">{errors.descripcion}</span>}
                         </div>
+
+
+
 
 
                         <div className="flex flex-col">
@@ -155,6 +149,17 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                         </div>
 
                         <div className="flex flex-col">
+                            <label htmlFor="fecha_fin" className={labelClass}>Fecha final</label>
+                            <input
+                                id="fecha_fin"
+                                type="date"
+                                className={inputClass('fecha_fin')}
+                                value={data.fecha_fin}
+                                onChange={e => setData('fecha_fin', e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
                             <label htmlFor="duracion_estimada" className={labelClass}>Vigencia / Duración</label>
                             <select
                                 name="duracion_estimada"
@@ -174,7 +179,7 @@ export default function Edit({ contrato, tipos, procedimientos }: Props) {
                         {/* Botones de acción */}
                         <div className="md:col-span-2 border-t border-gray-100 pt-6 flex gap-3 justify-end">
                             <Link
-                                href={window.history.state.back || urlVolver}
+                                href={`/contratos/control-mando`}
                                 className="bg-gray-100 text-gray-600 px-6 py-2 rounded-sm font-bold uppercase hover:bg-gray-200 border border-gray-300 transition-colors"
                             >
                                 Descartar Cambios

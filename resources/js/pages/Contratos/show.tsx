@@ -142,28 +142,29 @@ export default function Show({ contrato, vieneDeMando }: Props) {
                                 </td>
                             </tr>
 
+
                             {mostrarDetalles && (
                                 <>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Dado de alta por</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.usuario?.nombre || 'N/A'}</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600">{contrato.usuario?.nombre || 'N/A'}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Unidad promotora</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.unidad_promotora}</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600">{contrato.unidad_promotora}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Fecha de inicio efectiva</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.fecha_fin}</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600">{contrato.fecha_inicio_f}</td>
                                     </tr>
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Importe final</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.importe_final != null ? `${contrato.importe_final} €` : '---'}</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600">{contrato.importe_final != null ? `${contrato.importe_final} €` : '---'}</td>
                                     </tr>
 
                                    <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>
                                         <td className="px-4 py-2 font-bold text-gray-600 border-r border-gray-200 bg-gray-50/30 pl-8 italic text-[10px]">Responsable</td>
-                                        <td className="px-4 py-2 text-gray-600">{contrato.responsable}</td>
+                                        <td className="px-4 py-2 font-bold text-gray-600">{contrato.responsable}</td>
                                     </tr>
 
                                     <tr className='animate-in fade-in slide-in-from-top-1 duration-200'>

@@ -1,0 +1,90 @@
+<?php
+
+/* @var $this yii\web\View */
+/* @var $form yii\bootstrap\ActiveForm */
+/* @var $model app\models\LoginForm */
+
+use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+$css = 
+<<<EOT
+.wrap {
+    background-image: url("css/imagenes/fondo3.png");
+    background-repeat: no-repeat;
+    background-size: 27%;
+    background-position: 0px 51px;
+  }
+  .breadcrumb {
+    text-align: center;
+    max-width: 30%;
+    margin-left: 35%;
+  }
+  @media screen and (max-width : 768px) {
+    .wrap {
+        background-image:none;
+    }
+    .breadcrumb {
+      text-align: left;
+      max-width: 100%;
+      margin-left: 0%;
+    }
+  }
+EOT;
+$this->registerCss($css);
+$this->title = 'Iniciar sesión';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+
+<div class="site-login col-sm-8 col-sm-offset-4">
+<h1><?= Html::encode($this->title) ?></h1>
+
+<p>Rellena los siguientes campos para iniciar sesión:</p>
+<?php
+if (isset($softDeleted) && $softDeleted) {
+    echo "<script>alert('Este usuario ha sido deshabilitado.');</script>";
+}
+
+if (isset($csrfError) && $csrfError) {
+    echo "<script>alert('No se pudo iniciar sesión. El usuario podría estar deshabilitado.');</script>";
+}
+?>
+
+
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger">
+            <?= Yii::$app->session->getFlash('error') ?>
+        </div>
+    <?php endif; ?>
+<?php $form = ActiveForm::begin([
+    'id' => 'login-form',
+    'layout' => 'horizontal',
+    'fieldConfig' => [
+        'template' => "{label}\n<div class=\"col-sm-4\">{input}</div>\n<div class=\"col-sm-8\">{error}</div>",
+        'labelOptions' => ['class' => 'col-sm-2 control-label'],
+    ],
+]); ?>
+
+    <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+
+    <?= $form->field($model, 'password')->passwordInput() ?>
+
+    <?= Html::a('¿Ha olvidado su contraseña?', ['site/recuperar']) ?>
+
+    <?= $form->field($model, 'rememberMe')->checkbox([
+        'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
+    ]) ?>
+
+    <div class="form-group">
+        <div class="col-lg-offset-1 col-lg-11">
+            <?= Html::submitButton('Iniciar sesión', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-offset-1 col-lg-11">
+            <?= Html::a('Guía de usuario', ['site/guia'], ['class' => 'btn btn-lg btn-danger']) ?>
+        </div>
+    </div>
+
+<?php ActiveForm::end(); ?>
+</div>
